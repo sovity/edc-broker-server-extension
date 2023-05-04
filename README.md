@@ -13,17 +13,17 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-<a href="https://github.com/sovity/edc-extensions">
+<a href="https://github.com/sovity/edc-broker-server-extension">
 <img src="https://raw.githubusercontent.com/sovity/edc-ui/main/src/assets/images/sovity_logo.svg" alt="Logo" width="300">
 </a>
 
 <h3 align="center">Broker Server</h3>
 <p align="center" style="padding-bottom:16px">
-IDS Broker Server built on EDC.
+Broker Backend &amp; EDC Extensions.
 <br />
-<a href="https://github.com/sovity/edc-extensions/issues/new?template=bug_report.md">Report Bug</a>
+<a href="https://github.com/sovity/edc-broker-server-extension/issues/new?template=bug_report.md">Report Bug</a>
 ·
-<a href="https://github.com/sovity/edc-extensions/issues/new?template=feature_request.md">Request Feature</a>
+<a href="https://github.com/sovity/edc-broker-server-extension/issues/new?template=feature_request.md">Request Feature</a>
 </p>
 </div>
 
@@ -48,9 +48,10 @@ for building dataspaces, exchanging data securely with ensured data sovereignty.
 enterprise-ready managed services like "Connector-as-a-Service", out-of-the-box fully configured DAPS
 and integrations to existing other dataspace technologies.
 
-An IDS Broker aggregates all data offers in a data space and offers them well indexed searchable and filterable.
+An IDS Broker is a central component of a dataspace that operates on the IDS protocol, that aggregates and indexes
+connectors and data offers.
 
-This is an implementation of an IDS Broker written on EDC basis.
+This IDS Broker is written on basis of the EDC and should be used in tandem with the Broker UI.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -74,29 +75,29 @@ contact@sovity.de
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 
 [contributors-shield]:
-https://img.shields.io/github/contributors/sovity/edc-extensions.svg?style=for-the-badge
+https://img.shields.io/github/contributors/sovity/edc-broker-server-extension.svg?style=for-the-badge
 
-[contributors-url]: https://github.com/sovity/edc-extensions/graphs/contributors
+[contributors-url]: https://github.com/sovity/edc-broker-server-extension/graphs/contributors
 
 [forks-shield]:
-https://img.shields.io/github/forks/sovity/edc-extensions.svg?style=for-the-badge
+https://img.shields.io/github/forks/sovity/edc-broker-server-extension.svg?style=for-the-badge
 
-[forks-url]: https://github.com/sovity/edc-extensions/network/members
+[forks-url]: https://github.com/sovity/edc-broker-server-extension/network/members
 
 [stars-shield]:
-https://img.shields.io/github/stars/sovity/edc-extensions.svg?style=for-the-badge
+https://img.shields.io/github/stars/sovity/edc-broker-server-extension.svg?style=for-the-badge
 
-[stars-url]: https://github.com/sovity/edc-extensions/stargazers
+[stars-url]: https://github.com/sovity/edc-broker-server-extension/stargazers
 
 [issues-shield]:
-https://img.shields.io/github/issues/sovity/edc-extensions.svg?style=for-the-badge
+https://img.shields.io/github/issues/sovity/edc-broker-server-extension.svg?style=for-the-badge
 
-[issues-url]: https://github.com/sovity/edc-extensions/issues
+[issues-url]: https://github.com/sovity/edc-broker-server-extension/issues
 
 [license-shield]:
-https://img.shields.io/github/license/sovity/edc-extensions.svg?style=for-the-badge
+https://img.shields.io/github/license/sovity/edc-broker-server-extension.svg?style=for-the-badge
 
-[license-url]: https://github.com/sovity/edc-extensions/blob/master/LICENSE.txt
+[license-url]: https://github.com/sovity/edc-broker-server-extension/blob/master/LICENSE.txt
 
 [linkedin-shield]:
 https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555

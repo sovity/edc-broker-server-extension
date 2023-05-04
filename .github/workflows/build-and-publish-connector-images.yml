@@ -22,13 +22,13 @@ jobs:
           {
             "imageName": "broker-server-dev",
             "title": "Broker Server (Dev)",
-            "description": "Broker Server. This dev version contains no persistence or auth and can be used to quickly start a locally running Broker Server + Broker UI.",
+            "description": "EDC IDS Broker Server. This dev version contains no persistence or auth and can be used to quickly start a locally running Broker Server + Broker UI.",
             "buildArgs": "-Pdmgmt-api-key"
           },
           {
             "imageName": "broker-server-ce",
             "title": "Broker Server (Community Edition)",
-            "description": "Broker Server. Contains DB extensions and requires dataspace credentials to join an existing dataspace.",
+            "description": "EDC IDS Broker Server. Contains DB extensions and requires dataspace credentials to join an existing dataspace.",
             "buildArgs": "-Pfs-vault -Pdmgmt-api-key -Ppostgres-flyway -Poauth2"
           }
         ]
@@ -40,15 +40,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-
-      - name: Store last commit's author, message and SHA
-        id: last-commit-information
-        run: |
-          echo "Saving local commit details."
-          echo "LAST_COMMIT_INFO<<EOF" >> $GITHUB_ENV
-          export LAST_COMMIT_INFO=$(git log -1)
-          echo "$LAST_COMMIT_INFO" >> $GITHUB_ENV
-          echo "EOF" >> $GITHUB_ENV
 
       - name: Log in to the Container registry
         uses: docker/login-action@v2
@@ -85,4 +76,3 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
             BUILD_ARGS=${{ matrix.imageVariants.buildArgs }}
-            EDC_LAST_COMMIT_INFO_ARG="${{ env.LAST_COMMIT_INFO }}"
