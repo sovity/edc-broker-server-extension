@@ -48,6 +48,8 @@ for building dataspaces, exchanging data securely with ensured data sovereignty.
 enterprise-ready managed services like "Connector-as-a-Service", out-of-the-box fully configured DAPS
 and integrations to existing other dataspace technologies.
 
+An IDS Broker aggregates all data offers in a data space and offers them well indexed searchable and filterable.
+
 This is an implementation of an IDS Broker written on EDC basis.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
