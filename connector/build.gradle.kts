@@ -7,6 +7,9 @@ plugins {
 val edcVersion: String by project
 val edcGroup: String by project
 
+val sovityEdcExtensionsGroup: String by project
+val sovityEdcExtensionsVersion: String by project
+
 dependencies {
     // Control-Plane
     implementation("${edcGroup}:control-plane-core:${edcVersion}")
@@ -17,32 +20,12 @@ dependencies {
     implementation("${edcGroup}:http:${edcVersion}")
     implementation("${edcGroup}:ids:${edcVersion}")
 
-    // Control-plane to Data-plane
-    implementation("${edcGroup}:transfer-data-plane:${edcVersion}")
-    implementation("${edcGroup}:data-plane-selector-core:${edcVersion}")
-    implementation("${edcGroup}:data-plane-selector-client:${edcVersion}")
-
-    // Data-plane
-    implementation("${edcGroup}:data-plane-http:${edcVersion}")
-    implementation("${edcGroup}:data-plane-framework:${edcVersion}")
-    implementation("${edcGroup}:data-plane-core:${edcVersion}")
-    implementation("${edcGroup}:data-plane-util:${edcVersion}")
-
     // JDK Logger
     implementation("${edcGroup}:monitor-jdk-logger:${edcVersion}")
 
-    // sovity Extensions Package
-    implementation(project(":extensions:sovity-edc-extensions-package"))
-
     // Optional: PostgreSQL + Flyway
     if (project.hasProperty("postgres-flyway")) {
-        implementation(project(":extensions:postgres-flyway"))
-    }
-
-    // Optional: MDS Extensions
-    if (project.hasProperty("mds")) {
-        implementation(project(":extensions:ids-clearinghouse-client"))
-        implementation(project(":extensions:ids-broker-client"))
+        implementation("${sovityEdcExtensionsGroup}:postgres-flyway:${sovityEdcExtensionsVersion}")
     }
 
     // Optional: Connector-To-Connector IAM
@@ -50,21 +33,6 @@ dependencies {
         implementation("${edcGroup}:oauth2-core:${edcVersion}")
     } else {
         implementation("${edcGroup}:iam-mock:${edcVersion}")
-    }
-
-    // Optional: Data Management API IAM
-    if (project.hasProperty("dmgmt-api-key")) {
-        implementation("${edcGroup}:auth-tokenbased:${edcVersion}")
-    }
-
-    // Optional: Fs Vault
-    if (project.hasProperty("fs-vault")) {
-        implementation("${edcGroup}:vault-filesystem:${edcVersion}")
-    }
-
-    // Optional: Azure Vault
-    if (project.hasProperty("azure-vault")) {
-        implementation("${edcGroup}:azure-vault:${edcVersion}")
     }
 }
 
