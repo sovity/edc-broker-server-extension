@@ -17,9 +17,9 @@
 <img src="https://raw.githubusercontent.com/sovity/edc-ui/main/src/assets/images/sovity_logo.svg" alt="Logo" width="300">
 </a>
 
-<h3 align="center">EDC Broker Server</h3>
+<h3 align="center">Broker Server</h3>
 <p align="center" style="padding-bottom:16px">
-IDS Broker Server on an EDC basis.
+IDS Broker Server built on EDC.
 <br />
 <a href="https://github.com/sovity/edc-extensions/issues/new?template=bug_report.md">Report Bug</a>
 ·
