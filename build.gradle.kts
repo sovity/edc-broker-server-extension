@@ -13,31 +13,6 @@ val downloadArtifact: Configuration by configurations.creating {
     isTransitive = false
 }
 
-
-val identityHubVersion: String by project
-val registrationServiceVersion: String by project
-
-// task that downloads the RegSrv CLI and IH CLI
-val getJars by tasks.registering(Copy::class) {
-    outputs.upToDateWhen { false } //always download
-
-    from(downloadArtifact)
-        // strip away the version string
-        .rename { s ->
-            s.replace("-${identityHubVersion}", "")
-                .replace("-${registrationServiceVersion}", "")
-                .replace("-all", "")
-        }
-    into(layout.projectDirectory.dir("libs/cli-tools"))
-}
-
-// run the download jars task after the "jar" task
-tasks {
-    jar {
-        finalizedBy(getJars)
-    }
-}
-
 allprojects {
     apply(plugin = "java")
     apply(plugin = "checkstyle")
@@ -71,24 +46,32 @@ allprojects {
         maven {
             url = uri("https://oss.sonatype.org/content/repositories/snapshots/")
         }
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/sovity/edc-extensions")
+            credentials {
+                username = project.findProperty("gpr.user") as String? ?: System.getenv("USERNAME")
+                password = project.findProperty("gpr.key") as String? ?: System.getenv("TOKEN")
+            }
+        }
     }
 }
 
 subprojects {
     apply(plugin = "maven-publish")
 
-    val sovityEdcExtensionsGroup: String by project
-    val sovityEdcExtensionsVersion: String by project
-    val sovityEdcCeGroup: String by project
+    val sovityBrokerServerGroup: String by project
+    val sovityBrokerServerVersion: String by project
 
-    group = if (name.contains("connector")) sovityEdcCeGroup else sovityEdcExtensionsGroup
-    version = sovityEdcExtensionsVersion
+
+    group = sovityBrokerServerGroup
+    version = sovityBrokerServerVersion
 
     publishing {
         repositories {
             maven {
                 name = "GitHubPackages"
-                url = uri("https://maven.pkg.github.com/sovity/edc-extensions")
+                url = uri("https://maven.pkg.github.com/sovity/edc-broker-server-extension")
                 credentials {
                     username = project.findProperty("gpr.user") as String? ?: System.getenv("USERNAME")
                     password = project.findProperty("gpr.key") as String? ?: System.getenv("TOKEN")
