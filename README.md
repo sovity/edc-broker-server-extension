@@ -58,7 +58,7 @@ This is an implementation of an IDS Broker written on EDC basis.
 
 ## License
 
-Currently unlicensed. See `LICENSE` for more information.
+Distributed under the Apache 2.0 License. See `LICENSE` for more information.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
