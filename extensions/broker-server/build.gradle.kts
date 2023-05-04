@@ -10,7 +10,11 @@ val assertj: String by project
 val okHttpVersion: String by project
 
 dependencies {
+    annotationProcessor("org.projectlombok:lombok:1.18.26")
+    compileOnly("org.projectlombok:lombok:1.18.26")
+
     implementation("${edcGroup}:control-plane-core:${edcVersion}")
+    implementation("${edcGroup}:management-api-configuration:${edcVersion}")
     implementation("${edcGroup}:ids-spi:${edcVersion}")
     implementation("${edcGroup}:ids-api-multipart-dispatcher-v1:${edcVersion}")
     implementation("${edcGroup}:ids-api-configuration:${edcVersion}")
