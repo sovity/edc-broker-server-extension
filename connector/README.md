@@ -5,7 +5,7 @@
     <img src="https://raw.githubusercontent.com/sovity/edc-ui/main/src/assets/images/sovity_logo.svg" alt="Logo" width="300">
   </a>
 
-<h3 align="center">EDC-Connector:<br />sovity EDC Community Edition</h3>
+<h3 align="center">Broker Server:<br />Docker Images</h3>
 
   <p align="center">
     <a href="https://github.com/sovity/edc-extensions/issues/new?template=bug_report.md">Report Bug</a>
@@ -16,7 +16,16 @@
 
 ## Broker Server Image
 
-Docker Images for our IDS Broker built with the EDC.
+The Broker Server Extension together with other EDC Extensions are built into Docker Images.
+
+## Different Image Types
+
+Our EDC Community Edition builds several docker images in different configurations.
+
+| Docker Image                                                                                      | Type              | Purpose                                                                                             | Features                                                                                                                                                      |
+|---------------------------------------------------------------------------------------------------|-------------------|-----------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [edc-dev](https://github.com/sovity/edc-broker-server-extension/pkgs/container/broker-server-dev) | Development       | <ul><li>Lightweight local development</li><li>Used in EDC UI's Getting Started section</li></ul>    | <ul><li>IDS Broker Server Extension(s)</li><li>Management API Auth via API Keys</li><li>Mock IAM</li></ul>                                                    |
+| [edc-ce](https://github.com/sovity/edc-broker-server-extension/pkgs/container/broker-server-ce)   | Community Edition | <ul><li>Deploy the Broker Server</li><li>Locally test the Broker Server with persistence.</li></ul> | <ul><li>IDS Broker Server Extension(s)</li><li>Management API Auth via API Keys</li><li>DAPS Authentication</li><li>PostgreSQL Persistence & Flyway</li></ul> |
 
 ## Image Tags
 
