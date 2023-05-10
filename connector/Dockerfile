@@ -1,6 +1,11 @@
 FROM gradle:7.6.0-jdk17 AS build
 
+ARG USERNAME
+ARG TOKEN
 ARG BUILD_ARGS
+
+ENV USERNAME=$USERNAME
+ENV TOKEN=$TOKEN
 
 COPY --chown=gradle:gradle . /home/gradle/project/
 WORKDIR /home/gradle/project/

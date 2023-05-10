@@ -75,4 +75,6 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
+            USERNAME=${{ github.actor }}
+            TOKEN=${{ secrets.GITHUB_TOKEN }}
             BUILD_ARGS=${{ matrix.imageVariants.buildArgs }}
