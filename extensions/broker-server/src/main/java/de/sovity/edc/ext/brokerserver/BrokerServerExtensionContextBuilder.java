@@ -90,7 +90,7 @@ public class BrokerServerExtensionContextBuilder {
                 dslContextFactory,
                 monitor
         );
-        var brokerServerInitializer = new BrokerServerInitializer(dslContextFactory, config, connectorUpdater);
+        var brokerServerInitializer = new BrokerServerInitializer(dslContextFactory, config);
 
         // UI Capabilities
         var paginationMetadataUtils = new PaginationMetadataUtils();
