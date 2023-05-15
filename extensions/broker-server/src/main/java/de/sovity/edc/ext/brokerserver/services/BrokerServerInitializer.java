@@ -39,6 +39,7 @@ public class BrokerServerInitializer {
                     .idsId(connectorId)
                     .endpoint(connectorId)
                     .createdAt(OffsetDateTime.now())
+                    .forceDeleted(false)
                     .build();
 
             connectorStore.save(connectorRecord);

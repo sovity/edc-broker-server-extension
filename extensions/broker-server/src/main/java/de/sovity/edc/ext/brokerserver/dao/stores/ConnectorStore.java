@@ -36,4 +36,10 @@ public class ConnectorStore {
         Validate.notBlank(connector.getId(), "Need Connector ID");
         return connectorsById.put(connector.getId(), connector);
     }
+
+    public void setForceDeleteById(String connectorId, boolean forceDelete) {
+        var connector = findById(connectorId);
+        connector.setForceDeleted(forceDelete);
+        save(connector);
+    }
 }

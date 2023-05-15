@@ -18,6 +18,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 
@@ -33,15 +34,18 @@ import java.time.OffsetDateTime;
 @Builder(toBuilder = true)
 @EqualsAndHashCode(of = "id")
 @AllArgsConstructor(access = lombok.AccessLevel.PRIVATE)
-@FieldDefaults(makeFinal = true, level = lombok.AccessLevel.PRIVATE)
+@FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 public class ConnectorRecord {
-    String id;
-    String idsId;
-    String title;
-    String description;
-    String endpoint;
-    OffsetDateTime lastUpdate;
-    OffsetDateTime offlineSince;
-    OffsetDateTime createdAt;
-    ConnectorOnlineStatus onlineStatus;
+    final String id;
+    final String idsId;
+    final String title;
+    final String description;
+    final String endpoint;
+    final OffsetDateTime lastUpdate;
+    final OffsetDateTime offlineSince;
+    final OffsetDateTime createdAt;
+    final ConnectorOnlineStatus onlineStatus;
+    @Setter
+    boolean forceDeleted;
 }
+
