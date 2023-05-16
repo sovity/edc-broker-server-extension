@@ -14,9 +14,17 @@
 
 package de.sovity.edc.ext.brokerserver;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import de.sovity.edc.ext.brokerserver.sender.DescriptionRequestSender;
+import de.sovity.edc.ext.brokerserver.sender.IdsMultipartExtendedRemoteMessageDispatcher;
 import org.eclipse.edc.connector.api.management.configuration.ManagementApiConfiguration;
+import org.eclipse.edc.protocol.ids.api.multipart.dispatcher.sender.IdsMultipartSender;
+import org.eclipse.edc.protocol.ids.spi.service.DynamicAttributeTokenService;
 import org.eclipse.edc.runtime.metamodel.annotation.Inject;
 import org.eclipse.edc.runtime.metamodel.annotation.Setting;
+import org.eclipse.edc.spi.http.EdcHttpClient;
+import org.eclipse.edc.spi.message.RemoteMessageDispatcherRegistry;
+import org.eclipse.edc.spi.monitor.Monitor;
 import org.eclipse.edc.spi.system.ServiceExtension;
 import org.eclipse.edc.spi.system.ServiceExtensionContext;
 import org.eclipse.edc.web.spi.WebService;
@@ -34,6 +42,21 @@ public class BrokerServerExtension implements ServiceExtension {
     @Inject
     private WebService webService;
 
+    @Inject
+    private Monitor monitor;
+
+    @Inject
+    private EdcHttpClient httpClient;
+
+    @Inject
+    private DynamicAttributeTokenService dynamicAttributeTokenService;
+
+    @Inject
+    private ObjectMapper objectMapper;
+
+    @Inject
+    private RemoteMessageDispatcherRegistry dispatcherRegistry;
+
     @Override
     public String name() {
         return EXTENSION_NAME;
@@ -44,7 +67,13 @@ public class BrokerServerExtension implements ServiceExtension {
         var services = BrokerServerExtensionContextBuilder.buildContext(context.getConfig());
         services.brokerServerInitializer().initializeConnectorList();
 
-        String managementApiGroup = managementApiConfiguration.getContextAlias();
+        var descriptionRequestSender = new DescriptionRequestSender();
+        var idsMultipartSender = new IdsMultipartSender(monitor, httpClient, dynamicAttributeTokenService, objectMapper);
+        var dispatcher = new IdsMultipartExtendedRemoteMessageDispatcher(idsMultipartSender);
+        dispatcher.register(descriptionRequestSender);
+        dispatcherRegistry.register(dispatcher);
+
+        var managementApiGroup = managementApiConfiguration.getContextAlias();
         webService.registerResource(managementApiGroup, services.brokerServerResource());
     }
 }

@@ -18,6 +18,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 
@@ -29,11 +30,12 @@ import java.time.OffsetDateTime;
  * Represents metadata for another connector in the dataspace.
  */
 @Getter
+@Setter
 @ToString
 @Builder(toBuilder = true)
 @EqualsAndHashCode(of = "id")
 @AllArgsConstructor(access = lombok.AccessLevel.PRIVATE)
-@FieldDefaults(makeFinal = true, level = lombok.AccessLevel.PRIVATE)
+@FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 public class ConnectorRecord {
     String id;
     String idsId;
