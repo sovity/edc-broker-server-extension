@@ -11,7 +11,7 @@
  *       sovity GmbH - initial API and implementation
  *
  */
-package de.sovity.edc.ext.brokerserver.sender;
+package de.sovity.edc.ext.brokerserver.services.refreshing.sender;
 
 import org.eclipse.edc.protocol.ids.api.multipart.dispatcher.IdsMultipartRemoteMessageDispatcher;
 import org.eclipse.edc.protocol.ids.api.multipart.dispatcher.sender.IdsMultipartSender;

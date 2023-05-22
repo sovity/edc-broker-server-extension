@@ -11,9 +11,9 @@
  *       sovity GmbH - initial API and implementation
  *
  */
-package de.sovity.edc.ext.brokerserver.sender.message;
+package de.sovity.edc.ext.brokerserver.services.refreshing.sender.message;
 
-import de.sovity.edc.ext.brokerserver.sender.ExtendedMessageProtocol;
+import de.sovity.edc.ext.brokerserver.services.refreshing.sender.ExtendedMessageProtocol;
 import org.eclipse.edc.spi.types.domain.message.RemoteMessage;
 
 import java.net.URL;

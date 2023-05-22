@@ -16,7 +16,7 @@ package de.sovity.edc.ext.brokerserver.services.refreshing;
 
 import de.sovity.edc.ext.brokerserver.dao.models.ConnectorOnlineStatus;
 import de.sovity.edc.ext.brokerserver.dao.models.ConnectorRecord;
-import de.sovity.edc.ext.brokerserver.sender.message.DescriptionRequestMessage;
+import de.sovity.edc.ext.brokerserver.services.refreshing.sender.message.DescriptionRequestMessage;
 import lombok.RequiredArgsConstructor;
 import org.eclipse.edc.spi.EdcException;
 import org.eclipse.edc.spi.message.RemoteMessageDispatcherRegistry;

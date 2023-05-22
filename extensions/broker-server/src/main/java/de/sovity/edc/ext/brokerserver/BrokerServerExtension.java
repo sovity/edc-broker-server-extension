@@ -15,10 +15,7 @@
 package de.sovity.edc.ext.brokerserver;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import de.sovity.edc.ext.brokerserver.sender.DescriptionRequestSender;
-import de.sovity.edc.ext.brokerserver.sender.IdsMultipartExtendedRemoteMessageDispatcher;
 import org.eclipse.edc.connector.api.management.configuration.ManagementApiConfiguration;
-import org.eclipse.edc.protocol.ids.api.multipart.dispatcher.sender.IdsMultipartSender;
 import org.eclipse.edc.protocol.ids.spi.service.DynamicAttributeTokenService;
 import org.eclipse.edc.runtime.metamodel.annotation.Inject;
 import org.eclipse.edc.runtime.metamodel.annotation.Setting;

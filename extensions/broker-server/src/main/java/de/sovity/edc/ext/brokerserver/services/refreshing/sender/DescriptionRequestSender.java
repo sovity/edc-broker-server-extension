@@ -1,10 +1,10 @@
-package de.sovity.edc.ext.brokerserver.sender;
+package de.sovity.edc.ext.brokerserver.services.refreshing.sender;
 
 import de.fraunhofer.iais.eis.DescriptionRequestMessageBuilder;
 import de.fraunhofer.iais.eis.DescriptionResponseMessage;
 import de.fraunhofer.iais.eis.DynamicAttributeToken;
 import de.fraunhofer.iais.eis.Message;
-import de.sovity.edc.ext.brokerserver.sender.message.DescriptionRequestMessage;
+import de.sovity.edc.ext.brokerserver.services.refreshing.sender.message.DescriptionRequestMessage;
 import org.eclipse.edc.protocol.ids.api.multipart.dispatcher.sender.MultipartSenderDelegate;
 import org.eclipse.edc.protocol.ids.api.multipart.dispatcher.sender.response.IdsMultipartParts;
 import org.eclipse.edc.protocol.ids.api.multipart.dispatcher.sender.response.MultipartResponse;
