@@ -65,10 +65,10 @@ public class BrokerServerExtension implements ServiceExtension {
         services.brokerServerInitializer().initializeConnectorList();
 
         var dispatcher = BrokerServerExtensionContextBuilder.getIdsMessageDispatcher(
-            monitor,
-            httpClient,
-            dynamicAttributeTokenService,
-            objectMapper);
+                monitor,
+                httpClient,
+                dynamicAttributeTokenService,
+                objectMapper);
         dispatcherRegistry.register(dispatcher);
 
         var managementApiGroup = managementApiConfiguration.getContextAlias();

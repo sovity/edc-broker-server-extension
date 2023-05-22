@@ -17,12 +17,12 @@ package de.sovity.edc.ext.brokerserver;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.sovity.edc.ext.brokerserver.dao.stores.ConnectorStore;
 import de.sovity.edc.ext.brokerserver.dao.stores.ContractOfferStore;
-import de.sovity.edc.ext.brokerserver.services.refreshing.sender.DescriptionRequestSender;
-import de.sovity.edc.ext.brokerserver.services.refreshing.sender.IdsMultipartExtendedRemoteMessageDispatcher;
 import de.sovity.edc.ext.brokerserver.services.BrokerServerInitializer;
 import de.sovity.edc.ext.brokerserver.services.api.CatalogApiService;
 import de.sovity.edc.ext.brokerserver.services.api.ConnectorApiService;
 import de.sovity.edc.ext.brokerserver.services.api.PaginationMetadataUtils;
+import de.sovity.edc.ext.brokerserver.services.refreshing.sender.DescriptionRequestSender;
+import de.sovity.edc.ext.brokerserver.services.refreshing.sender.IdsMultipartExtendedRemoteMessageDispatcher;
 import lombok.NoArgsConstructor;
 import org.eclipse.edc.protocol.ids.api.multipart.dispatcher.sender.IdsMultipartSender;
 import org.eclipse.edc.protocol.ids.spi.service.DynamicAttributeTokenService;
@@ -66,10 +66,10 @@ public class BrokerServerExtensionContextBuilder {
     }
 
     public static IdsMultipartExtendedRemoteMessageDispatcher getIdsMessageDispatcher(
-        Monitor monitor,
-        EdcHttpClient httpClient,
-        DynamicAttributeTokenService dynamicAttributeTokenService,
-        ObjectMapper objectMapper
+            Monitor monitor,
+            EdcHttpClient httpClient,
+            DynamicAttributeTokenService dynamicAttributeTokenService,
+            ObjectMapper objectMapper
     ) {
         var descriptionRequestSender = new DescriptionRequestSender();
         var idsMultipartSender = new IdsMultipartSender(monitor, httpClient, dynamicAttributeTokenService, objectMapper);

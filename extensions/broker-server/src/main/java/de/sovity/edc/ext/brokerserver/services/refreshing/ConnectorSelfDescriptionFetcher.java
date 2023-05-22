@@ -72,7 +72,7 @@ public class ConnectorSelfDescriptionFetcher {
             .lastUpdate(OffsetDateTime.now())
             .onlineStatus(ConnectorOnlineStatus.OFFLINE)
             .offlineSince(OffsetDateTime.now())
-            .build();
+                .build();
     }
 
     private void handleConnectorOnline(ConnectorRecord connector, String connectorSelfDescription) {
@@ -80,6 +80,6 @@ public class ConnectorSelfDescriptionFetcher {
             .lastUpdate(OffsetDateTime.now())
             .onlineStatus(ConnectorOnlineStatus.ONLINE)
             .description(connectorSelfDescription)
-            .build();
+                .build();
     }
 }
