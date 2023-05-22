@@ -67,10 +67,11 @@ public class BrokerServerExtension implements ServiceExtension {
         var services = BrokerServerExtensionContextBuilder.buildContext(context.getConfig());
         services.brokerServerInitializer().initializeConnectorList();
 
-        var descriptionRequestSender = new DescriptionRequestSender();
-        var idsMultipartSender = new IdsMultipartSender(monitor, httpClient, dynamicAttributeTokenService, objectMapper);
-        var dispatcher = new IdsMultipartExtendedRemoteMessageDispatcher(idsMultipartSender);
-        dispatcher.register(descriptionRequestSender);
+        var dispatcher = BrokerServerExtensionContextBuilder.getIdsMessageDispatcher(
+            monitor,
+            httpClient,
+            dynamicAttributeTokenService,
+            objectMapper);
         dispatcherRegistry.register(dispatcher);
 
         var managementApiGroup = managementApiConfiguration.getContextAlias();

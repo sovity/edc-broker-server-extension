@@ -14,14 +14,21 @@
 
 package de.sovity.edc.ext.brokerserver;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import de.sovity.edc.ext.brokerserver.dao.stores.ConnectorStore;
 import de.sovity.edc.ext.brokerserver.dao.stores.ContractOfferStore;
+import de.sovity.edc.ext.brokerserver.sender.DescriptionRequestSender;
+import de.sovity.edc.ext.brokerserver.sender.IdsMultipartExtendedRemoteMessageDispatcher;
 import de.sovity.edc.ext.brokerserver.services.BrokerServerInitializer;
 import de.sovity.edc.ext.brokerserver.services.api.CatalogApiService;
 import de.sovity.edc.ext.brokerserver.services.api.ConnectorApiService;
 import de.sovity.edc.ext.brokerserver.services.api.PaginationMetadataUtils;
 import lombok.NoArgsConstructor;
+import org.eclipse.edc.protocol.ids.api.multipart.dispatcher.sender.IdsMultipartSender;
+import org.eclipse.edc.protocol.ids.spi.service.DynamicAttributeTokenService;
 import org.eclipse.edc.runtime.metamodel.annotation.Inject;
+import org.eclipse.edc.spi.http.EdcHttpClient;
+import org.eclipse.edc.spi.monitor.Monitor;
 import org.eclipse.edc.spi.system.configuration.Config;
 
 
@@ -35,6 +42,7 @@ import org.eclipse.edc.spi.system.configuration.Config;
  */
 @NoArgsConstructor(access = lombok.AccessLevel.PRIVATE)
 public class BrokerServerExtensionContextBuilder {
+
     public static BrokerServerExtensionContext buildContext(Config config) {
         // Dao
         var connectorStore = new ConnectorStore();
@@ -55,5 +63,19 @@ public class BrokerServerExtensionContextBuilder {
         );
         var brokerServerResource = new BrokerServerResourceImpl(connectorApiService, catalogApiService);
         return new BrokerServerExtensionContext(brokerServerResource, brokerServerInitializer);
+    }
+
+    public static IdsMultipartExtendedRemoteMessageDispatcher getIdsMessageDispatcher(
+        Monitor monitor,
+        EdcHttpClient httpClient,
+        DynamicAttributeTokenService dynamicAttributeTokenService,
+        ObjectMapper objectMapper
+    ) {
+        var descriptionRequestSender = new DescriptionRequestSender();
+        var idsMultipartSender = new IdsMultipartSender(monitor, httpClient, dynamicAttributeTokenService, objectMapper);
+        var dispatcher = new IdsMultipartExtendedRemoteMessageDispatcher(idsMultipartSender);
+        dispatcher.register(descriptionRequestSender);
+
+        return dispatcher;
     }
 }
