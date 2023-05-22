@@ -68,14 +68,18 @@ public class ConnectorSelfDescriptionFetcher {
     }
 
     private void handleConnectorOffline(ConnectorRecord connector) {
-        connector.setLastUpdate(OffsetDateTime.now());
-        connector.setOnlineStatus(ConnectorOnlineStatus.OFFLINE);
-        connector.setOfflineSince(OffsetDateTime.now());
+        connector.toBuilder()
+            .lastUpdate(OffsetDateTime.now())
+            .onlineStatus(ConnectorOnlineStatus.OFFLINE)
+            .offlineSince(OffsetDateTime.now())
+            .build();
     }
 
     private void handleConnectorOnline(ConnectorRecord connector, String connectorSelfDescription) {
-        connector.setDescription(connectorSelfDescription);
-        connector.setOnlineStatus(ConnectorOnlineStatus.ONLINE);
-        connector.setLastUpdate(OffsetDateTime.now());
+        connector.toBuilder()
+            .lastUpdate(OffsetDateTime.now())
+            .onlineStatus(ConnectorOnlineStatus.ONLINE)
+            .description(connectorSelfDescription)
+            .build();
     }
 }
