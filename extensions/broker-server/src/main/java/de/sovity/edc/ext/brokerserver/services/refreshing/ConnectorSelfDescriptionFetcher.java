@@ -45,7 +45,7 @@ public class ConnectorSelfDescriptionFetcher {
             var connectorEndpoint = connector.getEndpoint();
             var connectorSelfDescription = fetchConnectorSelfDescription(connectorEndpoint);
 
-            handleConnectorOnline(connector, connectorSelfDescription);
+            handleConnectorOnline(connector, connectorSelfDescription.selfDescription());
         } catch (Exception e) {
             handleConnectorOffline(connector);
         }
@@ -53,13 +53,13 @@ public class ConnectorSelfDescriptionFetcher {
         return connector;
     }
 
-    private String fetchConnectorSelfDescription(String connectorEndpoint)  {
+    private ConnectorSelfDescription fetchConnectorSelfDescription(String connectorEndpoint)  {
         try {
             var connectorEndpointUrl = new URL(connectorEndpoint);
             var descriptionRequestMessage = new DescriptionRequestMessage(connectorEndpointUrl);
             var descriptionResponseCompletableFuture = dispatcherRegistry.send(String.class, descriptionRequestMessage, () -> CONTEXT_SD_REQUEST);
 
-            return descriptionResponseCompletableFuture.get();
+            return new ConnectorSelfDescription(descriptionResponseCompletableFuture.get());
         } catch (MalformedURLException e) {
             throw new EdcException("Invalid connector-endpoint URL", e);
         } catch (Exception e) {
