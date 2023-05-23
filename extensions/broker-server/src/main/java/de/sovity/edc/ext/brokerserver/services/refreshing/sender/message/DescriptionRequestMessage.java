@@ -11,6 +11,7 @@
  *       sovity GmbH - initial API and implementation
  *
  */
+
 package de.sovity.edc.ext.brokerserver.services.refreshing.sender.message;
 
 import de.sovity.edc.ext.brokerserver.services.refreshing.sender.ExtendedMessageProtocol;

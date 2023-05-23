@@ -21,9 +21,9 @@ import org.eclipse.edc.runtime.metamodel.annotation.Inject;
 import org.eclipse.edc.runtime.metamodel.annotation.Setting;
 import org.eclipse.edc.spi.http.EdcHttpClient;
 import org.eclipse.edc.spi.message.RemoteMessageDispatcherRegistry;
-import org.eclipse.edc.spi.monitor.Monitor;
 import org.eclipse.edc.spi.system.ServiceExtension;
 import org.eclipse.edc.spi.system.ServiceExtensionContext;
+import org.eclipse.edc.spi.types.TypeManager;
 import org.eclipse.edc.web.spi.WebService;
 
 public class BrokerServerExtension implements ServiceExtension {
@@ -46,7 +46,7 @@ public class BrokerServerExtension implements ServiceExtension {
     private DynamicAttributeTokenService dynamicAttributeTokenService;
 
     @Inject
-    private ObjectMapper objectMapper;
+    private TypeManager typeManager;
 
     @Inject
     private RemoteMessageDispatcherRegistry dispatcherRegistry;
@@ -63,13 +63,15 @@ public class BrokerServerExtension implements ServiceExtension {
 
     @Override
     public void initialize(ServiceExtensionContext context) {
-        var services = BrokerServerExtensionContextBuilder.buildContext(
+        services = BrokerServerExtensionContextBuilder.buildContext(
                 context.getConfig(),
                 context.getMonitor(),
                 httpClient,
                 dynamicAttributeTokenService,
-                objectMapper
+                typeManager,
+                dispatcherRegistry
         );
+
         var managementApiGroup = managementApiConfiguration.getContextAlias();
         webService.registerResource(managementApiGroup, services.brokerServerResource());
 
