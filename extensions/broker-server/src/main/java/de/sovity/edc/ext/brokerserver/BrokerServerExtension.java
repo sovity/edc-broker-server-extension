@@ -51,6 +51,11 @@ public class BrokerServerExtension implements ServiceExtension {
     @Inject
     private RemoteMessageDispatcherRegistry dispatcherRegistry;
 
+    /**
+     * Manual Dependency Injection Result
+     */
+    private BrokerServerExtensionContext services;
+
     @Override
     public String name() {
         return EXTENSION_NAME;
@@ -65,11 +70,14 @@ public class BrokerServerExtension implements ServiceExtension {
                 dynamicAttributeTokenService,
                 objectMapper
         );
-        services.brokerServerInitializer().initializeConnectorList();
-
         var managementApiGroup = managementApiConfiguration.getContextAlias();
         webService.registerResource(managementApiGroup, services.brokerServerResource());
 
         dispatcherRegistry.register(services.remoteMessageDispatcher());
+    }
+
+    @Override
+    public void start() {
+        services.brokerServerInitializer().onStartup();
     }
 }

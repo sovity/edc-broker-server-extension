@@ -14,9 +14,12 @@
 
 package de.sovity.edc.ext.brokerserver;
 
+import de.sovity.edc.ext.brokerserver.dao.stores.ConnectorQueries;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.sovity.edc.ext.brokerserver.dao.stores.ConnectorStore;
 import de.sovity.edc.ext.brokerserver.dao.stores.ContractOfferStore;
+import de.sovity.edc.ext.brokerserver.db.DataSourceFactory;
+import de.sovity.edc.ext.brokerserver.db.DslContextFactory;
 import de.sovity.edc.ext.brokerserver.services.BrokerServerInitializer;
 import de.sovity.edc.ext.brokerserver.services.api.CatalogApiService;
 import de.sovity.edc.ext.brokerserver.services.api.ConnectorApiService;
@@ -51,7 +54,10 @@ public class BrokerServerExtensionContextBuilder {
             ObjectMapper objectMapper
     ) {
         // Dao
-        var connectorStore = new ConnectorStore();
+        var dataSourceFactory = new DataSourceFactory(config);
+        var dataSource = dataSourceFactory.newDataSource();
+        var dslContextFactory = new DslContextFactory(dataSource);
+        var connectorQueries = new ConnectorQueries();
         var contractOfferStore = new ContractOfferStore();
 
         // IDS Message Client
@@ -60,7 +66,7 @@ public class BrokerServerExtensionContextBuilder {
         var descriptionRequestSender = new DescriptionRequestSender();
 
         // Services
-        var brokerServerInitializer = new BrokerServerInitializer(connectorStore, config);
+        var brokerServerInitializer = new BrokerServerInitializer(dslContextFactory, config);
 
         // UI Capabilities
         var paginationMetadataUtils = new PaginationMetadataUtils();
@@ -69,7 +75,8 @@ public class BrokerServerExtensionContextBuilder {
                 paginationMetadataUtils
         );
         var connectorApiService = new ConnectorApiService(
-                connectorStore,
+                dslContextFactory,
+                connectorQueries,
                 paginationMetadataUtils
         );
         var brokerServerResource = new BrokerServerResourceImpl(connectorApiService, catalogApiService);
