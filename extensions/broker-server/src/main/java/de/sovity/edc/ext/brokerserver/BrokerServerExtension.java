@@ -40,9 +40,6 @@ public class BrokerServerExtension implements ServiceExtension {
     private WebService webService;
 
     @Inject
-    private Monitor monitor;
-
-    @Inject
     private EdcHttpClient httpClient;
 
     @Inject
@@ -61,17 +58,18 @@ public class BrokerServerExtension implements ServiceExtension {
 
     @Override
     public void initialize(ServiceExtensionContext context) {
-        var services = BrokerServerExtensionContextBuilder.buildContext(context.getConfig());
-        services.brokerServerInitializer().initializeConnectorList();
-
-        var dispatcher = BrokerServerExtensionContextBuilder.getIdsMessageDispatcher(
-                monitor,
+        var services = BrokerServerExtensionContextBuilder.buildContext(
+                context.getConfig(),
+                context.getMonitor(),
                 httpClient,
                 dynamicAttributeTokenService,
-                objectMapper);
-        dispatcherRegistry.register(dispatcher);
+                objectMapper
+        );
+        services.brokerServerInitializer().initializeConnectorList();
 
         var managementApiGroup = managementApiConfiguration.getContextAlias();
         webService.registerResource(managementApiGroup, services.brokerServerResource());
+
+        dispatcherRegistry.register(services.remoteMessageDispatcher());
     }
 }

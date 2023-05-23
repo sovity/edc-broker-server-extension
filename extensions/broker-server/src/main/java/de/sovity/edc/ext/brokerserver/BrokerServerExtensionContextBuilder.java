@@ -43,10 +43,21 @@ import org.eclipse.edc.spi.system.configuration.Config;
 @NoArgsConstructor(access = lombok.AccessLevel.PRIVATE)
 public class BrokerServerExtensionContextBuilder {
 
-    public static BrokerServerExtensionContext buildContext(Config config) {
+    public static BrokerServerExtensionContext buildContext(
+            Config config,
+            Monitor monitor,
+            EdcHttpClient httpClient,
+            DynamicAttributeTokenService dynamicAttributeTokenService,
+            ObjectMapper objectMapper
+    ) {
         // Dao
         var connectorStore = new ConnectorStore();
         var contractOfferStore = new ContractOfferStore();
+
+        // IDS Message Client
+        var idsMultipartSender = new IdsMultipartSender(monitor, httpClient, dynamicAttributeTokenService, objectMapper);
+        var remoteMessageDispatcher = new IdsMultipartExtendedRemoteMessageDispatcher(idsMultipartSender);
+        var descriptionRequestSender = new DescriptionRequestSender();
 
         // Services
         var brokerServerInitializer = new BrokerServerInitializer(connectorStore, config);
@@ -62,20 +73,6 @@ public class BrokerServerExtensionContextBuilder {
                 paginationMetadataUtils
         );
         var brokerServerResource = new BrokerServerResourceImpl(connectorApiService, catalogApiService);
-        return new BrokerServerExtensionContext(brokerServerResource, brokerServerInitializer);
-    }
-
-    public static IdsMultipartExtendedRemoteMessageDispatcher getIdsMessageDispatcher(
-            Monitor monitor,
-            EdcHttpClient httpClient,
-            DynamicAttributeTokenService dynamicAttributeTokenService,
-            ObjectMapper objectMapper
-    ) {
-        var descriptionRequestSender = new DescriptionRequestSender();
-        var idsMultipartSender = new IdsMultipartSender(monitor, httpClient, dynamicAttributeTokenService, objectMapper);
-        var dispatcher = new IdsMultipartExtendedRemoteMessageDispatcher(idsMultipartSender);
-        dispatcher.register(descriptionRequestSender);
-
-        return dispatcher;
+        return new BrokerServerExtensionContext(remoteMessageDispatcher, brokerServerResource, brokerServerInitializer);
     }
 }
