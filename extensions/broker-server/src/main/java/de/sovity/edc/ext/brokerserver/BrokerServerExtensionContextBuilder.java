@@ -14,7 +14,6 @@
 
 package de.sovity.edc.ext.brokerserver;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import de.sovity.edc.ext.brokerserver.dao.stores.ConnectorQueries;
 import de.sovity.edc.ext.brokerserver.dao.stores.ContractOfferStore;
 import de.sovity.edc.ext.brokerserver.dao.stores.LogEventStore;
