@@ -33,7 +33,7 @@ import java.util.List;
 public class BrokerServerInitializer {
     private final DslContextFactory dslContextFactory;
     private final Config config;
-    private final ConnectorQueue connectorQueue = new ConnectorQueue();
+    private final ConnectorQueue connectorQueue;
 
     public void onStartup() {
         List<String> connectorEndpoints = getPreconfiguredConnectorEndpoints();
