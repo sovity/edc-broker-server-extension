@@ -32,6 +32,9 @@ public class BrokerServerExtension implements ServiceExtension {
     @Setting
     public static final String KNOWN_CONNECTORS = "edc.brokerserver.known.connectors";
 
+    @Setting
+    public static final String CRON_TRIGGER = "edc.brokerserver.cron.connectorrefresh";
+
     @Inject
     private ManagementApiConfiguration managementApiConfiguration;
 

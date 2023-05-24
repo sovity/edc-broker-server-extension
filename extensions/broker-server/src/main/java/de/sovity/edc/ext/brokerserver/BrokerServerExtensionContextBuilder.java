@@ -40,6 +40,8 @@ import org.eclipse.edc.spi.monitor.Monitor;
 import org.eclipse.edc.spi.system.configuration.Config;
 import org.eclipse.edc.spi.types.TypeManager;
 
+import static de.sovity.edc.ext.brokerserver.factories.SchedulerFactory.initalizeScheduler;
+
 
 /**
  * Manual Dependency Injection.
@@ -90,6 +92,7 @@ public class BrokerServerExtensionContextBuilder {
 
         // Queue
         var connectorQueue = new ConnectorQueue();
+        initalizeScheduler(config, connectorQueue);
 
         var brokerServerInitializer = new BrokerServerInitializer(dslContextFactory, config, connectorQueue);
 
