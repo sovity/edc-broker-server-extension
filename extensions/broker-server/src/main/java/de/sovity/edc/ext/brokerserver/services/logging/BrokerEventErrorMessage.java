@@ -14,7 +14,7 @@
 
 package de.sovity.edc.ext.brokerserver.services.logging;
 
-import de.sovity.edc.ext.brokerserver.utils.StringUtils;
+import de.sovity.edc.ext.brokerserver.utils.StringUtils2;
 import lombok.NonNull;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
@@ -32,10 +32,11 @@ public record BrokerEventErrorMessage(String message, String stackTraceOrNull) {
     public static BrokerEventErrorMessage ofMessage(@NonNull String message) {
         return new BrokerEventErrorMessage(message, null);
     }
+
     public static BrokerEventErrorMessage ofStackTrace(@NonNull String baseMessage, @NonNull Throwable cause) {
         String message = baseMessage;
-        message = StringUtils.removeSuffix(message, ".");
-        message = StringUtils.removeSuffix(message, ":");
+        message = StringUtils2.removeSuffix(message, ".");
+        message = StringUtils2.removeSuffix(message, ":");
         message = "%s: %s".formatted(message, cause.getClass().getName());
         return new BrokerEventErrorMessage(message, ExceptionUtils.getStackTrace(cause));
     }

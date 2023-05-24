@@ -16,8 +16,8 @@ package de.sovity.edc.ext.brokerserver.services.refreshing;
 
 import de.sovity.edc.ext.brokerserver.db.jooq.enums.ConnectorOnlineStatus;
 import de.sovity.edc.ext.brokerserver.db.jooq.tables.records.ConnectorRecord;
-import de.sovity.edc.ext.brokerserver.services.logging.BrokerEventLogger;
 import de.sovity.edc.ext.brokerserver.services.logging.BrokerEventErrorMessage;
+import de.sovity.edc.ext.brokerserver.services.logging.BrokerEventLogger;
 import lombok.RequiredArgsConstructor;
 import org.eclipse.edc.spi.EdcException;
 import org.jooq.DSLContext;

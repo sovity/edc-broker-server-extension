@@ -14,7 +14,7 @@
 
 package de.sovity.edc.ext.brokerserver;
 
-import de.sovity.edc.ext.brokerserver.dao.stores.ConnectorQueries;
+import de.sovity.edc.ext.brokerserver.dao.queries.ConnectorQueries;
 import de.sovity.edc.ext.brokerserver.db.DataSourceFactory;
 import de.sovity.edc.ext.brokerserver.db.DslContextFactory;
 import de.sovity.edc.ext.brokerserver.services.BrokerServerInitializer;
