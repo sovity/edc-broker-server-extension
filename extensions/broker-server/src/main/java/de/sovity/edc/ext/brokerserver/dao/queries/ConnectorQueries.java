@@ -40,13 +40,6 @@ public class ConnectorQueries {
         return dsl.selectFrom(c).where(c.ENDPOINT.eq(endpoint)).fetchOne();
     }
 
-    /**
-     * Query Data for Connector Page
-     *
-     * @param dsl         transaction
-     * @param searchQuery search query
-     * @return data
-     */
     public List<ConnectorPageDbRow> forConnectorPage(DSLContext dsl, String searchQuery, ConnectorPageSortingType sorting) {
         var c = Tables.CONNECTOR;
         var filterBySearchQuery = SearchUtils.simpleSearch(searchQuery, List.of(

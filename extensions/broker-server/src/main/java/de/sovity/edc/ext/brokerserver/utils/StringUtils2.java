@@ -16,6 +16,8 @@ package de.sovity.edc.ext.brokerserver.utils;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 import java.util.stream.Stream;
@@ -30,7 +32,7 @@ public class StringUtils2 {
      * @param suffix suffix to remove
      * @return string without suffix
      */
-    public static String removeSuffix(String string, String suffix) {
+    public static String removeSuffix(@NonNull String string, @NonNull String suffix) {
         if (string.endsWith(suffix)) {
             return string.substring(0, string.length() - suffix.length());
         }
@@ -44,12 +46,13 @@ public class StringUtils2 {
      * @return list of lowercase words
      */
     public static List<String> lowercaseWords(String string) {
-        if (string == null) {
+        if (StringUtils.isBlank(string)) {
             return List.of();
         }
 
         return Stream.of(string.split("\\s+"))
                 .map(String::toLowerCase)
+                .filter(StringUtils::isNotBlank)
                 .toList();
     }
 }
