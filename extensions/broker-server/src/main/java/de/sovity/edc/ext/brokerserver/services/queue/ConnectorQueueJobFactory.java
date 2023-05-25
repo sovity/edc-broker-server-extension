@@ -22,6 +22,6 @@ import org.quartz.spi.TriggerFiredBundle;
 public class ConnectorQueueJobFactory implements JobFactory {
     @Override
     public Job newJob(TriggerFiredBundle bundle, Scheduler scheduler) throws SchedulerException {
-        return (Job) bundle.getJobDetail().getJobDataMap().get("connectorQueueJob");
+        return new ConnectorQueueJob();
     }
 }
