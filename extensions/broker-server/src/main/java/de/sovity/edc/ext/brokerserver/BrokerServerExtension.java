@@ -35,9 +35,6 @@ public class BrokerServerExtension implements ServiceExtension {
     @Setting
     public static final String CRON_CONNECTOR_REFRESH = "edc.broker.server.cron.connector.refresh";
 
-    @Setting
-    public static final String CRON_TEST_JOB = "edc.broker.server.cron.test.job";
-
     @Inject
     private ManagementApiConfiguration managementApiConfiguration;
 

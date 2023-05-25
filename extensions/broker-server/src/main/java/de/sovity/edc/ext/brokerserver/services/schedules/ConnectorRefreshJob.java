@@ -18,14 +18,13 @@ import de.sovity.edc.ext.brokerserver.services.queue.ConnectorQueueFiller;
 import lombok.RequiredArgsConstructor;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
 
 @RequiredArgsConstructor
 public class ConnectorRefreshJob implements Job {
     private final ConnectorQueueFiller connectorQueueFiller;
 
     @Override
-    public void execute(JobExecutionContext context) throws JobExecutionException {
+    public void execute(JobExecutionContext context) {
         connectorQueueFiller.fillConnectorQueue();
     }
 }

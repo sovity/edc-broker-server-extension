@@ -47,9 +47,7 @@ class CatalogApiTest {
 
     @BeforeEach
     void setUp(EdcExtension extension) {
-        extension.setConfiguration(createConfiguration(TEST_DATABASE, Map.of(
-                BrokerServerExtension.CRON_TEST_JOB, "0/2 * * * * ? *"
-        )));
+        extension.setConfiguration(createConfiguration(TEST_DATABASE, Map.of()));
     }
 
     @Test
