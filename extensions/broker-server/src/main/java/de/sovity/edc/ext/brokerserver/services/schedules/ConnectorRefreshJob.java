@@ -14,6 +14,7 @@
 
 package de.sovity.edc.ext.brokerserver.services.schedules;
 
+import de.sovity.edc.ext.brokerserver.db.DslContextFactory;
 import de.sovity.edc.ext.brokerserver.services.queue.ConnectorQueueFiller;
 import lombok.RequiredArgsConstructor;
 import org.quartz.Job;
@@ -21,10 +22,11 @@ import org.quartz.JobExecutionContext;
 
 @RequiredArgsConstructor
 public class ConnectorRefreshJob implements Job {
+    private final DslContextFactory dslContextFactory;
     private final ConnectorQueueFiller connectorQueueFiller;
 
     @Override
     public void execute(JobExecutionContext context) {
-        connectorQueueFiller.fillConnectorQueue();
+        dslContextFactory.transaction(connectorQueueFiller::enqueueAllConnectors);
     }
 }

@@ -14,39 +14,35 @@
 
 package de.sovity.edc.ext.brokerserver.services;
 
-import de.sovity.edc.ext.brokerserver.BrokerServerExtension;
+import de.sovity.edc.ext.brokerserver.dao.queries.ConnectorQueries;
 import de.sovity.edc.ext.brokerserver.db.jooq.enums.ConnectorOnlineStatus;
 import de.sovity.edc.ext.brokerserver.db.jooq.tables.records.ConnectorRecord;
-import de.sovity.edc.ext.brokerserver.services.queue.ConnectorQueue;
-import de.sovity.edc.ext.brokerserver.services.queue.ConnectorRefreshPriority;
+import de.sovity.edc.ext.brokerserver.utils.CollectionUtils2;
 import de.sovity.edc.ext.brokerserver.utils.UrlUtils;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
-import org.eclipse.edc.spi.system.configuration.Config;
 import org.jetbrains.annotations.NotNull;
 import org.jooq.DSLContext;
 
 import java.time.OffsetDateTime;
-import java.util.Arrays;
 import java.util.List;
 
 @RequiredArgsConstructor
 public class ConnectorCreator {
-    private final Config config;
-    private final ConnectorQueue connectorQueue;
-
-    public void addKnownConnectorsOnStartup(DSLContext dsl) {
-        List<String> connectorEndpoints = getKnownConnectorsConfigValue();
-        addConnectors(dsl, connectorEndpoints);
-        connectorQueue.addAll(connectorEndpoints, ConnectorRefreshPriority.ADDED_ON_STARTUP);
-    }
+    private final ConnectorQueries connectorQueries;
 
     public void addConnectors(DSLContext dsl, List<String> connectorEndpoints) {
-        var connectorRecords = connectorEndpoints.stream()
+        // Don't create connectors that already exist
+        var existingConnectors = connectorQueries.findExistingConnectors(dsl, connectorEndpoints);
+        var newConnectors = CollectionUtils2.difference(connectorEndpoints, existingConnectors);
+
+        var connectorRecords = newConnectors.stream()
                 .map(String::trim)
                 .map(this::newConnectorRow)
                 .toList();
-        dsl.batchStore(connectorRecords).execute();
+
+        if (!connectorRecords.isEmpty()) {
+            dsl.batchStore(connectorRecords).execute();
+        }
     }
 
     @NotNull
@@ -62,10 +58,5 @@ public class ConnectorCreator {
         connector.setCreatedAt(OffsetDateTime.now());
         connector.setOnlineStatus(ConnectorOnlineStatus.OFFLINE);
         return connector;
-    }
-
-    private List<String> getKnownConnectorsConfigValue() {
-        String knownConnectorsString = config.getString(BrokerServerExtension.KNOWN_CONNECTORS, "");
-        return Arrays.stream(knownConnectorsString.split(",")).map(String::trim).filter(StringUtils::isNotBlank).distinct().toList();
     }
 }

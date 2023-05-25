@@ -20,6 +20,7 @@ import de.sovity.edc.ext.brokerserver.db.DataSourceFactory;
 import de.sovity.edc.ext.brokerserver.db.DslContextFactory;
 import de.sovity.edc.ext.brokerserver.services.BrokerServerInitializer;
 import de.sovity.edc.ext.brokerserver.services.ConnectorCreator;
+import de.sovity.edc.ext.brokerserver.services.KnownConnectorsInitializer;
 import de.sovity.edc.ext.brokerserver.services.api.AssetPropertyParser;
 import de.sovity.edc.ext.brokerserver.services.api.CatalogApiService;
 import de.sovity.edc.ext.brokerserver.services.api.ConnectorApiService;
@@ -102,25 +103,22 @@ public class BrokerServerExtensionContextBuilder {
         var assetPropertyParser = new AssetPropertyParser(objectMapper);
         var paginationMetadataUtils = new PaginationMetadataUtils();
         var connectorQueue = new ConnectorQueue();
-        var connectorQueueFiller = new ConnectorQueueFiller(
-                dslContextFactory,
-                connectorQueue,
-                connectorQueries
-        );
-        var connectorCreator = new ConnectorCreator(config, connectorQueue);
+        var connectorQueueFiller = new ConnectorQueueFiller(connectorQueue, connectorQueries);
+        var connectorCreator = new ConnectorCreator(connectorQueries);
+        var knownConnectorsInitializer = new KnownConnectorsInitializer(config, connectorQueue, connectorCreator);
 
         // Schedules
         List<CronJobRef<?>> jobs = List.of(
                 new CronJobRef<>(
                         BrokerServerExtension.CRON_CONNECTOR_REFRESH,
                         ConnectorRefreshJob.class,
-                        () -> new ConnectorRefreshJob(connectorQueueFiller)
+                        () -> new ConnectorRefreshJob(dslContextFactory, connectorQueueFiller)
                 )
         );
 
         // Startup
         var quartzScheduleInitializer = new QuartzScheduleInitializer(config, monitor, jobs);
-        var brokerServerInitializer = new BrokerServerInitializer(dslContextFactory, connectorCreator, quartzScheduleInitializer);
+        var brokerServerInitializer = new BrokerServerInitializer(dslContextFactory, knownConnectorsInitializer, quartzScheduleInitializer);
 
         // UI Capabilities
         var catalogApiService = new CatalogApiService(

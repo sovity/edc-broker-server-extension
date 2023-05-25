@@ -15,17 +15,16 @@
 package de.sovity.edc.ext.brokerserver.services.queue;
 
 import de.sovity.edc.ext.brokerserver.dao.queries.ConnectorQueries;
-import de.sovity.edc.ext.brokerserver.db.DslContextFactory;
 import lombok.RequiredArgsConstructor;
+import org.jooq.DSLContext;
 
 @RequiredArgsConstructor
 public class ConnectorQueueFiller {
-    private final DslContextFactory dslContextFactory;
     private final ConnectorQueue connectorQueue;
     private final ConnectorQueries connectorQueries;
 
-    public void fillConnectorQueue() {
-        var endpoints = dslContextFactory.transactionResult(connectorQueries::findEndpointsForScheduledRefresh);
+    public void enqueueAllConnectors(DSLContext dsl) {
+        var endpoints = connectorQueries.findConnectorsForScheduledRefresh(dsl);
         connectorQueue.addAll(endpoints, ConnectorRefreshPriority.SCHEDULED_REFRESH);
     }
 }

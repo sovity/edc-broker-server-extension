@@ -21,11 +21,11 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class BrokerServerInitializer {
     private final DslContextFactory dslContextFactory;
-    private final ConnectorCreator connectorCreator;
+    private final KnownConnectorsInitializer knownConnectorsInitializer;
     private final QuartzScheduleInitializer quartzScheduleInitializer;
 
     public void onStartup() {
-        dslContextFactory.transaction(connectorCreator::addKnownConnectorsOnStartup);
+        dslContextFactory.transaction(knownConnectorsInitializer::addKnownConnectorsOnStartup);
         quartzScheduleInitializer.startSchedules();
     }
 }
