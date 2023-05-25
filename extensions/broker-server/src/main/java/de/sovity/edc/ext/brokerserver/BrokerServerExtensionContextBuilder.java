@@ -37,7 +37,6 @@ import de.sovity.edc.ext.brokerserver.services.refreshing.sender.DescriptionRequ
 import de.sovity.edc.ext.brokerserver.services.refreshing.sender.IdsMultipartExtendedRemoteMessageDispatcher;
 import de.sovity.edc.ext.brokerserver.services.schedules.ConnectorRefreshJob;
 import de.sovity.edc.ext.brokerserver.services.schedules.QuartzScheduleInitializer;
-import de.sovity.edc.ext.brokerserver.services.schedules.TestJob;
 import de.sovity.edc.ext.brokerserver.services.schedules.utils.CronJobRef;
 import lombok.NoArgsConstructor;
 import org.eclipse.edc.protocol.ids.api.multipart.dispatcher.sender.IdsMultipartSender;
@@ -116,11 +115,6 @@ public class BrokerServerExtensionContextBuilder {
                         BrokerServerExtension.CRON_CONNECTOR_REFRESH,
                         ConnectorRefreshJob.class,
                         () -> new ConnectorRefreshJob(connectorQueueFiller)
-                ),
-                new CronJobRef<>(
-                        BrokerServerExtension.CRON_TEST_JOB,
-                        TestJob.class,
-                        () -> new TestJob(monitor)
                 )
         );
 

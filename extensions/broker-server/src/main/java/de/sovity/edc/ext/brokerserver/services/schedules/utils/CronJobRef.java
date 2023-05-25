@@ -22,9 +22,9 @@ import java.util.function.Supplier;
  * Broker Server CRON Job.
  *
  * @param configPropertyName EDC Config property that decides cron expression
- * @param clazz class of the job
- * @param factory factory that initializes the task class
- * @param <T> job type
+ * @param clazz              class of the job
+ * @param factory            factory that initializes the task class
+ * @param <T>                job type
  */
 public record CronJobRef<T extends Job>(
         String configPropertyName,

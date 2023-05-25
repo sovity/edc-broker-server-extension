@@ -17,7 +17,6 @@ package de.sovity.edc.ext.brokerserver.services.api;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.sovity.edc.client.gen.model.CatalogPageQuery;
 import de.sovity.edc.client.gen.model.DataOfferConnectorInfo;
-import de.sovity.edc.ext.brokerserver.BrokerServerExtension;
 import de.sovity.edc.ext.brokerserver.db.TestDatabase;
 import de.sovity.edc.ext.brokerserver.db.TestDatabaseFactory;
 import de.sovity.edc.ext.brokerserver.db.jooq.Tables;
@@ -47,9 +46,7 @@ class CatalogApiTest {
 
     @BeforeEach
     void setUp(EdcExtension extension) {
-        extension.setConfiguration(createConfiguration(TEST_DATABASE, Map.of(
-                BrokerServerExtension.CRON_TEST_JOB, "0/2 * * * * ? *"
-        )));
+        extension.setConfiguration(createConfiguration(TEST_DATABASE, Map.of()));
     }
 
     @Test
@@ -104,12 +101,6 @@ class CatalogApiTest {
             ));
             assertThat(dataOfferResult.getAsset().getCreatedAt()).isEqualTo(today.minusDays(5));
             assertThat(toJson(dataOfferResult.getPolicy().get(0).getLegacyPolicy())).isEqualTo(toJson(dummyPolicy()));
-
-            try {
-                Thread.sleep(10_000);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
         });
     }
 
