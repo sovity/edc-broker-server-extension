@@ -27,17 +27,23 @@ import org.jooq.OrderField;
 import org.jooq.impl.DSL;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Stream;
 
 public class ConnectorQueries {
 
-    public Stream<ConnectorRecord> findAll(DSLContext dslContext) {
-        return dslContext.selectFrom(Tables.CONNECTOR).stream();
+    public Stream<ConnectorRecord> findAll(DSLContext dsl) {
+        return dsl.selectFrom(Tables.CONNECTOR).stream();
     }
 
     public ConnectorRecord findByEndpoint(DSLContext dsl, String endpoint) {
         var c = Tables.CONNECTOR;
         return dsl.selectFrom(c).where(c.ENDPOINT.eq(endpoint)).fetchOne();
+    }
+
+    public Set<String> findEndpointsForScheduledRefresh(DSLContext dsl) {
+        var c = Tables.CONNECTOR;
+        return dsl.select(c.ENDPOINT).from(c).fetchSet(c.ENDPOINT);
     }
 
     public List<ConnectorPageDbRow> forConnectorPage(DSLContext dsl, String searchQuery, ConnectorPageSortingType sorting) {

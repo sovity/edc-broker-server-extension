@@ -17,6 +17,7 @@ package de.sovity.edc.ext.brokerserver.services.api;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.sovity.edc.client.gen.model.CatalogPageQuery;
 import de.sovity.edc.client.gen.model.DataOfferConnectorInfo;
+import de.sovity.edc.ext.brokerserver.BrokerServerExtension;
 import de.sovity.edc.ext.brokerserver.db.TestDatabase;
 import de.sovity.edc.ext.brokerserver.db.TestDatabaseFactory;
 import de.sovity.edc.ext.brokerserver.db.jooq.Tables;
@@ -30,13 +31,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.OffsetDateTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
-import java.util.List;
 import java.util.Map;
 
 import static de.sovity.edc.ext.brokerserver.TestUtils.createConfiguration;
@@ -52,7 +47,9 @@ class CatalogApiTest {
 
     @BeforeEach
     void setUp(EdcExtension extension) {
-        extension.setConfiguration(createConfiguration(TEST_DATABASE, List.of("https://example.com/ids/data")));
+        extension.setConfiguration(createConfiguration(TEST_DATABASE, Map.of(
+                BrokerServerExtension.CRON_TEST_JOB, "0/2 * * * * ? *"
+        )));
     }
 
     @Test
@@ -107,6 +104,12 @@ class CatalogApiTest {
             ));
             assertThat(dataOfferResult.getAsset().getCreatedAt()).isEqualTo(today.minusDays(5));
             assertThat(toJson(dataOfferResult.getPolicy().get(0).getLegacyPolicy())).isEqualTo(toJson(dummyPolicy()));
+
+            try {
+                Thread.sleep(10_000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
         });
     }
 

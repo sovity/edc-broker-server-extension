@@ -12,20 +12,20 @@
  *
  */
 
-package de.sovity.edc.ext.brokerserver.services;
+package de.sovity.edc.ext.brokerserver.services.queue;
 
+import de.sovity.edc.ext.brokerserver.dao.queries.ConnectorQueries;
 import de.sovity.edc.ext.brokerserver.db.DslContextFactory;
-import de.sovity.edc.ext.brokerserver.services.schedules.QuartzScheduleInitializer;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class BrokerServerInitializer {
+public class ConnectorQueueFiller {
     private final DslContextFactory dslContextFactory;
-    private final ConnectorCreator connectorCreator;
-    private final QuartzScheduleInitializer quartzScheduleInitializer;
+    private final ConnectorQueue connectorQueue;
+    private final ConnectorQueries connectorQueries;
 
-    public void onStartup() {
-        dslContextFactory.transaction(connectorCreator::addKnownConnectorsOnStartup);
-        quartzScheduleInitializer.startSchedules();
+    public void fillConnectorQueue() {
+        var endpoints = dslContextFactory.transactionResult(connectorQueries::findEndpointsForScheduledRefresh);
+        connectorQueue.addAll(endpoints, ConnectorRefreshPriority.SCHEDULED_REFRESH);
     }
 }

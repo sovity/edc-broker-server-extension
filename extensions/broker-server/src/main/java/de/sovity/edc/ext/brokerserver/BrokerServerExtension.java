@@ -30,10 +30,13 @@ public class BrokerServerExtension implements ServiceExtension {
     public static final String EXTENSION_NAME = "BrokerServerExtension";
 
     @Setting
-    public static final String KNOWN_CONNECTORS = "edc.brokerserver.known.connectors";
+    public static final String KNOWN_CONNECTORS = "edc.broker.server.known.connectors";
 
     @Setting
-    public static final String CRON_TRIGGER = "edc.brokerserver.cron.connectorrefresh";
+    public static final String CRON_CONNECTOR_REFRESH = "edc.broker.server.cron.connector.refresh";
+
+    @Setting
+    public static final String CRON_TEST_JOB = "edc.broker.server.cron.test.job";
 
     @Inject
     private ManagementApiConfiguration managementApiConfiguration;
