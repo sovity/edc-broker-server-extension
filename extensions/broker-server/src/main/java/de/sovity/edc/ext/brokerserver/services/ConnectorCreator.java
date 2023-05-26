@@ -57,6 +57,7 @@ public class ConnectorCreator {
         connector.setIdsId("");
         connector.setCreatedAt(OffsetDateTime.now());
         connector.setOnlineStatus(ConnectorOnlineStatus.OFFLINE);
+        connector.setDeleted(false);
         return connector;
     }
 }

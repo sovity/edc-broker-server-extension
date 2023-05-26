@@ -11,6 +11,7 @@ create table connector
     offline_since timestamp with time zone,
     created_at    timestamp with time zone not null,
     online_status connector_online_status  not null,
+    deleted       boolean                  not null,
 
     PRIMARY KEY (endpoint)
 );

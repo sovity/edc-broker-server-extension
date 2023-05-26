@@ -73,6 +73,10 @@ public class ConnectorApiService {
         };
     }
 
+    private boolean getDeletedStatus(ConnectorPageDbRow it) {
+        return it.isDeleted();
+    }
+
     private List<ConnectorPageSortingItem> buildAvailableSortings() {
         return Arrays.stream(ConnectorPageSortingType.values()).map(it -> new ConnectorPageSortingItem(it, it.getTitle())).toList();
     }

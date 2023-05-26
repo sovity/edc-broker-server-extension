@@ -36,4 +36,5 @@ public class ConnectorPageDbRow {
     OffsetDateTime createdAt;
     ConnectorOnlineStatus onlineStatus;
     Integer numDataOffers;
+    boolean deleted;
 }
