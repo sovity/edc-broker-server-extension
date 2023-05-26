@@ -15,6 +15,7 @@
 package de.sovity.edc.ext.brokerserver;
 
 import de.sovity.edc.ext.brokerserver.dao.queries.ConnectorQueries;
+import de.sovity.edc.ext.brokerserver.dao.queries.DataOfferContractOfferQueries;
 import de.sovity.edc.ext.brokerserver.dao.queries.DataOfferQueries;
 import de.sovity.edc.ext.brokerserver.db.DataSourceFactory;
 import de.sovity.edc.ext.brokerserver.db.DslContextFactory;
@@ -29,17 +30,25 @@ import de.sovity.edc.ext.brokerserver.services.api.PolicyDtoBuilder;
 import de.sovity.edc.ext.brokerserver.services.logging.BrokerEventLogger;
 import de.sovity.edc.ext.brokerserver.services.queue.ConnectorQueue;
 import de.sovity.edc.ext.brokerserver.services.queue.ConnectorQueueFiller;
-import de.sovity.edc.ext.brokerserver.services.refreshing.ConnectorSelfDescriptionFetcher;
 import de.sovity.edc.ext.brokerserver.services.refreshing.ConnectorUpdateFailureWriter;
 import de.sovity.edc.ext.brokerserver.services.refreshing.ConnectorUpdateSuccessWriter;
 import de.sovity.edc.ext.brokerserver.services.refreshing.ConnectorUpdater;
-import de.sovity.edc.ext.brokerserver.services.refreshing.ContractOfferFetcher;
+import de.sovity.edc.ext.brokerserver.services.refreshing.offers.fetching.ContractOfferFetcher;
+import de.sovity.edc.ext.brokerserver.services.refreshing.offers.fetching.DataOfferBuilder;
+import de.sovity.edc.ext.brokerserver.services.refreshing.offers.fetching.DataOfferFetcher;
+import de.sovity.edc.ext.brokerserver.services.refreshing.offers.writing.ContractOfferRecordUpdater;
+import de.sovity.edc.ext.brokerserver.services.refreshing.offers.writing.DataOfferPatchApplier;
+import de.sovity.edc.ext.brokerserver.services.refreshing.offers.writing.DataOfferPatchBuilder;
+import de.sovity.edc.ext.brokerserver.services.refreshing.offers.writing.DataOfferRecordUpdater;
+import de.sovity.edc.ext.brokerserver.services.refreshing.offers.writing.DataOfferWriter;
+import de.sovity.edc.ext.brokerserver.services.refreshing.selfdescription.ConnectorSelfDescriptionFetcher;
 import de.sovity.edc.ext.brokerserver.services.refreshing.sender.DescriptionRequestSender;
 import de.sovity.edc.ext.brokerserver.services.refreshing.sender.IdsMultipartExtendedRemoteMessageDispatcher;
 import de.sovity.edc.ext.brokerserver.services.schedules.ConnectorRefreshJob;
 import de.sovity.edc.ext.brokerserver.services.schedules.QuartzScheduleInitializer;
 import de.sovity.edc.ext.brokerserver.services.schedules.utils.CronJobRef;
 import lombok.NoArgsConstructor;
+import org.eclipse.edc.connector.spi.catalog.CatalogService;
 import org.eclipse.edc.protocol.ids.api.multipart.dispatcher.sender.IdsMultipartSender;
 import org.eclipse.edc.protocol.ids.spi.service.DynamicAttributeTokenService;
 import org.eclipse.edc.runtime.metamodel.annotation.Inject;
@@ -69,7 +78,8 @@ public class BrokerServerExtensionContextBuilder {
             EdcHttpClient httpClient,
             DynamicAttributeTokenService dynamicAttributeTokenService,
             TypeManager typeManager,
-            RemoteMessageDispatcherRegistry dispatcherRegistry
+            RemoteMessageDispatcherRegistry dispatcherRegistry,
+            CatalogService catalogService
     ) {
         // Dao
         var dataOfferQueries = new DataOfferQueries();
@@ -80,18 +90,37 @@ public class BrokerServerExtensionContextBuilder {
 
         // IDS Message Client
         var objectMapper = typeManager.getMapper();
-        var idsMultipartSender = new IdsMultipartSender(monitor, httpClient, dynamicAttributeTokenService, objectMapper);
+        var idsMultipartSender = new IdsMultipartSender(
+                monitor,
+                httpClient,
+                dynamicAttributeTokenService,
+                objectMapper
+        );
         var remoteMessageDispatcher = new IdsMultipartExtendedRemoteMessageDispatcher(idsMultipartSender);
         var descriptionRequestSender = new DescriptionRequestSender();
 
         // Services
         var connectorSelfDescriptionFetcher = new ConnectorSelfDescriptionFetcher(dispatcherRegistry);
         var brokerEventLogger = new BrokerEventLogger();
-        var connectorUpdateSuccessWriter = new ConnectorUpdateSuccessWriter(brokerEventLogger);
+        var contractOfferRecordUpdater = new ContractOfferRecordUpdater();
+        var dataOfferRecordUpdater = new DataOfferRecordUpdater();
+        var dataOfferContractOfferQueries = new DataOfferContractOfferQueries();
+        var dataOfferPatchBuilder = new DataOfferPatchBuilder(
+                dataOfferContractOfferQueries,
+                dataOfferQueries,
+                dataOfferRecordUpdater,
+                contractOfferRecordUpdater
+        );
+        var dataOfferPatchApplier = new DataOfferPatchApplier();
+        var dataOfferWriter = new DataOfferWriter(dataOfferPatchBuilder, dataOfferPatchApplier);
+        var connectorUpdateSuccessWriter = new ConnectorUpdateSuccessWriter(brokerEventLogger, dataOfferWriter);
         var connectorUpdateFailureWriter = new ConnectorUpdateFailureWriter(brokerEventLogger);
-        var contractOfferFetcher = new ContractOfferFetcher();
+        var contractOfferFetcher = new ContractOfferFetcher(catalogService);
+        var fetchedDataOfferBuilder = new DataOfferBuilder(objectMapper);
+        var dataOfferFetcher = new DataOfferFetcher(contractOfferFetcher, fetchedDataOfferBuilder);
         var connectorUpdater = new ConnectorUpdater(
                 connectorSelfDescriptionFetcher,
+                dataOfferFetcher,
                 connectorUpdateSuccessWriter,
                 connectorUpdateFailureWriter,
                 contractOfferFetcher,

@@ -86,6 +86,7 @@ class CatalogApiTest {
 
 
             var result = edcClient().brokerServerApi().catalogPage(new CatalogPageQuery());
+            System.out.println(de.sovity.edc.client.gen.JSON.serialize(result));
             assertThat(result.getDataOffers()).hasSize(1);
 
             var dataOfferResult = result.getDataOffers().get(0);

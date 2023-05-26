@@ -12,7 +12,7 @@
  *
  */
 
-package de.sovity.edc.ext.brokerserver.services.refreshing;
+package de.sovity.edc.ext.brokerserver.services.refreshing.selfdescription;
 
 public record ConnectorSelfDescription(String idsId, String title, String description) {
 }

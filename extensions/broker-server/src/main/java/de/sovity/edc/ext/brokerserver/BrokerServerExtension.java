@@ -15,6 +15,7 @@
 package de.sovity.edc.ext.brokerserver;
 
 import org.eclipse.edc.connector.api.management.configuration.ManagementApiConfiguration;
+import org.eclipse.edc.connector.spi.catalog.CatalogService;
 import org.eclipse.edc.protocol.ids.spi.service.DynamicAttributeTokenService;
 import org.eclipse.edc.runtime.metamodel.annotation.Inject;
 import org.eclipse.edc.runtime.metamodel.annotation.Setting;
@@ -53,6 +54,9 @@ public class BrokerServerExtension implements ServiceExtension {
     @Inject
     private RemoteMessageDispatcherRegistry dispatcherRegistry;
 
+    @Inject
+    private CatalogService catalogService;
+
     /**
      * Manual Dependency Injection Result
      */
@@ -71,7 +75,8 @@ public class BrokerServerExtension implements ServiceExtension {
                 httpClient,
                 dynamicAttributeTokenService,
                 typeManager,
-                dispatcherRegistry
+                dispatcherRegistry,
+                catalogService
         );
 
         var managementApiGroup = managementApiConfiguration.getContextAlias();

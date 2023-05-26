@@ -18,30 +18,33 @@ import de.sovity.edc.ext.brokerserver.db.jooq.enums.ConnectorOnlineStatus;
 import de.sovity.edc.ext.brokerserver.db.jooq.tables.records.ConnectorRecord;
 import de.sovity.edc.ext.brokerserver.services.logging.BrokerEventLogger;
 import de.sovity.edc.ext.brokerserver.services.logging.ConnectorChangeTracker;
+import de.sovity.edc.ext.brokerserver.services.refreshing.offers.fetching.FetchedDataOffer;
+import de.sovity.edc.ext.brokerserver.services.refreshing.offers.writing.DataOfferWriter;
+import de.sovity.edc.ext.brokerserver.services.refreshing.selfdescription.ConnectorSelfDescription;
 import lombok.RequiredArgsConstructor;
-import org.eclipse.edc.connector.contract.spi.types.offer.ContractOffer;
 import org.jooq.DSLContext;
 
 import java.time.OffsetDateTime;
-import java.util.List;
+import java.util.Collection;
 import java.util.Objects;
 
 @RequiredArgsConstructor
 public class ConnectorUpdateSuccessWriter {
     private final BrokerEventLogger brokerEventLogger;
+    private final DataOfferWriter dataOfferWriter;
 
     public void handleConnectorOnline(
             DSLContext dsl,
             ConnectorRecord connector,
             ConnectorSelfDescription selfDescription,
-            List<ContractOffer> contractOffers
+            Collection<FetchedDataOffer> dataOffers
     ) {
         // Track changes for final log message
         ConnectorChangeTracker changes = new ConnectorChangeTracker();
         updateConnector(connector, selfDescription, changes);
 
-        // Update contract offers (if changed)
-        // TODO
+        // Update data offers
+        dataOfferWriter.updateDataOffers(dsl, connector.getEndpoint(), dataOffers);
 
         // Log Event
         brokerEventLogger.logConnectorUpdateSuccess(dsl, connector.getEndpoint(), changes);

@@ -12,7 +12,7 @@
  *
  */
 
-package de.sovity.edc.ext.brokerserver.services.refreshing;
+package de.sovity.edc.ext.brokerserver.services.refreshing.selfdescription;
 
 import de.sovity.edc.ext.brokerserver.services.refreshing.sender.message.DescriptionRequestMessage;
 import lombok.RequiredArgsConstructor;
