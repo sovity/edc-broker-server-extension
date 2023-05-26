@@ -42,4 +42,8 @@ public class ConnectorQueue {
                 .toList();
         queue.addAll(entries);
     }
+
+    public boolean isEmpty() {
+        return queue.isEmpty();
+    }
 }

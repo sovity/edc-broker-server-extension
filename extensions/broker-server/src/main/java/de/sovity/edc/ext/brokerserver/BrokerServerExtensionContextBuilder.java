@@ -30,6 +30,8 @@ import de.sovity.edc.ext.brokerserver.services.api.PolicyDtoBuilder;
 import de.sovity.edc.ext.brokerserver.services.logging.BrokerEventLogger;
 import de.sovity.edc.ext.brokerserver.services.queue.ConnectorQueue;
 import de.sovity.edc.ext.brokerserver.services.queue.ConnectorQueueFiller;
+import de.sovity.edc.ext.brokerserver.services.refreshing.ConnectorRefreshExecutorPool;
+import de.sovity.edc.ext.brokerserver.services.refreshing.ConnectorSelfDescriptionFetcher;
 import de.sovity.edc.ext.brokerserver.services.refreshing.ConnectorUpdateFailureWriter;
 import de.sovity.edc.ext.brokerserver.services.refreshing.ConnectorUpdateSuccessWriter;
 import de.sovity.edc.ext.brokerserver.services.refreshing.ConnectorUpdater;
@@ -130,6 +132,10 @@ public class BrokerServerExtensionContextBuilder {
         // Startup
         var quartzScheduleInitializer = new QuartzScheduleInitializer(config, monitor, jobs);
         var brokerServerInitializer = new BrokerServerInitializer(dslContextFactory, knownConnectorsInitializer, quartzScheduleInitializer);
+
+        // Threads
+        var connectorRefreshExecutorPool = new ConnectorRefreshExecutorPool(config, connectorUpdater, connectorQueue);
+        connectorRefreshExecutorPool.execute();
 
         // UI Capabilities
         var catalogApiService = new CatalogApiService(
