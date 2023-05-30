@@ -14,21 +14,18 @@
 
 package de.sovity.edc.ext.brokerserver.services.queue;
 
+import de.sovity.edc.ext.brokerserver.services.refreshing.ConnectorUpdater;
+import lombok.RequiredArgsConstructor;
+
 import java.util.Collection;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.PriorityBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
 
+@RequiredArgsConstructor
 public class ConnectorQueue {
-    private final PriorityBlockingQueue<ConnectorQueueEntry> queue = new PriorityBlockingQueue<>();
-
-    /**
-     * Get the next item. Waits by blocking current thread.
-     *
-     * @return the next item
-     * @throws InterruptedException on thread interruption
-     */
-    public String take() throws InterruptedException {
-        return queue.take().getEndpoint();
-    }
+    private final ConnectorUpdater connectorUpdater;
+    private final ThreadPool threadPool;
 
     /**
      * Enqueues connectors for update.
@@ -37,13 +34,8 @@ public class ConnectorQueue {
      * @param priority  priority from {@link ConnectorRefreshPriority}
      */
     public void addAll(Collection<String> endpoints, int priority) {
-        var entries = endpoints.stream()
-                .map(endpoint -> new ConnectorQueueEntry(endpoint, priority))
-                .toList();
-        queue.addAll(entries);
-    }
-
-    public boolean isEmpty() {
-        return queue.isEmpty();
+        for (String endpoint : endpoints) {
+            threadPool.execute(priority, () -> connectorUpdater.updateConnector(endpoint));
+        }
     }
 }
