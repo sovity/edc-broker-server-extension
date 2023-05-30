@@ -15,6 +15,7 @@
 package de.sovity.edc.ext.brokerserver.services.refreshing;
 
 import de.sovity.edc.ext.brokerserver.services.queue.ConnectorQueue;
+import org.eclipse.edc.spi.EdcException;
 import org.eclipse.edc.spi.system.configuration.Config;
 
 import java.util.concurrent.ExecutorService;
@@ -43,6 +44,12 @@ public class ConnectorRefreshExecutorPool {
     }
 
     public void execute() {
-        executorService.execute(() -> connectorUpdater.updateConnector(connectorQueue.poll()));
+        executorService.execute(() -> {
+            try {
+                connectorUpdater.updateConnector(connectorQueue.take());
+            } catch (InterruptedException e) {
+                throw new EdcException("Interrupted while waiting for connector to refresh", e);
+            }
+        });
     }
 }
