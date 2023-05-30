@@ -31,7 +31,6 @@ import de.sovity.edc.ext.brokerserver.services.logging.BrokerEventLogger;
 import de.sovity.edc.ext.brokerserver.services.queue.ConnectorQueue;
 import de.sovity.edc.ext.brokerserver.services.queue.ConnectorQueueFiller;
 import de.sovity.edc.ext.brokerserver.services.refreshing.ConnectorRefreshExecutorPool;
-import de.sovity.edc.ext.brokerserver.services.refreshing.ConnectorSelfDescriptionFetcher;
 import de.sovity.edc.ext.brokerserver.services.refreshing.ConnectorUpdateFailureWriter;
 import de.sovity.edc.ext.brokerserver.services.refreshing.ConnectorUpdateSuccessWriter;
 import de.sovity.edc.ext.brokerserver.services.refreshing.ConnectorUpdater;
