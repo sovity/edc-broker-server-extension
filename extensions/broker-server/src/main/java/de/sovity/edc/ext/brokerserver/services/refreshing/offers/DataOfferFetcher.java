@@ -12,8 +12,9 @@
  *
  */
 
-package de.sovity.edc.ext.brokerserver.services.refreshing.offers.fetching;
+package de.sovity.edc.ext.brokerserver.services.refreshing.offers;
 
+import de.sovity.edc.ext.brokerserver.services.refreshing.offers.model.FetchedDataOffer;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.eclipse.edc.connector.contract.spi.types.offer.ContractOffer;
@@ -33,7 +34,10 @@ public class DataOfferFetcher {
      */
     @SneakyThrows
     public Collection<FetchedDataOffer> fetch(String connectorEndpoint) {
+        // Contract Offers contain assets multiple times, with different policies
         var contractOffers = contractOfferFetcher.fetch(connectorEndpoint);
+
+        // Data Offers represent unique assets
         return dataOfferBuilder.deduplicateContractOffers(contractOffers);
     }
 }

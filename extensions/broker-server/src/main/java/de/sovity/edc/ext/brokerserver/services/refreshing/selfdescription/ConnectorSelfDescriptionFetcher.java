@@ -23,7 +23,6 @@ import lombok.RequiredArgsConstructor;
 public class ConnectorSelfDescriptionFetcher {
     public ConnectorSelfDescription fetch(String connectorEndpoint) {
         return new ConnectorSelfDescription(
-                "urn:connector:unknown",
                 "Unknown Connector",
                 "As of Core EDC Milestone 9 connector self-descriptions are not supported. The connector was successfully crawled, but there is no connector metadata / description available."
         );

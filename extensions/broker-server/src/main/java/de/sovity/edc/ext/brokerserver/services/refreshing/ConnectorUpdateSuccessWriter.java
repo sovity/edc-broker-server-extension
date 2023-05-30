@@ -18,8 +18,8 @@ import de.sovity.edc.ext.brokerserver.db.jooq.enums.ConnectorOnlineStatus;
 import de.sovity.edc.ext.brokerserver.db.jooq.tables.records.ConnectorRecord;
 import de.sovity.edc.ext.brokerserver.services.logging.BrokerEventLogger;
 import de.sovity.edc.ext.brokerserver.services.logging.ConnectorChangeTracker;
-import de.sovity.edc.ext.brokerserver.services.refreshing.offers.fetching.FetchedDataOffer;
-import de.sovity.edc.ext.brokerserver.services.refreshing.offers.writing.DataOfferWriter;
+import de.sovity.edc.ext.brokerserver.services.refreshing.offers.DataOfferWriter;
+import de.sovity.edc.ext.brokerserver.services.refreshing.offers.model.FetchedDataOffer;
 import de.sovity.edc.ext.brokerserver.services.refreshing.selfdescription.ConnectorSelfDescription;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
@@ -51,17 +51,13 @@ public class ConnectorUpdateSuccessWriter {
     }
 
     private static void updateConnector(ConnectorRecord connector, ConnectorSelfDescription selfDescription, ConnectorChangeTracker changes) {
-        if (!Objects.equals(selfDescription.idsId(), connector.getIdsId())) {
-            changes.addSelfDescriptionChange("IDS Connector ID");
-            connector.setIdsId(selfDescription.idsId());
-        }
         if (!Objects.equals(selfDescription.title(), connector.getTitle())) {
             changes.addSelfDescriptionChange("Title");
-            connector.setIdsId(selfDescription.title());
+            connector.setTitle(selfDescription.title());
         }
         if (!Objects.equals(selfDescription.description(), connector.getDescription())) {
             changes.addSelfDescriptionChange("Description");
-            connector.setIdsId(selfDescription.description());
+            connector.setDescription(selfDescription.description());
         }
         connector.setOnlineStatus(ConnectorOnlineStatus.ONLINE);
         connector.setLastUpdate(OffsetDateTime.now());

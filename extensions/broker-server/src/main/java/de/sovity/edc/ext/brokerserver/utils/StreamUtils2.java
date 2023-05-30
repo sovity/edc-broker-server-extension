@@ -28,8 +28,8 @@ public class StreamUtils2 {
      * Returns a predicate that filters out all elements that have the same key as a previous element.
      *
      * @param keyFn key extractor
-     * @param <T> item type
-     * @param <K> key type
+     * @param <T>   item type
+     * @param <K>   key type
      * @return predicate to be used in {@link java.util.stream.Stream#filter(Predicate)}
      */
     public static <T, K> Predicate<T> distinctByKey(Function<T, K> keyFn) {

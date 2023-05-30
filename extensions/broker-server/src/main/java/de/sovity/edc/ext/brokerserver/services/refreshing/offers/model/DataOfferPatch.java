@@ -12,7 +12,7 @@
  *
  */
 
-package de.sovity.edc.ext.brokerserver.services.refreshing.offers.writing;
+package de.sovity.edc.ext.brokerserver.services.refreshing.offers.model;
 
 import de.sovity.edc.ext.brokerserver.db.jooq.tables.records.DataOfferContractOfferRecord;
 import de.sovity.edc.ext.brokerserver.db.jooq.tables.records.DataOfferRecord;

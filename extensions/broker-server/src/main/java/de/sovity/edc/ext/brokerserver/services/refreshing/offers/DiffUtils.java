@@ -1,4 +1,4 @@
-package de.sovity.edc.ext.brokerserver.services.refreshing.offers.writing;
+package de.sovity.edc.ext.brokerserver.services.refreshing.offers;
 
 import de.sovity.edc.ext.brokerserver.utils.MapUtils;
 import lombok.AccessLevel;

@@ -12,24 +12,29 @@
  *
  */
 
-package de.sovity.edc.ext.brokerserver.services.refreshing.offers.writing;
+package de.sovity.edc.ext.brokerserver.services.refreshing.offers;
 
 import de.sovity.edc.ext.brokerserver.db.jooq.tables.records.DataOfferRecord;
-import de.sovity.edc.ext.brokerserver.services.refreshing.offers.fetching.FetchedDataOffer;
+import de.sovity.edc.ext.brokerserver.services.refreshing.offers.model.FetchedDataOffer;
 import lombok.RequiredArgsConstructor;
 import org.jooq.JSONB;
 
 import java.time.OffsetDateTime;
 import java.util.Objects;
 
+/**
+ * Creates or updates {@link DataOfferRecord} DB Rows.
+ * <p>
+ * (Or at least prepares them for batch inserts / updates)
+ */
 @RequiredArgsConstructor
 public class DataOfferRecordUpdater {
     /**
      * Create a new {@link DataOfferRecord}.
      *
      * @param connectorEndpoint connector endpoint
-     * @param fetchedDataOffer  {@link FetchedDataOffer}
-     * @return {@link DataOfferRecord}
+     * @param fetchedDataOffer  new db row data
+     * @return new db row
      */
     public DataOfferRecord newDataOffer(String connectorEndpoint, FetchedDataOffer fetchedDataOffer) {
         var dataOffer = new DataOfferRecord();
@@ -44,8 +49,8 @@ public class DataOfferRecordUpdater {
     /**
      * Update existing {@link DataOfferRecord}.
      *
-     * @param dataOffer        {@link DataOfferRecord}
-     * @param fetchedDataOffer {@link FetchedDataOffer}
+     * @param dataOffer        existing row
+     * @param fetchedDataOffer changes to be incorporated
      * @return whether any fields were updated
      */
     public boolean updateDataOffer(DataOfferRecord dataOffer, FetchedDataOffer fetchedDataOffer) {

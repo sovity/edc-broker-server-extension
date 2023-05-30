@@ -28,7 +28,6 @@ import java.time.OffsetDateTime;
 public class ConnectorPageDbRow {
     String endpoint;
     String connectorId;
-    String idsId;
     String title;
     String description;
     OffsetDateTime lastUpdate;

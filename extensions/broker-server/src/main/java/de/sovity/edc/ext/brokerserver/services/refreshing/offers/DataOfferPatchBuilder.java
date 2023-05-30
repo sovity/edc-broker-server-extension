@@ -12,14 +12,15 @@
  *
  */
 
-package de.sovity.edc.ext.brokerserver.services.refreshing.offers.writing;
+package de.sovity.edc.ext.brokerserver.services.refreshing.offers;
 
 import de.sovity.edc.ext.brokerserver.dao.queries.DataOfferContractOfferQueries;
 import de.sovity.edc.ext.brokerserver.dao.queries.DataOfferQueries;
 import de.sovity.edc.ext.brokerserver.db.jooq.tables.records.DataOfferContractOfferRecord;
 import de.sovity.edc.ext.brokerserver.db.jooq.tables.records.DataOfferRecord;
-import de.sovity.edc.ext.brokerserver.services.refreshing.offers.fetching.FetchedDataOffer;
-import de.sovity.edc.ext.brokerserver.services.refreshing.offers.fetching.FetchedDataOfferContractOffer;
+import de.sovity.edc.ext.brokerserver.services.refreshing.offers.model.DataOfferPatch;
+import de.sovity.edc.ext.brokerserver.services.refreshing.offers.model.FetchedDataOffer;
+import de.sovity.edc.ext.brokerserver.services.refreshing.offers.model.FetchedDataOfferContractOffer;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 
@@ -35,6 +36,14 @@ public class DataOfferPatchBuilder {
     private final DataOfferRecordUpdater dataOfferRecordUpdater;
     private final ContractOfferRecordUpdater contractOfferRecordUpdater;
 
+    /**
+     * Fetches existing data offers of given connector endpoint and compares them with fetched data offers.
+     *
+     * @param dsl               dsl
+     * @param connectorEndpoint connector endpoint
+     * @param fetchedDataOffers fetched data offers
+     * @return change list / patch
+     */
     public DataOfferPatch buildDataOfferPatch(
             DSLContext dsl,
             String connectorEndpoint,

@@ -12,9 +12,9 @@
  *
  */
 
-package de.sovity.edc.ext.brokerserver.services.refreshing.offers.writing;
+package de.sovity.edc.ext.brokerserver.services.refreshing.offers;
 
-import de.sovity.edc.ext.brokerserver.services.refreshing.offers.fetching.FetchedDataOffer;
+import de.sovity.edc.ext.brokerserver.services.refreshing.offers.model.FetchedDataOffer;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.jooq.DSLContext;
@@ -26,6 +26,13 @@ public class DataOfferWriter {
     private final DataOfferPatchBuilder dataOfferPatchBuilder;
     private final DataOfferPatchApplier dataOfferPatchApplier;
 
+    /**
+     * Updates a connector's data offers with given {@link FetchedDataOffer}s.
+     *
+     * @param dsl               dsl
+     * @param connectorEndpoint connector endpoint
+     * @param fetchedDataOffers fetched data offers
+     */
     @SneakyThrows
     public void updateDataOffers(DSLContext dsl, String connectorEndpoint, Collection<FetchedDataOffer> fetchedDataOffers) {
         var patch = dataOfferPatchBuilder.buildDataOfferPatch(dsl, connectorEndpoint, fetchedDataOffers);

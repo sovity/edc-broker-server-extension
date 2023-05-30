@@ -32,7 +32,6 @@ import org.jooq.OrderField;
 import org.jooq.impl.DSL;
 
 import java.util.List;
-import java.util.Map;
 
 public class DataOfferQueries {
     public List<DataOfferDbRow> forCatalogPage(DSLContext dsl, String searchQuery, CatalogPageSortingType sorting) {

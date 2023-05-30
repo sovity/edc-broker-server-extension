@@ -12,7 +12,7 @@
  *
  */
 
-package de.sovity.edc.ext.brokerserver.services.refreshing.offers.fetching;
+package de.sovity.edc.ext.brokerserver.services.refreshing.offers.model;
 
 import lombok.AccessLevel;
 import lombok.Getter;

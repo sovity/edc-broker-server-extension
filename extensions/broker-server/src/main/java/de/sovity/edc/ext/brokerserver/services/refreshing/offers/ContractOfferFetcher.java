@@ -12,7 +12,7 @@
  *
  */
 
-package de.sovity.edc.ext.brokerserver.services.refreshing.offers.fetching;
+package de.sovity.edc.ext.brokerserver.services.refreshing.offers;
 
 import de.sovity.edc.ext.brokerserver.services.refreshing.exceptions.ConnectorUnreachableException;
 import lombok.RequiredArgsConstructor;

@@ -12,8 +12,9 @@
  *
  */
 
-package de.sovity.edc.ext.brokerserver.services.refreshing.offers.writing;
+package de.sovity.edc.ext.brokerserver.services.refreshing.offers;
 
+import de.sovity.edc.ext.brokerserver.services.refreshing.offers.model.DataOfferPatch;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.jooq.DSLContext;

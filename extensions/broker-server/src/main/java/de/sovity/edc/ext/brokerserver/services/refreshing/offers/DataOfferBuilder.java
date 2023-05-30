@@ -12,9 +12,11 @@
  *
  */
 
-package de.sovity.edc.ext.brokerserver.services.refreshing.offers.fetching;
+package de.sovity.edc.ext.brokerserver.services.refreshing.offers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import de.sovity.edc.ext.brokerserver.services.refreshing.offers.model.FetchedDataOffer;
+import de.sovity.edc.ext.brokerserver.services.refreshing.offers.model.FetchedDataOfferContractOffer;
 import de.sovity.edc.ext.brokerserver.utils.StreamUtils2;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -25,9 +27,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collection;
 import java.util.List;
 
-import static java.util.stream.Collectors.collectingAndThen;
 import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.toList;
 
 @RequiredArgsConstructor
 public class DataOfferBuilder {
@@ -42,10 +42,10 @@ public class DataOfferBuilder {
      * @return {@link FetchedDataOffer}s
      */
     public Collection<FetchedDataOffer> deduplicateContractOffers(Collection<ContractOffer> contractOffers) {
-        return contractOffers.stream().collect(groupingBy(
-                offer -> offer.getAsset().getId(),
-                collectingAndThen(toList(), offers -> buildFetchedDataOffer(offers.get(0).getAsset(), offers))
-        )).values();
+        return groupByAssetId(contractOffers)
+                .stream()
+                .map(offers -> buildFetchedDataOffer(offers.get(0).getAsset(), offers))
+                .toList();
     }
 
     @NotNull
@@ -57,6 +57,7 @@ public class DataOfferBuilder {
         return dataOffer;
     }
 
+    @NotNull
     private List<FetchedDataOfferContractOffer> buildFetchedDataOfferContractOffers(List<ContractOffer> offers) {
         return offers.stream()
                 .map(this::buildFetchedDataOfferContractOffer)
@@ -72,11 +73,17 @@ public class DataOfferBuilder {
         return contractOffer;
     }
 
+    private Collection<List<ContractOffer>> groupByAssetId(Collection<ContractOffer> contractOffers) {
+        return contractOffers.stream().collect(groupingBy(offer -> offer.getAsset().getId())).values();
+    }
+
+    @NotNull
     @SneakyThrows
     private String getAssetPropertiesJson(Asset asset) {
         return objectMapper.writeValueAsString(asset.getProperties());
     }
 
+    @NotNull
     @SneakyThrows
     private String getPolicyJson(ContractOffer offer) {
         return objectMapper.writeValueAsString(offer.getPolicy());

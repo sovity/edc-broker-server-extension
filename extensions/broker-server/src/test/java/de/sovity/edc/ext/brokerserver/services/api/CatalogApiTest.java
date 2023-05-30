@@ -58,7 +58,6 @@ class CatalogApiTest {
             var connector = dsl.newRecord(Tables.CONNECTOR);
             connector.setTitle("Example Connector");
             connector.setDescription("My example Connector...");
-            connector.setIdsId("urn:connector:my-connector");
             connector.setConnectorId("http://my-connector");
             connector.setEndpoint("http://my-connector/ids/data");
             connector.setOnlineStatus(ConnectorOnlineStatus.ONLINE);
@@ -86,7 +85,6 @@ class CatalogApiTest {
 
 
             var result = edcClient().brokerServerApi().catalogPage(new CatalogPageQuery());
-            System.out.println(de.sovity.edc.client.gen.JSON.serialize(result));
             assertThat(result.getDataOffers()).hasSize(1);
 
             var dataOfferResult = result.getDataOffers().get(0);
