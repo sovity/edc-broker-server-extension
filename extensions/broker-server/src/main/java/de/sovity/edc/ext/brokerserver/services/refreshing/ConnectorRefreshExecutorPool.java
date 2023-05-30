@@ -23,9 +23,11 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 public class ConnectorRefreshExecutorPool {
-    private static final int MAX_THREADS = 1;
+    private static final int MIN_THREADS = 1;
+    private static final int MAX_THREADS = 5;
     private static final int KEEP_ALIVE_TIME = 60;
     private static final TimeUnit KEEP_ALIVE_TIME_UNIT = TimeUnit.SECONDS;
+    private static final String SETTING_MIN_THREADS = "broker.server.refreshing.minThreads";
     private static final String SETTING_MAX_THREADS = "broker.server.refreshing.maxThreads";
     private final ExecutorService executorService;
     private final ConnectorUpdater connectorUpdater;
@@ -35,18 +37,12 @@ public class ConnectorRefreshExecutorPool {
         this.connectorUpdater = connectorUpdater;
         this.connectorQueue = connectorQueue;
 
+        var minThreads = config.getInteger(SETTING_MIN_THREADS, MIN_THREADS);
         var maxThreads = config.getInteger(SETTING_MAX_THREADS, MAX_THREADS);
-        executorService = new ThreadPoolExecutor(maxThreads, maxThreads, KEEP_ALIVE_TIME, KEEP_ALIVE_TIME_UNIT, new PriorityBlockingQueue<>());
+        executorService = new ThreadPoolExecutor(minThreads, maxThreads, KEEP_ALIVE_TIME, KEEP_ALIVE_TIME_UNIT, new PriorityBlockingQueue<>());
     }
 
     public void execute() {
-        for (var i = 0; i < ((ThreadPoolExecutor) executorService).getMaximumPoolSize(); i++) {
-            if (connectorQueue.isEmpty()) {
-                break;
-            }
-            new Thread(() -> {
-                executorService.execute(() -> connectorUpdater.updateConnector(connectorQueue.poll()));
-            }).start();
-        }
+        executorService.execute(() -> connectorUpdater.updateConnector(connectorQueue.poll()));
     }
 }
