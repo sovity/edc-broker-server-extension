@@ -16,11 +16,8 @@ package de.sovity.edc.ext.brokerserver;
 
 import org.eclipse.edc.connector.api.management.configuration.ManagementApiConfiguration;
 import org.eclipse.edc.connector.spi.catalog.CatalogService;
-import org.eclipse.edc.protocol.ids.spi.service.DynamicAttributeTokenService;
 import org.eclipse.edc.runtime.metamodel.annotation.Inject;
 import org.eclipse.edc.runtime.metamodel.annotation.Setting;
-import org.eclipse.edc.spi.http.EdcHttpClient;
-import org.eclipse.edc.spi.message.RemoteMessageDispatcherRegistry;
 import org.eclipse.edc.spi.system.ServiceExtension;
 import org.eclipse.edc.spi.system.ServiceExtensionContext;
 import org.eclipse.edc.spi.types.TypeManager;
@@ -43,16 +40,7 @@ public class BrokerServerExtension implements ServiceExtension {
     private WebService webService;
 
     @Inject
-    private EdcHttpClient httpClient;
-
-    @Inject
-    private DynamicAttributeTokenService dynamicAttributeTokenService;
-
-    @Inject
     private TypeManager typeManager;
-
-    @Inject
-    private RemoteMessageDispatcherRegistry dispatcherRegistry;
 
     @Inject
     private CatalogService catalogService;
@@ -72,17 +60,12 @@ public class BrokerServerExtension implements ServiceExtension {
         services = BrokerServerExtensionContextBuilder.buildContext(
                 context.getConfig(),
                 context.getMonitor(),
-                httpClient,
-                dynamicAttributeTokenService,
                 typeManager,
-                dispatcherRegistry,
                 catalogService
         );
 
         var managementApiGroup = managementApiConfiguration.getContextAlias();
         webService.registerResource(managementApiGroup, services.brokerServerResource());
-
-        dispatcherRegistry.register(services.remoteMessageDispatcher());
     }
 
     @Override

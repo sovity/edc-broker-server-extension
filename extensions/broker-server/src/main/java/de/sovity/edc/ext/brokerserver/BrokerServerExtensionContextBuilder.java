@@ -42,18 +42,12 @@ import de.sovity.edc.ext.brokerserver.services.refreshing.offers.writing.DataOff
 import de.sovity.edc.ext.brokerserver.services.refreshing.offers.writing.DataOfferRecordUpdater;
 import de.sovity.edc.ext.brokerserver.services.refreshing.offers.writing.DataOfferWriter;
 import de.sovity.edc.ext.brokerserver.services.refreshing.selfdescription.ConnectorSelfDescriptionFetcher;
-import de.sovity.edc.ext.brokerserver.services.refreshing.sender.DescriptionRequestSender;
-import de.sovity.edc.ext.brokerserver.services.refreshing.sender.IdsMultipartExtendedRemoteMessageDispatcher;
 import de.sovity.edc.ext.brokerserver.services.schedules.ConnectorRefreshJob;
 import de.sovity.edc.ext.brokerserver.services.schedules.QuartzScheduleInitializer;
 import de.sovity.edc.ext.brokerserver.services.schedules.utils.CronJobRef;
 import lombok.NoArgsConstructor;
 import org.eclipse.edc.connector.spi.catalog.CatalogService;
-import org.eclipse.edc.protocol.ids.api.multipart.dispatcher.sender.IdsMultipartSender;
-import org.eclipse.edc.protocol.ids.spi.service.DynamicAttributeTokenService;
 import org.eclipse.edc.runtime.metamodel.annotation.Inject;
-import org.eclipse.edc.spi.http.EdcHttpClient;
-import org.eclipse.edc.spi.message.RemoteMessageDispatcherRegistry;
 import org.eclipse.edc.spi.monitor.Monitor;
 import org.eclipse.edc.spi.system.configuration.Config;
 import org.eclipse.edc.spi.types.TypeManager;
@@ -75,10 +69,7 @@ public class BrokerServerExtensionContextBuilder {
     public static BrokerServerExtensionContext buildContext(
             Config config,
             Monitor monitor,
-            EdcHttpClient httpClient,
-            DynamicAttributeTokenService dynamicAttributeTokenService,
             TypeManager typeManager,
-            RemoteMessageDispatcherRegistry dispatcherRegistry,
             CatalogService catalogService
     ) {
         // Dao
@@ -88,19 +79,10 @@ public class BrokerServerExtensionContextBuilder {
         var dslContextFactory = new DslContextFactory(dataSource);
         var connectorQueries = new ConnectorQueries();
 
-        // IDS Message Client
-        var objectMapper = typeManager.getMapper();
-        var idsMultipartSender = new IdsMultipartSender(
-                monitor,
-                httpClient,
-                dynamicAttributeTokenService,
-                objectMapper
-        );
-        var remoteMessageDispatcher = new IdsMultipartExtendedRemoteMessageDispatcher(idsMultipartSender);
-        var descriptionRequestSender = new DescriptionRequestSender();
 
         // Services
-        var connectorSelfDescriptionFetcher = new ConnectorSelfDescriptionFetcher(dispatcherRegistry);
+        var objectMapper = typeManager.getMapper();
+        var connectorSelfDescriptionFetcher = new ConnectorSelfDescriptionFetcher();
         var brokerEventLogger = new BrokerEventLogger();
         var contractOfferRecordUpdater = new ContractOfferRecordUpdater();
         var dataOfferRecordUpdater = new DataOfferRecordUpdater();
@@ -165,6 +147,6 @@ public class BrokerServerExtensionContextBuilder {
                 connectorApiService,
                 catalogApiService
         );
-        return new BrokerServerExtensionContext(remoteMessageDispatcher, brokerServerResource, brokerServerInitializer);
+        return new BrokerServerExtensionContext(brokerServerResource, brokerServerInitializer);
     }
 }

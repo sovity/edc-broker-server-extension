@@ -14,35 +14,18 @@
 
 package de.sovity.edc.ext.brokerserver.services.refreshing.selfdescription;
 
-import de.sovity.edc.ext.brokerserver.services.refreshing.sender.message.DescriptionRequestMessage;
 import lombok.RequiredArgsConstructor;
-import org.eclipse.edc.spi.EdcException;
-import org.eclipse.edc.spi.message.RemoteMessageDispatcherRegistry;
-
-import java.net.MalformedURLException;
-import java.net.URL;
 
 /**
  * Fetch Connector Metadata.
  */
 @RequiredArgsConstructor
 public class ConnectorSelfDescriptionFetcher {
-    private static final String CONTEXT_SD_REQUEST = "SelfDescriptionRequest";
-
-    private final RemoteMessageDispatcherRegistry dispatcherRegistry;
-
     public ConnectorSelfDescription fetch(String connectorEndpoint) {
-        try {
-            var connectorEndpointUrl = new URL(connectorEndpoint);
-            var descriptionRequestMessage = new DescriptionRequestMessage(connectorEndpointUrl);
-            var descriptionResponse = dispatcherRegistry.send(String.class, descriptionRequestMessage, () -> CONTEXT_SD_REQUEST).get();
-
-            // TODO parse self-description
-            return new ConnectorSelfDescription("TODO", "TODO", descriptionResponse);
-        } catch (MalformedURLException e) {
-            throw new EdcException("Invalid connector-endpoint URL", e);
-        } catch (Exception e) {
-            throw new EdcException("Failed to fetch connector self-description", e);
-        }
+        return new ConnectorSelfDescription(
+                "urn:connector:unknown",
+                "Unknown Connector",
+                "As of Core EDC Milestone 9 connector self-descriptions are not supported. The connector was successfully crawled, but there is no connector metadata / description available."
+        );
     }
 }
