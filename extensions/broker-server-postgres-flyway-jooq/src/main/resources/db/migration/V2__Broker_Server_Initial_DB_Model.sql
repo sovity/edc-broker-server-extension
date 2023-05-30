@@ -11,6 +11,7 @@ create table connector
     offline_since timestamp with time zone,
     created_at    timestamp with time zone not null,
     online_status connector_online_status  not null,
+    force_deleted boolean                  not null,
 
     PRIMARY KEY (endpoint)
 );
@@ -22,6 +23,7 @@ create table data_offer
     asset_properties   jsonb                    not null,
     created_at         timestamp with time zone not null,
     updated_at         timestamp with time zone,
+    force_deleted      boolean                  not null,
 
     PRIMARY KEY (connector_endpoint, asset_id),
     FOREIGN KEY (connector_endpoint) REFERENCES connector (endpoint)

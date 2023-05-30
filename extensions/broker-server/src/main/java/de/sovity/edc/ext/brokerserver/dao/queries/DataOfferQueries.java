@@ -74,6 +74,8 @@ public class DataOfferQueries {
                 .from(c, d)
                 .where(
                         c.ONLINE_STATUS.eq(ConnectorOnlineStatus.ONLINE),
+                        c.FORCE_DELETED.eq(false),
+                        d.FORCE_DELETED.eq(false),
                         filterBySearchQuery
                 )
                 .orderBy(getOrderBy(sorting, c, d, assetTitle))

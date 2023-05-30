@@ -73,6 +73,10 @@ public class ConnectorApiService {
         };
     }
 
+    private boolean getForceDeletedStatus(ConnectorPageDbRow it) {
+        return it.getForceDeleted();
+    }
+
     private List<ConnectorPageSortingItem> buildAvailableSortings() {
         return Arrays.stream(ConnectorPageSortingType.values()).map(it -> new ConnectorPageSortingItem(it, it.getTitle())).toList();
     }
