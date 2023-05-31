@@ -8,6 +8,7 @@ create table connector
     last_refresh_attempt_at    timestamp with time zone,
     last_successful_refresh_at timestamp with time zone,
     online_status              connector_online_status  not null,
+    force_deleted              boolean                  not null,
 
     PRIMARY KEY (endpoint)
 );

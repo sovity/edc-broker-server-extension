@@ -62,6 +62,7 @@ class CatalogApiTest {
             connector.setCreatedAt(today.minusDays(1));
             connector.setLastRefreshAttemptAt(today);
             connector.setLastSuccessfulRefreshAt(today);
+            connector.setForceDeleted(false);
             connector.insert();
 
             var dataOffer = dsl.newRecord(Tables.DATA_OFFER);

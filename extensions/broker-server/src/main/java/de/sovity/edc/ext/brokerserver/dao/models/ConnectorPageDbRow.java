@@ -33,4 +33,5 @@ public class ConnectorPageDbRow {
     private OffsetDateTime lastRefreshAttemptAt;
     ConnectorOnlineStatus onlineStatus;
     Integer numDataOffers;
+    boolean forceDeleted;
 }
