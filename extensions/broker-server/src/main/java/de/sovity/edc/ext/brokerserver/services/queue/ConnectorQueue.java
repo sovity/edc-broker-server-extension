@@ -18,9 +18,6 @@ import de.sovity.edc.ext.brokerserver.services.refreshing.ConnectorUpdater;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Collection;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.PriorityBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
 
 @RequiredArgsConstructor
 public class ConnectorQueue {
