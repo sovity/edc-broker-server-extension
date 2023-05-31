@@ -18,7 +18,6 @@ dependencies {
     implementation("${edcGroup}:configuration-filesystem:${edcVersion}")
     implementation("${edcGroup}:control-plane-aggregate-services:${edcVersion}")
     implementation("${edcGroup}:http:${edcVersion}")
-    implementation("${edcGroup}:ids:${edcVersion}")
 
     // JDK Logger
     implementation("${edcGroup}:monitor-jdk-logger:${edcVersion}")

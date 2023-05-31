@@ -24,10 +24,6 @@ dependencies {
 
     implementation("${edcGroup}:control-plane-core:${edcVersion}")
     implementation("${edcGroup}:management-api-configuration:${edcVersion}")
-    implementation("${edcGroup}:ids-spi:${edcVersion}")
-    implementation("${edcGroup}:ids-api-multipart-dispatcher-v1:${edcVersion}")
-    implementation("${edcGroup}:ids-api-configuration:${edcVersion}")
-    implementation("${edcGroup}:ids-jsonld-serdes:${edcVersion}")
 
     api(project(":extensions:broker-server-postgres-flyway-jooq"))
     api("${sovityEdcGroup}:wrapper-broker-api:${sovityEdcExtensionsVersion}") { isChanging = true }
