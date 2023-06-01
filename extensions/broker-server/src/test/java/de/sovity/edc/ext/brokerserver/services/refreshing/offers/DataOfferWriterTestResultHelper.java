@@ -16,7 +16,7 @@ class DataOfferWriterTestResultHelper {
     private final @NotNull Map<String, DataOfferRecord> dataOffers;
     private final @NotNull Map<String, Map<String, DataOfferContractOfferRecord>> contractOffers;
 
-    public DataOfferWriterTestResultHelper(DSLContext dsl) {
+    DataOfferWriterTestResultHelper(DSLContext dsl) {
         this.dataOffers = dsl.selectFrom(Tables.DATA_OFFER).fetchMap(Tables.DATA_OFFER.ASSET_ID);
         this.contractOffers = dsl.selectFrom(Tables.DATA_OFFER_CONTRACT_OFFER).stream().collect(groupingBy(
                 DataOfferContractOfferRecord::getAssetId,
