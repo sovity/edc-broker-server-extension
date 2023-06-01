@@ -36,4 +36,8 @@ public class ThreadPool {
     public void execute(int priority, Runnable runnable) {
         queue.add(new ThreadPoolTask(priority, runnable));
     }
+
+    public int size() {
+        return queue.size();
+    }
 }

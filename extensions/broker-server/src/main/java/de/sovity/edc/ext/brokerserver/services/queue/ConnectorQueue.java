@@ -35,4 +35,8 @@ public class ConnectorQueue {
             threadPool.execute(priority, () -> connectorUpdater.updateConnector(endpoint));
         }
     }
+
+    public int size() {
+        return threadPool.size();
+    }
 }
