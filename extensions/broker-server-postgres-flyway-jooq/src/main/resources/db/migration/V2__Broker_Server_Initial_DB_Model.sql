@@ -1,6 +1,8 @@
 create type connector_online_status as enum ('ONLINE', 'OFFLINE');
 create type measurement_type as enum ('CONNECTOR_REFRESH');
 create type measurement_error_status as enum ('ERROR', 'OK');
+create type connector_data_offers_exceeded as enum ('OK', 'EXCEEDED');
+create type connector_contract_offers_exceeded as enum ('OK', 'EXCEEDED');
 
 create table connector
 (
@@ -10,6 +12,8 @@ create table connector
     last_refresh_attempt_at    timestamp with time zone,
     last_successful_refresh_at timestamp with time zone,
     online_status              connector_online_status  not null,
+    data_offers_exceeded       connector_data_offers_exceeded not null,
+    contract_offers_exceeded   connector_contract_offers_exceeded not null,
 
     PRIMARY KEY (endpoint)
 );
@@ -57,7 +61,11 @@ create type broker_event_type as enum (
     'CONTRACT_OFFER_UPDATED',
 
     --Contract Offer was clicked
-    'CONTRACT_OFFER_CLICK'
+    'CONTRACT_OFFER_CLICK',
+
+    'CONNECTOR_DATA_OFFER_LIMIT_EXCEEDED',
+
+    'CONNECTOR_DATA_OFFER_LIMIT_OK'
 );
 
 create type broker_event_status as enum (
