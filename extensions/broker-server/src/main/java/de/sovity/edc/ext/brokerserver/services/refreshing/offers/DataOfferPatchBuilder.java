@@ -100,7 +100,7 @@ public class DataOfferPatchBuilder {
             Collection<DataOfferContractOfferRecord> contractOffers,
             Collection<FetchedDataOfferContractOffer> fetchedContractOffers
     ) {
-        AtomicBoolean hasUpdates = new AtomicBoolean(false);
+        var hasUpdates = new AtomicBoolean(false);
 
         var diff = DiffUtils.compareLists(
                 contractOffers,
