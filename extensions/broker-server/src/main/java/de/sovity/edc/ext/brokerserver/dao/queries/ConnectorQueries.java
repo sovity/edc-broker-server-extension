@@ -48,13 +48,6 @@ public class ConnectorQueries {
         return dsl.select(c.ENDPOINT).from(c).fetchSet(c.ENDPOINT);
     }
 
-    public Set<String> findConnectorsForInitialFetch(DSLContext dsl) {
-        var c = Tables.CONNECTOR;
-        return dsl.select(c.ENDPOINT).from(c)
-                .where(c.LAST_REFRESH_ATTEMPT_AT.isNull())
-                .fetchSet(c.ENDPOINT);
-    }
-
     public Set<String> findExistingConnectors(DSLContext dsl, Collection<String> connectorEndpoints) {
         var c = Tables.CONNECTOR;
         return dsl.select(c.ENDPOINT).from(c)

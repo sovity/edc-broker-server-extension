@@ -32,11 +32,9 @@ public class ConnectorQueue {
      */
     public void addAll(Collection<String> endpoints, int priority) {
         for (String endpoint : endpoints) {
-            threadPool.execute(priority, () -> connectorUpdater.updateConnector(endpoint));
+            if (!(threadPool.getQueuedConnectorEndpoints() != null && threadPool.getQueuedConnectorEndpoints().contains(endpoint))) {
+                threadPool.execute(priority, () -> connectorUpdater.updateConnector(endpoint));
+            }
         }
-    }
-
-    public int size() {
-        return threadPool.size();
     }
 }
