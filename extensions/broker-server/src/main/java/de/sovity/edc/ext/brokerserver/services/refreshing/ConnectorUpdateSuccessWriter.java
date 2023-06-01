@@ -40,7 +40,11 @@ public class ConnectorUpdateSuccessWriter {
 
         // Track changes for final log message
         ConnectorChangeTracker changes = new ConnectorChangeTracker();
-        connector.setOnlineStatus(ConnectorOnlineStatus.ONLINE);
+
+        if (connector.getOnlineStatus() != ConnectorOnlineStatus.ONLINE) {
+            connector.setOnlineStatus(ConnectorOnlineStatus.ONLINE);
+        }
+
         connector.setLastSuccessfulRefreshAt(now);
         connector.setLastRefreshAttemptAt(now);
         connector.update();
