@@ -22,7 +22,7 @@ import org.jetbrains.annotations.NotNull;
 
 @Getter
 @RequiredArgsConstructor
-@EqualsAndHashCode(of = {"priority", "task", "connectorEndpoint"})
+@EqualsAndHashCode(of = {"priority", "connectorEndpoint"})
 public class ThreadPoolTask implements Comparable<ThreadPoolTask>, Runnable {
     private final int priority;
     private final Runnable task;
