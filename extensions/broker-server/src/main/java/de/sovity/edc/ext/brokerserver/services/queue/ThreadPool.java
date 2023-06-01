@@ -37,8 +37,8 @@ public class ThreadPool {
         threadPoolExecutor.prestartAllCoreThreads();
     }
 
-    public void execute(int priority, Runnable runnable) {
-        queue.add(new ThreadPoolTask(priority, runnable));
+    public void execute(int priority, Runnable runnable, String endpoint) {
+        queue.add(new ThreadPoolTask(priority, runnable, endpoint));
     }
 
     public Set<String> getQueuedConnectorEndpoints() {
