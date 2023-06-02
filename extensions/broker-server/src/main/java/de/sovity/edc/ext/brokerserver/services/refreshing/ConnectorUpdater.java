@@ -16,6 +16,7 @@ package de.sovity.edc.ext.brokerserver.services.refreshing;
 
 import de.sovity.edc.ext.brokerserver.dao.queries.ConnectorQueries;
 import de.sovity.edc.ext.brokerserver.db.DslContextFactory;
+import de.sovity.edc.ext.brokerserver.db.jooq.enums.MeasurementErrorStatus;
 import de.sovity.edc.ext.brokerserver.db.jooq.tables.records.ConnectorRecord;
 import de.sovity.edc.ext.brokerserver.services.logging.BrokerExecutionTimeLogger;
 import de.sovity.edc.ext.brokerserver.services.refreshing.offers.DataOfferFetcher;
@@ -71,22 +72,13 @@ public class ConnectorUpdater {
             }
         } finally {
             executionTime.stop();
-            if (failed) {
-                try {
-                    dslContextFactory.transaction(dsl -> {
-                        brokerExecutionTimeLogger.logError(dsl, connectorEndpoint, executionTime.getTime(TimeUnit.MILLISECONDS));
-                    });
-                } catch (Exception e) {
-                    monitor.info("Failed logging connector update execution time as error.", e);
-                }
-            } else {
-                try {
-                    dslContextFactory.transaction(dsl -> {
-                        brokerExecutionTimeLogger.logSuccess(dsl, connectorEndpoint, executionTime.getTime(TimeUnit.MILLISECONDS));
-                    });
-                } catch (Exception e) {
-                    monitor.info("Failed logging connector update execution time as success.", e);
-                }
+            try {
+                var status = failed ? MeasurementErrorStatus.ERROR : MeasurementErrorStatus.OK;
+                dslContextFactory.transaction(dsl -> {
+                    brokerExecutionTimeLogger.logExecutionTime(dsl, connectorEndpoint, executionTime.getTime(TimeUnit.MILLISECONDS), status);
+                });
+            } catch (Exception e) {
+                monitor.severe("Failed logging connector update execution time.", e);
             }
         }
     }

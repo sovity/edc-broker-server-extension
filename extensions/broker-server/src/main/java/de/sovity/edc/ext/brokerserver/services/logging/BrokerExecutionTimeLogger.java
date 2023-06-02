@@ -17,7 +17,6 @@ package de.sovity.edc.ext.brokerserver.services.logging;
 import de.sovity.edc.ext.brokerserver.db.jooq.Tables;
 import de.sovity.edc.ext.brokerserver.db.jooq.enums.MeasurementErrorStatus;
 import de.sovity.edc.ext.brokerserver.db.jooq.enums.MeasurementType;
-import de.sovity.edc.ext.brokerserver.db.jooq.tables.records.BrokerExecutionTimeMeasurementRecord;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 
@@ -28,27 +27,14 @@ import java.time.OffsetDateTime;
  */
 @RequiredArgsConstructor
 public class BrokerExecutionTimeLogger {
-    public void logSuccess(DSLContext dsl, String connectorEndpoint, long executionTimeInMs) {
-        logExecutionTime(dsl, connectorEndpoint, executionTimeInMs, MeasurementErrorStatus.OK);
-    }
-
-    public void logError(DSLContext dsl, String connectorEndpoint, long executionTimeInMs) {
-        logExecutionTime(dsl, connectorEndpoint, executionTimeInMs, MeasurementErrorStatus.ERROR);
-    }
-
-    private void logExecutionTime(DSLContext dsl, String connectorEndpoint, long executionTimeInMs, MeasurementErrorStatus errorStatus) {
-        var logEntry = connectorUpdateEntry(dsl, connectorEndpoint);
+    public void logExecutionTime(DSLContext dsl, String connectorEndpoint, long executionTimeInMs, MeasurementErrorStatus errorStatus) {
+        var logEntry = dsl.newRecord(Tables.BROKER_EXECUTION_TIME_MEASUREMENT);
         logEntry.setConnectorEndpoint(connectorEndpoint);
         logEntry.setDurationInMs(executionTimeInMs);
         logEntry.setType(MeasurementType.CONNECTOR_REFRESH);
         logEntry.setErrorStatus(errorStatus);
-        logEntry.insert();
-    }
-
-    private BrokerExecutionTimeMeasurementRecord connectorUpdateEntry(DSLContext dsl, String connectorEndpoint) {
-        var logEntry = dsl.newRecord(Tables.BROKER_EXECUTION_TIME_MEASUREMENT);
         logEntry.setConnectorEndpoint(connectorEndpoint);
         logEntry.setCreatedAt(OffsetDateTime.now());
-        return logEntry;
+        logEntry.insert();
     }
 }
