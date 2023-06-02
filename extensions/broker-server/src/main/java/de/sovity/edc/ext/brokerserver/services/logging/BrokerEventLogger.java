@@ -91,6 +91,26 @@ public class BrokerEventLogger {
         logEntry.insert();
     }
 
+    public void logConnectorUpdateContractOfferLimitExceeded(int contractOffersCount, Integer maxContractOffersPerConnector, String endpoint) {
+        var logEntry = new BrokerEventLogRecord();
+        logEntry.setEvent(BrokerEventType.CONNECTOR_CONTRACT_OFFER_LIMIT_EXCEEDED);
+        logEntry.setEventStatus(BrokerEventStatus.OK);
+        logEntry.setConnectorEndpoint(endpoint);
+        logEntry.setUserMessage("Connector has exceeded maximum number of contract offers per data offer limit, maximum: " + contractOffersCount + " > " + maxContractOffersPerConnector);
+        logEntry.setCreatedAt(OffsetDateTime.now());
+        logEntry.insert();
+    }
+
+    public void logConnectorUpdateContractOfferLimitOk(int contractOffersCount, Integer maxContractOffersPerConnector, String endpoint) {
+        var logEntry = new BrokerEventLogRecord();
+        logEntry.setEvent(BrokerEventType.CONNECTOR_CONTRACT_OFFER_LIMIT_OK);
+        logEntry.setEventStatus(BrokerEventStatus.OK);
+        logEntry.setConnectorEndpoint(endpoint);
+        logEntry.setUserMessage("Connector is not exceeding maximum number of contract offers per data offer limits anymore. Maximum: " + contractOffersCount + " <= " + maxContractOffersPerConnector);
+        logEntry.setCreatedAt(OffsetDateTime.now());
+        logEntry.insert();
+    }
+
     private BrokerEventLogRecord logEntry(DSLContext dsl, BrokerEventType eventType, String connectorEndpoint, String userMessage) {
         var logEntry = dsl.newRecord(Tables.BROKER_EVENT_LOG);
         logEntry.setEventStatus(BrokerEventStatus.OK);
