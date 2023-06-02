@@ -1,3 +1,17 @@
+/*
+ *  Copyright (c) 2023 sovity GmbH
+ *
+ *  This program and the accompanying materials are made available under the
+ *  terms of the Apache License, Version 2.0 which is available at
+ *  https://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  SPDX-License-Identifier: Apache-2.0
+ *
+ *  Contributors:
+ *       sovity GmbH - initial implementation
+ *
+ */
+
 package de.sovity.edc.ext.brokerserver.services.refreshing.offers;
 
 import de.sovity.edc.ext.brokerserver.BrokerServerExtension;
@@ -17,12 +31,13 @@ public class DataOfferLimitsEnforcer {
     private final BrokerEventLogger brokerEventLogger;
 
     public record DataOfferLimitsEnforced(
-        Collection<FetchedDataOffer> abbreviatedDataOffers,
-        boolean dataOfferLimitsExceeded,
-        boolean contractOfferLimitsExceeded
+            Collection<FetchedDataOffer> abbreviatedDataOffers,
+            boolean dataOfferLimitsExceeded,
+            boolean contractOfferLimitsExceeded
     ) {
     }
 
+    //TODO: use function to enforce limits
     public DataOfferLimitsEnforced enforceDataOfferAndContractOfferLimits(ConnectorRecord connector, Collection<FetchedDataOffer> dataOffers) {
         // Get limits from config
         var maxDataOffers = config.getInteger(BrokerServerExtension.MAX_DATA_OFFERS_PER_CONNECTOR, -1);

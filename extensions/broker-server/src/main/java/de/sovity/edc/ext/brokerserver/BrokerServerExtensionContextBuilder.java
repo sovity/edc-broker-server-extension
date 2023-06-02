@@ -40,6 +40,7 @@ import de.sovity.edc.ext.brokerserver.services.refreshing.offers.ContractOfferFe
 import de.sovity.edc.ext.brokerserver.services.refreshing.offers.ContractOfferRecordUpdater;
 import de.sovity.edc.ext.brokerserver.services.refreshing.offers.DataOfferBuilder;
 import de.sovity.edc.ext.brokerserver.services.refreshing.offers.DataOfferFetcher;
+import de.sovity.edc.ext.brokerserver.services.refreshing.offers.DataOfferLimitsEnforcer;
 import de.sovity.edc.ext.brokerserver.services.refreshing.offers.DataOfferPatchApplier;
 import de.sovity.edc.ext.brokerserver.services.refreshing.offers.DataOfferPatchBuilder;
 import de.sovity.edc.ext.brokerserver.services.refreshing.offers.DataOfferRecordUpdater;
@@ -91,6 +92,7 @@ public class BrokerServerExtensionContextBuilder {
         var contractOfferRecordUpdater = new ContractOfferRecordUpdater();
         var dataOfferRecordUpdater = new DataOfferRecordUpdater();
         var dataOfferContractOfferQueries = new DataOfferContractOfferQueries();
+        var dataOfferLimitsEnforcer = new DataOfferLimitsEnforcer(config, brokerEventLogger);
         var dataOfferPatchBuilder = new DataOfferPatchBuilder(
                 dataOfferContractOfferQueries,
                 dataOfferQueries,
