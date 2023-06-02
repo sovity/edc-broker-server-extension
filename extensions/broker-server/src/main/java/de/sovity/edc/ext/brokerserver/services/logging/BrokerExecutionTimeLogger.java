@@ -28,18 +28,18 @@ import java.time.OffsetDateTime;
  */
 @RequiredArgsConstructor
 public class BrokerExecutionTimeLogger {
-    public void logSuccess(DSLContext dsl, String connectorEndpoint, long executionTime) {
-        logExecutionTime(dsl, connectorEndpoint, executionTime, MeasurementErrorStatus.OK);
+    public void logSuccess(DSLContext dsl, String connectorEndpoint, long executionTimeInMs) {
+        logExecutionTime(dsl, connectorEndpoint, executionTimeInMs, MeasurementErrorStatus.OK);
     }
 
-    public void logError(DSLContext dsl, String connectorEndpoint, long executionTime) {
-        logExecutionTime(dsl, connectorEndpoint, executionTime, MeasurementErrorStatus.ERROR);
+    public void logError(DSLContext dsl, String connectorEndpoint, long executionTimeInMs) {
+        logExecutionTime(dsl, connectorEndpoint, executionTimeInMs, MeasurementErrorStatus.ERROR);
     }
 
-    private void logExecutionTime(DSLContext dsl, String connectorEndpoint, long executionTime, MeasurementErrorStatus errorStatus) {
+    private void logExecutionTime(DSLContext dsl, String connectorEndpoint, long executionTimeInMs, MeasurementErrorStatus errorStatus) {
         var logEntry = connectorUpdateEntry(dsl, connectorEndpoint);
         logEntry.setConnectorEndpoint(connectorEndpoint);
-        logEntry.setDurationInMs(executionTime);
+        logEntry.setDurationInMs(executionTimeInMs);
         logEntry.setType(MeasurementType.CONNECTOR_REFRESH);
         logEntry.setErrorStatus(errorStatus);
         logEntry.insert();

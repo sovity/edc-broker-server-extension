@@ -87,7 +87,7 @@ public class BrokerServerExtensionContextBuilder {
         // Services
         var objectMapper = typeManager.getMapper();
         var brokerEventLogger = new BrokerEventLogger();
-        var brokerFetchLogger = new BrokerExecutionTimeLogger();
+        var brokerExecutionTimeLogger = new BrokerExecutionTimeLogger();
         var contractOfferRecordUpdater = new ContractOfferRecordUpdater();
         var dataOfferRecordUpdater = new DataOfferRecordUpdater();
         var dataOfferContractOfferQueries = new DataOfferContractOfferQueries();
@@ -111,8 +111,7 @@ public class BrokerServerExtensionContextBuilder {
                 connectorQueries,
                 dslContextFactory,
                 monitor,
-                brokerEventLogger,
-                brokerFetchLogger
+                brokerExecutionTimeLogger
         );
         var policyDtoBuilder = new PolicyDtoBuilder(objectMapper);
         var assetPropertyParser = new AssetPropertyParser(objectMapper);
