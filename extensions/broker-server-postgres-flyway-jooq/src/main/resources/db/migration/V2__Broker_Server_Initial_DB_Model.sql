@@ -85,4 +85,14 @@ create table broker_event_log
     duration_in_ms     bigint
 );
 
+create table broker_fetch_log
+(
+    id                 serial primary key,
+    created_at         timestamp with time zone not null,
+    connector_endpoint text                     not null,
+    start_time         timestamp with time zone not null,
+    end_time           timestamp with time zone not null,
+    log_message        text                     not null
+);
+
 create index speedup on broker_event_log (connector_endpoint, asset_id, event_status);

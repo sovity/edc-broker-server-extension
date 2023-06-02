@@ -62,14 +62,6 @@ public class BrokerEventLogger {
         logEntry.insert();
     }
 
-    public void logConnectorCrawledExecutionTime(DSLContext dsl, String connectorEndpoint, String logMessage) {
-        var logEntry = connectorUpdateEntry(dsl, connectorEndpoint);
-        logEntry.setEvent(BrokerEventType.CONNECTOR_CRAWLED);
-        logEntry.setEventStatus(BrokerEventStatus.OK);
-        logEntry.setUserMessage(logMessage);
-        logEntry.insert();
-    }
-
     private BrokerEventLogRecord connectorUpdateEntry(DSLContext dsl, String connectorEndpoint) {
         var logEntry = dsl.newRecord(Tables.BROKER_EVENT_LOG);
         logEntry.setEvent(BrokerEventType.CONNECTOR_UPDATED);
