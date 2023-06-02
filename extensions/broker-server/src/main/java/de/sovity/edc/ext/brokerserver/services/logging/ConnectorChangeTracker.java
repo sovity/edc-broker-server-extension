@@ -44,7 +44,7 @@ public class ConnectorChangeTracker {
     }
 
     public boolean isEmpty() {
-        return selfDescriptionChanges.isEmpty();
+        return selfDescriptionChanges.isEmpty() && numOffersAdded == 0 && numOffersDeleted == 0 && numOffersUpdated == 0;
     }
 
     @Override
@@ -53,7 +53,7 @@ public class ConnectorChangeTracker {
             return "Connector is up to date.";
         }
 
-        String msg = "Connector Updated.";
+        var msg = "Connector Updated.";
         if (!selfDescriptionChanges.isEmpty()) {
             msg += " Self-description changed: %s.".formatted(selfDescriptionChanges.stream().sorted().collect(joining()));
         }

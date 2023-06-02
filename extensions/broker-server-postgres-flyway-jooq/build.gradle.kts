@@ -21,7 +21,7 @@ val postgresVersion: String by project
 
 buildscript {
     dependencies {
-        classpath("org.testcontainers:postgresql:1.18.2")
+        classpath("org.testcontainers:postgresql:1.18.3")
     }
 }
 
@@ -33,7 +33,7 @@ plugins {
 }
 
 dependencies {
-    api("org.jooq:jooq:3.16.4")
+    api("org.jooq:jooq:3.18.4")
     api("com.github.t9t.jooq:jooq-postgresql-json:4.0.0")
 
     jooqGenerator("org.postgresql:postgresql:42.6.0")
