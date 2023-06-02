@@ -19,7 +19,6 @@ import de.sovity.edc.ext.brokerserver.services.refreshing.offers.model.FetchedDa
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.eclipse.edc.connector.contract.spi.types.offer.ContractOffer;
-import org.eclipse.edc.spi.monitor.Monitor;
 import org.eclipse.edc.spi.system.configuration.Config;
 
 import java.util.Collection;
@@ -29,7 +28,6 @@ public class DataOfferFetcher {
     private final ContractOfferFetcher contractOfferFetcher;
     private final DataOfferBuilder dataOfferBuilder;
     private final Config config;
-    private final Monitor monitor;
 
     /**
      * Fetches {@link ContractOffer}s and de-duplicates them into {@link FetchedDataOffer}s.
@@ -46,9 +44,6 @@ public class DataOfferFetcher {
         var contractOfferLimit = config.getInteger(BrokerServerExtension.MAX_CONTRACT_OFFERS_PER_CONNECTOR, -1);
         if (contractOfferLimit != -1 && contractOffers.size() > contractOfferLimit) {
             contractOffers = contractOffers.stream().limit(contractOfferLimit).toList();
-            monitor.info("Connector " + connectorEndpoint + " has more than " + contractOfferLimit + " contract offers. " +
-                    +contractOffers.size() + " contract offers were fetched. " +
-                    "Only the first " + contractOfferLimit + " contract offers will be processed.");
         }
 
         // Data Offers represent unique assets
