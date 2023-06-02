@@ -37,7 +37,6 @@ public class DataOfferLimitsEnforcer {
     ) {
     }
 
-    //TODO: use function to enforce limits
     public DataOfferLimitsEnforced enforceDataOfferAndContractOfferLimits(ConnectorRecord connector, Collection<FetchedDataOffer> dataOffers) {
         // Get limits from config
         var maxDataOffers = config.getInteger(BrokerServerExtension.MAX_DATA_OFFERS_PER_CONNECTOR, -1);
