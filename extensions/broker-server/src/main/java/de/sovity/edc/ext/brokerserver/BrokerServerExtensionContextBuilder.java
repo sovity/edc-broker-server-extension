@@ -108,7 +108,8 @@ public class BrokerServerExtensionContextBuilder {
                 connectorUpdateFailureWriter,
                 connectorQueries,
                 dslContextFactory,
-                monitor
+                monitor,
+                brokerEventLogger
         );
         var policyDtoBuilder = new PolicyDtoBuilder(objectMapper);
         var assetPropertyParser = new AssetPropertyParser(objectMapper);

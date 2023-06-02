@@ -17,6 +17,7 @@ package de.sovity.edc.ext.brokerserver.services.refreshing;
 import de.sovity.edc.ext.brokerserver.dao.queries.ConnectorQueries;
 import de.sovity.edc.ext.brokerserver.db.DslContextFactory;
 import de.sovity.edc.ext.brokerserver.db.jooq.tables.records.ConnectorRecord;
+import de.sovity.edc.ext.brokerserver.services.logging.BrokerEventLogger;
 import de.sovity.edc.ext.brokerserver.services.refreshing.offers.DataOfferFetcher;
 import lombok.RequiredArgsConstructor;
 import org.eclipse.edc.spi.monitor.Monitor;
@@ -32,6 +33,7 @@ public class ConnectorUpdater {
     private final ConnectorQueries connectorQueries;
     private final DslContextFactory dslContextFactory;
     private final Monitor monitor;
+    private final BrokerEventLogger brokerEventLogger;
 
     /**
      * Updates single connector.
@@ -39,19 +41,27 @@ public class ConnectorUpdater {
      * @param connectorEndpoint connector endpoint
      */
     public void updateConnector(String connectorEndpoint) {
+        var start = System.currentTimeMillis();
+
         try {
             monitor.info("Updating connector: " + connectorEndpoint);
+
             var dataOffers = dataOfferFetcher.fetch(connectorEndpoint);
+            var logMessage = "Updated connector: " + connectorEndpoint + " in " + (System.currentTimeMillis() - start) + "ms.";
 
             // Update connector in a single transaction
             dslContextFactory.transaction(dsl -> {
                 ConnectorRecord connectorRecord = connectorQueries.findByEndpoint(dsl, connectorEndpoint);
                 connectorUpdateSuccessWriter.handleConnectorOnline(dsl, connectorRecord, dataOffers);
+                brokerEventLogger.logConnectorCrawledExecutionTime(dsl, connectorEndpoint, logMessage);
             });
         } catch (Exception e) {
             try {
+                var logMessage = "Failed updating connector: " + connectorEndpoint + " in " + (System.currentTimeMillis() - start) + "ms.";
+
                 // Update connector in a single transaction
                 dslContextFactory.transaction(dsl -> {
+                    brokerEventLogger.logConnectorCrawledExecutionTime(dsl, connectorEndpoint, logMessage);
                     ConnectorRecord connectorRecord = connectorQueries.findByEndpoint(dsl, connectorEndpoint);
                     connectorUpdateFailureWriter.handleConnectorOffline(dsl, connectorRecord, e);
                 });

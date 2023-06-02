@@ -55,7 +55,10 @@ create type broker_event_type as enum (
     'CONTRACT_OFFER_UPDATED',
 
     --Contract Offer was clicked
-    'CONTRACT_OFFER_CLICK'
+    'CONTRACT_OFFER_CLICK',
+
+    --Connector was crawled and execution time measured
+    'CONNECTOR_CRAWLED'
 );
 
 create type broker_event_status as enum (
