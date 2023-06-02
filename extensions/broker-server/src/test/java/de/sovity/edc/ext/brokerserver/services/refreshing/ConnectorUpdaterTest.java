@@ -96,7 +96,7 @@ class ConnectorUpdaterTest {
                 .id("always-true")
                 .policy(Policy.Builder.newInstance().build())
                 .build();
-        policyDefinitionStore.create(policyDefinition);
+        policyDefinitionStore.save(policyDefinition);
     }
 
     public void createAlwaysTrueContractDefinition(ContractDefinitionStore contractDefinitionStore) {
