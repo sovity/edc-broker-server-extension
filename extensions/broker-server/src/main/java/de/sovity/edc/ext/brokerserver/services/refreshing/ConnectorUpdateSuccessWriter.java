@@ -76,12 +76,12 @@ public class ConnectorUpdateSuccessWriter {
         var dataOffersCount = offerList.size();
 
         if (maxDataOffersPerConnector != -1 && dataOffersCount > maxDataOffersPerConnector) {
-            if (connector.getContractOffersExceeded().equals(ConnectorContractOffersExceeded.OK)) {
+            if (connector.getContractOffersExceeded() == ConnectorContractOffersExceeded.OK) {
                 brokerEventLogger.logConnectorUpdateDataOfferLimitExceeded(dataOffersCount, maxDataOffersPerConnector, connector.getEndpoint());
                 connector.setContractOffersExceeded(ConnectorContractOffersExceeded.EXCEEDED);
             }
             offerList = offerList.subList(0, maxDataOffersPerConnector);
-        } else if (connector.getContractOffersExceeded().equals(ConnectorContractOffersExceeded.EXCEEDED)) {
+        } else if (connector.getContractOffersExceeded() == ConnectorContractOffersExceeded.EXCEEDED) {
             brokerEventLogger.logConnectorUpdateDataOfferLimitOk(dataOffersCount, maxDataOffersPerConnector, connector.getEndpoint());
             connector.setContractOffersExceeded(ConnectorContractOffersExceeded.OK);
         }

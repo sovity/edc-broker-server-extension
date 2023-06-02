@@ -63,8 +63,10 @@ create type broker_event_type as enum (
     --Contract Offer was clicked
     'CONTRACT_OFFER_CLICK',
 
+    --Connector Data Offer Limit was exceeded
     'CONNECTOR_DATA_OFFER_LIMIT_EXCEEDED',
 
+    --Connector Data Offer Limit was not exceeded
     'CONNECTOR_DATA_OFFER_LIMIT_OK'
 );
 
