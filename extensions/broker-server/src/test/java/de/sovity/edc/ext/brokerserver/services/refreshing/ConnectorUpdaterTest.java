@@ -105,6 +105,7 @@ class ConnectorUpdaterTest {
                 .contractPolicyId("always-true")
                 .accessPolicyId("always-true")
                 .selectorExpression(AssetSelectorExpression.SELECT_ALL)
+                .validity(1000) //else throws "validity must be strictly positive"
                 .build();
         contractDefinitionStore.save(contractDefinition);
     }
