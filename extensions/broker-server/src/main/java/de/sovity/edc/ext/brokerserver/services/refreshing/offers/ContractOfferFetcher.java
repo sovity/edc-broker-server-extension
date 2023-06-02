@@ -36,7 +36,8 @@ public class ContractOfferFetcher {
     @SneakyThrows
     public List<ContractOffer> fetch(String connectorEndpoint) {
         try {
-            return catalogService.getByProviderUrl(connectorEndpoint, QuerySpec.max()).get().getContractOffers();
+            var catalog = catalogService.getByProviderUrl(connectorEndpoint, QuerySpec.max()).get();
+            return catalog.getContractOffers();
         } catch (InterruptedException e) {
             throw e;
         } catch (Exception e) {
