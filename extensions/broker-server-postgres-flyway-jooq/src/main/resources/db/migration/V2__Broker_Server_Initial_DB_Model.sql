@@ -1,4 +1,6 @@
 create type connector_online_status as enum ('ONLINE', 'OFFLINE');
+create type measurement_type as enum ('CONNECTOR_REFRESH');
+create type error_status as enum ('ERROR', 'OK');
 
 create table connector
 (
@@ -55,10 +57,7 @@ create type broker_event_type as enum (
     'CONTRACT_OFFER_UPDATED',
 
     --Contract Offer was clicked
-    'CONTRACT_OFFER_CLICK',
-
-    --Connector was crawled and execution time measured
-    'CONNECTOR_CRAWLED'
+    'CONTRACT_OFFER_CLICK'
 );
 
 create type broker_event_status as enum (
@@ -85,14 +84,14 @@ create table broker_event_log
     duration_in_ms     bigint
 );
 
-create table broker_fetch_log
+create table broker_execution_time
 (
     id                 serial primary key,
     created_at         timestamp with time zone not null,
     connector_endpoint text                     not null,
-    start_time         timestamp with time zone not null,
-    end_time           timestamp with time zone not null,
-    log_message        text                     not null
+    duration_in_ms     bigint                   not null,
+    type               measurement_type         not null,
+    error_status       error_status             not null
 );
 
 create index speedup on broker_event_log (connector_endpoint, asset_id, event_status);
