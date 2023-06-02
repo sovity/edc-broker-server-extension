@@ -15,9 +15,9 @@
 package de.sovity.edc.ext.brokerserver.services.logging;
 
 import de.sovity.edc.ext.brokerserver.db.jooq.Tables;
-import de.sovity.edc.ext.brokerserver.db.jooq.enums.ErrorStatus;
+import de.sovity.edc.ext.brokerserver.db.jooq.enums.MeasurementErrorStatus;
 import de.sovity.edc.ext.brokerserver.db.jooq.enums.MeasurementType;
-import de.sovity.edc.ext.brokerserver.db.jooq.tables.records.BrokerExecutionTimeRecord;
+import de.sovity.edc.ext.brokerserver.db.jooq.tables.records.BrokerExecutionTimeMeasurementRecord;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 
@@ -29,14 +29,14 @@ import java.time.OffsetDateTime;
 @RequiredArgsConstructor
 public class BrokerExecutionTimeLogger {
     public void logSuccess(DSLContext dsl, String connectorEndpoint, long executionTime) {
-        logExecutionTime(dsl, connectorEndpoint, executionTime, ErrorStatus.OK);
+        logExecutionTime(dsl, connectorEndpoint, executionTime, MeasurementErrorStatus.OK);
     }
 
     public void logError(DSLContext dsl, String connectorEndpoint, long executionTime) {
-        logExecutionTime(dsl, connectorEndpoint, executionTime, ErrorStatus.ERROR);
+        logExecutionTime(dsl, connectorEndpoint, executionTime, MeasurementErrorStatus.ERROR);
     }
 
-    private void logExecutionTime(DSLContext dsl, String connectorEndpoint, long executionTime, ErrorStatus errorStatus) {
+    private void logExecutionTime(DSLContext dsl, String connectorEndpoint, long executionTime, MeasurementErrorStatus errorStatus) {
         var logEntry = connectorUpdateEntry(dsl, connectorEndpoint);
         logEntry.setConnectorEndpoint(connectorEndpoint);
         logEntry.setDurationInMs(executionTime);
@@ -45,8 +45,8 @@ public class BrokerExecutionTimeLogger {
         logEntry.insert();
     }
 
-    private BrokerExecutionTimeRecord connectorUpdateEntry(DSLContext dsl, String connectorEndpoint) {
-        var logEntry = dsl.newRecord(Tables.BROKER_EXECUTION_TIME);
+    private BrokerExecutionTimeMeasurementRecord connectorUpdateEntry(DSLContext dsl, String connectorEndpoint) {
+        var logEntry = dsl.newRecord(Tables.BROKER_EXECUTION_TIME_MEASUREMENT);
         logEntry.setConnectorEndpoint(connectorEndpoint);
         logEntry.setCreatedAt(OffsetDateTime.now());
         return logEntry;
