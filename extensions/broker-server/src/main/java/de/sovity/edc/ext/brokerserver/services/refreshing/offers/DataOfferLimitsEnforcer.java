@@ -53,11 +53,11 @@ public class DataOfferLimitsEnforcer {
         offerList = dataOffers.stream().toList();
 
         // Validate if limits exceeded
-        var dataOfferLimitsExceeded = isDataOfferLimitsExceeded(dataOffers, maxDataOffers);
-        var contractOfferLimitsExceeded = isContractOfferLimitsExceeded(dataOffers, maxContractOffers);
+        var dataOfferLimitsExceeded = isDataOfferLimitsExceeded(maxDataOffers);
+        var contractOfferLimitsExceeded = isContractOfferLimitsExceeded(maxContractOffers);
 
         // Create new list with limited offers
-        return new DataOfferLimitsEnforced(dataOffers, dataOfferLimitsExceeded, contractOfferLimitsExceeded);
+        return new DataOfferLimitsEnforced(offerList, dataOfferLimitsExceeded, contractOfferLimitsExceeded);
     }
 
     public void logEnforcedLimitsIfChanged(ConnectorRecord connector, DataOfferLimitsEnforced enforcedLimits) {
@@ -80,21 +80,21 @@ public class DataOfferLimitsEnforcer {
         }
     }
 
-    private boolean isDataOfferLimitsExceeded(Collection<FetchedDataOffer> dataOffers, Integer maxDataOffers) {
-        if (maxDataOffers != -1 && dataOffers.size() > maxDataOffers) {
-            offerList = offerList.subList(0, maxDataOffers - 1);
+    private boolean isDataOfferLimitsExceeded(Integer maxDataOffers) {
+        if (maxDataOffers != -1 && offerList.size() > maxDataOffers) {
+            offerList = offerList.subList(0, maxDataOffers);
             return true;
         }
 
         return false;
     }
 
-    private boolean isContractOfferLimitsExceeded(Collection<FetchedDataOffer> dataOffers, Integer maxContractOffers) {
+    private boolean isContractOfferLimitsExceeded(Integer maxContractOffers) {
         var contractOfferLimitsExceeded = false;
-        for (var dataOffer : dataOffers) {
+        for (var dataOffer : offerList) {
             var contractOffers = dataOffer.getContractOffers();
-            if (maxContractOffers != -1 && contractOffers.size() > maxContractOffers) {
-                dataOffer.setContractOffers(contractOffers.subList(0, maxContractOffers - 1));
+            if (contractOffers != null && maxContractOffers != -1 && contractOffers.size() > maxContractOffers) {
+                dataOffer.setContractOffers(contractOffers.subList(0, maxContractOffers));
                 contractOfferLimitsExceeded = true;
             }
         }
