@@ -71,42 +71,42 @@ public class BrokerEventLogger {
         logEntry.insert();
     }
 
-    public void logConnectorUpdateDataOfferLimitExceeded(int dataOffersCount, Integer maxDataOffersPerConnector, String endpoint) {
+    public void logConnectorUpdateDataOfferLimitExceeded(Integer maxDataOffersPerConnector, String endpoint) {
         var logEntry = new BrokerEventLogRecord();
         logEntry.setEvent(BrokerEventType.CONNECTOR_DATA_OFFER_LIMIT_EXCEEDED);
         logEntry.setEventStatus(BrokerEventStatus.OK);
         logEntry.setConnectorEndpoint(endpoint);
-        logEntry.setUserMessage("Connector has exceeded the maximum number of data offers: " + dataOffersCount + " > " + maxDataOffersPerConnector);
+        logEntry.setUserMessage("Connector has exceeded the maximum number of data offers: " + maxDataOffersPerConnector);
         logEntry.setCreatedAt(OffsetDateTime.now());
         logEntry.insert();
     }
 
-    public void logConnectorUpdateDataOfferLimitOk(int dataOffersCount, Integer maxDataOffersPerConnector, String endpoint) {
+    public void logConnectorUpdateDataOfferLimitOk(Integer maxDataOffersPerConnector, String endpoint) {
         var logEntry = new BrokerEventLogRecord();
         logEntry.setEvent(BrokerEventType.CONNECTOR_DATA_OFFER_LIMIT_OK);
         logEntry.setEventStatus(BrokerEventStatus.OK);
         logEntry.setConnectorEndpoint(endpoint);
-        logEntry.setUserMessage("Connector is not exceeding maximum number of data offers limits anymore." + dataOffersCount + " <= " + maxDataOffersPerConnector);
+        logEntry.setUserMessage("Connector is not exceeding maximum number of data offers limits anymore: " + maxDataOffersPerConnector);
         logEntry.setCreatedAt(OffsetDateTime.now());
         logEntry.insert();
     }
 
-    public void logConnectorUpdateContractOfferLimitExceeded(int contractOffersCount, Integer maxContractOffersPerConnector, String endpoint) {
+    public void logConnectorUpdateContractOfferLimitExceeded(Integer maxContractOffersPerConnector, String endpoint) {
         var logEntry = new BrokerEventLogRecord();
         logEntry.setEvent(BrokerEventType.CONNECTOR_CONTRACT_OFFER_LIMIT_EXCEEDED);
         logEntry.setEventStatus(BrokerEventStatus.OK);
         logEntry.setConnectorEndpoint(endpoint);
-        logEntry.setUserMessage("Connector has exceeded maximum number of contract offers per data offer limit, maximum: " + contractOffersCount + " > " + maxContractOffersPerConnector);
+        logEntry.setUserMessage("Connector has exceeded maximum number of contract offers per data offer limit: " + maxContractOffersPerConnector);
         logEntry.setCreatedAt(OffsetDateTime.now());
         logEntry.insert();
     }
 
-    public void logConnectorUpdateContractOfferLimitOk(int contractOffersCount, Integer maxContractOffersPerConnector, String endpoint) {
+    public void logConnectorUpdateContractOfferLimitOk(Integer maxContractOffersPerConnector, String endpoint) {
         var logEntry = new BrokerEventLogRecord();
         logEntry.setEvent(BrokerEventType.CONNECTOR_CONTRACT_OFFER_LIMIT_OK);
         logEntry.setEventStatus(BrokerEventStatus.OK);
         logEntry.setConnectorEndpoint(endpoint);
-        logEntry.setUserMessage("Connector is not exceeding maximum number of contract offers per data offer limits anymore. Maximum: " + contractOffersCount + " <= " + maxContractOffersPerConnector);
+        logEntry.setUserMessage("Connector is not exceeding maximum number of contract offers per data offer limits anymore: " + maxContractOffersPerConnector);
         logEntry.setCreatedAt(OffsetDateTime.now());
         logEntry.insert();
     }
