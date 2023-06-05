@@ -40,8 +40,9 @@ public class ConnectorUpdateSuccessWriter {
     ) {
         var now = OffsetDateTime.now();
 
-        // Limit data offers if necessary
-        var limitedDataOffers = dataOfferLimitsEnforcer.enforceDataOfferAndContractOfferLimits(connector, dataOffers);
+        // Limit data offers and log limitation if necessary
+        var limitedDataOffers = dataOfferLimitsEnforcer.enforceLimits(dataOffers);
+        dataOfferLimitsEnforcer.logEnforcedLimitsIfChanged(connector, limitedDataOffers);
 
         // Log Status Change and set status to online if necessary
         if (connector.getOnlineStatus() == ConnectorOnlineStatus.OFFLINE || connector.getLastRefreshAttemptAt() == null) {

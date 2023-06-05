@@ -24,7 +24,6 @@ import lombok.RequiredArgsConstructor;
 import org.eclipse.edc.spi.system.configuration.Config;
 
 import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -41,7 +40,7 @@ public class DataOfferLimitsEnforcer {
     ) {
     }
 
-    public DataOfferLimitsEnforced enforceDataOfferAndContractOfferLimits(ConnectorRecord connector, Collection<FetchedDataOffer> dataOffers) {
+    public DataOfferLimitsEnforced enforceLimits(Collection<FetchedDataOffer> dataOffers) {
         // Get limits from config
         var maxDataOffers = config.getInteger(BrokerServerExtension.MAX_DATA_OFFERS_PER_CONNECTOR, -1);
         var maxContractOffers = config.getInteger(BrokerServerExtension.MAX_CONTRACT_OFFERS_PER_CONNECTOR, -1);
@@ -58,13 +57,27 @@ public class DataOfferLimitsEnforcer {
         var contractOfferLimitsExceeded = isContractOfferLimitsExceeded(dataOffers, maxContractOffers);
 
         // Create new list with limited offers
-        var limitsEnforced = new DataOfferLimitsEnforced(dataOffers, dataOfferLimitsExceeded, contractOfferLimitsExceeded);
+        return new DataOfferLimitsEnforced(dataOffers, dataOfferLimitsExceeded, contractOfferLimitsExceeded);
+    }
 
-        // Log if limits exceeded again or ok again
-        logDataOfferLimits(connector, maxDataOffers, dataOfferLimitsExceeded);
-        logContractOfferLimits(connector, maxDataOffers, contractOfferLimitsExceeded);
+    public void logEnforcedLimitsIfChanged(ConnectorRecord connector, DataOfferLimitsEnforced enforcedLimits) {
+        // DataOffer
+        if (enforcedLimits.dataOfferLimitsExceeded() && connector.getDataOffersExceeded() == ConnectorDataOffersExceeded.OK) {
+            brokerEventLogger.logConnectorUpdateDataOfferLimitExceeded(offerList.size(), connector.getEndpoint());
+            connector.setDataOffersExceeded(ConnectorDataOffersExceeded.EXCEEDED);
+        } else if (!enforcedLimits.dataOfferLimitsExceeded() && connector.getDataOffersExceeded() == ConnectorDataOffersExceeded.EXCEEDED) {
+            brokerEventLogger.logConnectorUpdateDataOfferLimitOk(offerList.size(), connector.getEndpoint());
+            connector.setDataOffersExceeded(ConnectorDataOffersExceeded.OK);
+        }
 
-        return limitsEnforced;
+        // ContractOffer
+        if (enforcedLimits.contractOfferLimitsExceeded() && connector.getContractOffersExceeded() == ConnectorContractOffersExceeded.OK) {
+            brokerEventLogger.logConnectorUpdateContractOfferLimitExceeded(offerList.size(), connector.getEndpoint());
+            connector.setContractOffersExceeded(ConnectorContractOffersExceeded.EXCEEDED);
+        } else if (!enforcedLimits.contractOfferLimitsExceeded() && connector.getContractOffersExceeded() == ConnectorContractOffersExceeded.EXCEEDED) {
+            brokerEventLogger.logConnectorUpdateContractOfferLimitOk(offerList.size(), connector.getEndpoint());
+            connector.setContractOffersExceeded(ConnectorContractOffersExceeded.OK);
+        }
     }
 
     private boolean isDataOfferLimitsExceeded(Collection<FetchedDataOffer> dataOffers, Integer maxDataOffers) {
@@ -87,25 +100,5 @@ public class DataOfferLimitsEnforcer {
         }
 
         return contractOfferLimitsExceeded;
-    }
-
-    private void logContractOfferLimits(ConnectorRecord connector, Integer maxDataOffers, boolean contractOfferLimitsExceeded) {
-        if (contractOfferLimitsExceeded && connector.getContractOffersExceeded() == ConnectorContractOffersExceeded.OK) {
-            brokerEventLogger.logConnectorUpdateContractOfferLimitExceeded(maxDataOffers, connector.getEndpoint());
-            connector.setContractOffersExceeded(ConnectorContractOffersExceeded.EXCEEDED);
-        } else if (!contractOfferLimitsExceeded && connector.getContractOffersExceeded() == ConnectorContractOffersExceeded.EXCEEDED) {
-            brokerEventLogger.logConnectorUpdateContractOfferLimitOk(maxDataOffers, connector.getEndpoint());
-            connector.setContractOffersExceeded(ConnectorContractOffersExceeded.OK);
-        }
-    }
-
-    private void logDataOfferLimits(ConnectorRecord connector, Integer maxDataOffers, boolean dataOfferLimitsExceeded) {
-        if (dataOfferLimitsExceeded && connector.getDataOffersExceeded() == ConnectorDataOffersExceeded.OK) {
-            brokerEventLogger.logConnectorUpdateDataOfferLimitExceeded(maxDataOffers, connector.getEndpoint());
-            connector.setDataOffersExceeded(ConnectorDataOffersExceeded.EXCEEDED);
-        } else if (!dataOfferLimitsExceeded && connector.getDataOffersExceeded() == ConnectorDataOffersExceeded.EXCEEDED) {
-            brokerEventLogger.logConnectorUpdateDataOfferLimitOk(maxDataOffers, connector.getEndpoint());
-            connector.setDataOffersExceeded(ConnectorDataOffersExceeded.OK);
-        }
     }
 }
