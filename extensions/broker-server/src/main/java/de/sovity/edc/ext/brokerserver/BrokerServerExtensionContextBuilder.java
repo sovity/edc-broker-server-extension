@@ -105,7 +105,7 @@ public class BrokerServerExtensionContextBuilder {
         var connectorUpdateFailureWriter = new ConnectorUpdateFailureWriter(brokerEventLogger, monitor);
         var contractOfferFetcher = new ContractOfferFetcher(catalogService);
         var fetchedDataOfferBuilder = new DataOfferBuilder(objectMapper);
-        var dataOfferFetcher = new DataOfferFetcher(contractOfferFetcher, fetchedDataOfferBuilder, config, brokerEventLogger);
+        var dataOfferFetcher = new DataOfferFetcher(contractOfferFetcher, fetchedDataOfferBuilder);
         var connectorUpdater = new ConnectorUpdater(
                 dataOfferFetcher,
                 connectorUpdateSuccessWriter,

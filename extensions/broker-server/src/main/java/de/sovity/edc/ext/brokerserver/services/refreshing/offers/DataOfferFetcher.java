@@ -14,13 +14,10 @@
 
 package de.sovity.edc.ext.brokerserver.services.refreshing.offers;
 
-import de.sovity.edc.ext.brokerserver.BrokerServerExtension;
-import de.sovity.edc.ext.brokerserver.services.logging.BrokerEventLogger;
 import de.sovity.edc.ext.brokerserver.services.refreshing.offers.model.FetchedDataOffer;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.eclipse.edc.connector.contract.spi.types.offer.ContractOffer;
-import org.eclipse.edc.spi.system.configuration.Config;
 
 import java.util.Collection;
 
@@ -28,8 +25,6 @@ import java.util.Collection;
 public class DataOfferFetcher {
     private final ContractOfferFetcher contractOfferFetcher;
     private final DataOfferBuilder dataOfferBuilder;
-    private final Config config;
-    private final BrokerEventLogger brokerEventLogger;
 
     /**
      * Fetches {@link ContractOffer}s and de-duplicates them into {@link FetchedDataOffer}s.
@@ -42,16 +37,7 @@ public class DataOfferFetcher {
         // Contract Offers contain assets multiple times, with different policies
         var contractOffers = contractOfferFetcher.fetch(connectorEndpoint);
 
-        // Limit the number of contract offers per connector
-        var contractOfferLimit = config.getInteger(BrokerServerExtension.MAX_CONTRACT_OFFERS_PER_CONNECTOR, -1);
-        if (contractOfferLimit != -1 && contractOffers.size() > contractOfferLimit) {
-            brokerEventLogger.logConnectorUpdateDataOfferLimitExceeded(contractOfferLimit, contractOffers.size(), connectorEndpoint);
-            contractOffers = contractOffers.stream().limit(contractOfferLimit).toList();
-        }
-
         // Data Offers represent unique assets
         return dataOfferBuilder.deduplicateContractOffers(contractOffers);
     }
-
-
 }

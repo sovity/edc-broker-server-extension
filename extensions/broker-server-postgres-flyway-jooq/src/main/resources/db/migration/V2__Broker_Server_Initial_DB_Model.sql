@@ -93,8 +93,7 @@ create table broker_event_log
     event_status       broker_event_status      not null,
     connector_endpoint text,
     asset_id           text,
-    error_stack        text,
-    duration_in_ms     bigint
+    error_stack        text
 );
 
 create table broker_execution_time_measurement
