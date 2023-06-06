@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
@@ -42,10 +44,15 @@ public class DataOfferLimitsEnforcerTest {
         List<FetchedDataOffer> dataOffers = List.of();
 
         // act
-        var actual = new ArrayList(dataOfferLimitsEnforcer.enforceLimits(dataOffers).abbreviatedDataOffers());
+        var enforcedLimits = dataOfferLimitsEnforcer.enforceLimits(dataOffers);
+        var actual = new ArrayList(enforcedLimits.abbreviatedDataOffers());
+        var contractOffersLimitExceeded = enforcedLimits.contractOfferLimitsExceeded();
+        var dataOffersLimitExceeded = enforcedLimits.dataOfferLimitsExceeded();
 
         // assert
         assertThat(actual).isEmpty();
+        assertFalse(contractOffersLimitExceeded);
+        assertFalse(dataOffersLimitExceeded);
     }
 
     @Test
@@ -59,10 +66,15 @@ public class DataOfferLimitsEnforcerTest {
         var dataOffers = List.of(new FetchedDataOffer());
 
         // act
-        var actual = new ArrayList(dataOfferLimitsEnforcer.enforceLimits(dataOffers).abbreviatedDataOffers());
+        var enforcedLimits = dataOfferLimitsEnforcer.enforceLimits(dataOffers);
+        var actual = new ArrayList(enforcedLimits.abbreviatedDataOffers());
+        var contractOffersLimitExceeded = enforcedLimits.contractOfferLimitsExceeded();
+        var dataOffersLimitExceeded = enforcedLimits.dataOfferLimitsExceeded();
 
         // assert
         assertThat(actual).isEmpty();
+        assertFalse(contractOffersLimitExceeded);
+        assertTrue(dataOffersLimitExceeded);
     }
 
     @Test
@@ -78,12 +90,15 @@ public class DataOfferLimitsEnforcerTest {
         var dataOffers = List.of(myDataOffer, myDataOffer);
 
         // act
-        var actual = new ArrayList(dataOfferLimitsEnforcer.enforceLimits(dataOffers).abbreviatedDataOffers());
+        var enforcedLimits = dataOfferLimitsEnforcer.enforceLimits(dataOffers);
+        var actual = new ArrayList(enforcedLimits.abbreviatedDataOffers());
+        var contractOffersLimitExceeded = enforcedLimits.contractOfferLimitsExceeded();
+        var dataOffersLimitExceeded = enforcedLimits.dataOfferLimitsExceeded();
 
         // assert
         assertThat(actual).hasSize(1);
         assertThat(((FetchedDataOffer) actual.get(0)).getContractOffers()).hasSize(1);
-        verify(brokerEventLogger, never()).logConnectorUpdateContractOfferLimitOk(any(), any());
-        verify(brokerEventLogger, never()).logConnectorUpdateContractOfferLimitExceeded(any(), any());
+        assertTrue(contractOffersLimitExceeded);
+        assertTrue(dataOffersLimitExceeded);
     }
 }
