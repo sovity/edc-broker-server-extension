@@ -39,7 +39,7 @@ create table data_offer_contract_offer
     created_at         timestamp with time zone not null,
     updated_at         timestamp with time zone,
 
-    PRIMARY KEY (contract_offer_id),
+    PRIMARY KEY (connector_endpoint, asset_id, contract_offer_id),
     FOREIGN KEY (connector_endpoint, asset_id) REFERENCES data_offer (connector_endpoint, asset_id),
     FOREIGN KEY (connector_endpoint) REFERENCES connector (endpoint)
 );
