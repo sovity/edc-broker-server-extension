@@ -36,23 +36,25 @@ public class DataOfferLimitsEnforcerTest {
     }
 
     @Test
-    void no_limit_zero_and_no_dataofffers_should_result_to_none() {
+    void no_limit_and_two_dataofffers_and_contractoffer_should_not_limit() {
         // arrange
         int maxDataOffers = -1;
         int maxContractOffers = -1;
         when(config.getInteger(eq(BrokerServerExtension.MAX_DATA_OFFERS_PER_CONNECTOR), any())).thenReturn(maxDataOffers);
         when(config.getInteger(eq(BrokerServerExtension.MAX_CONTRACT_OFFERS_PER_CONNECTOR), any())).thenReturn(maxContractOffers);
 
-        List<FetchedDataOffer> dataOffers = List.of();
+        var myDataOffer = new FetchedDataOffer();
+        myDataOffer.setContractOffers(List.of(new FetchedDataOfferContractOffer(), new FetchedDataOfferContractOffer()));
+        var dataOffers = List.of(myDataOffer, myDataOffer);
 
         // act
         var enforcedLimits = dataOfferLimitsEnforcer.enforceLimits(dataOffers);
-        var actual = new ArrayList(enforcedLimits.abbreviatedDataOffers());
+        var actual = enforcedLimits.abbreviatedDataOffers();
         var contractOffersLimitExceeded = enforcedLimits.contractOfferLimitsExceeded();
         var dataOffersLimitExceeded = enforcedLimits.dataOfferLimitsExceeded();
 
         // assert
-        assertThat(actual).isEmpty();
+        assertThat(actual).hasSize(2);
         assertFalse(contractOffersLimitExceeded);
         assertFalse(dataOffersLimitExceeded);
     }
