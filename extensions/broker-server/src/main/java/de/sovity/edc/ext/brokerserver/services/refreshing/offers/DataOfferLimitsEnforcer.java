@@ -24,14 +24,11 @@ import lombok.RequiredArgsConstructor;
 import org.eclipse.edc.spi.system.configuration.Config;
 
 import java.util.Collection;
-import java.util.List;
 
 @RequiredArgsConstructor
 public class DataOfferLimitsEnforcer {
     private final Config config;
     private final BrokerEventLogger brokerEventLogger;
-
-    private List<FetchedDataOffer> offerList;
 
     public record DataOfferLimitsEnforced(
             Collection<FetchedDataOffer> abbreviatedDataOffers,
@@ -44,7 +41,7 @@ public class DataOfferLimitsEnforcer {
         // Get limits from config
         var maxDataOffers = config.getInteger(BrokerServerExtension.MAX_DATA_OFFERS_PER_CONNECTOR, -1);
         var maxContractOffers = config.getInteger(BrokerServerExtension.MAX_CONTRACT_OFFERS_PER_CONNECTOR, -1);
-        offerList = dataOffers.stream().toList();
+        var offerList = dataOffers.stream().toList();
 
         // No limits set
         if (maxDataOffers == -1 && maxContractOffers == -1) {
@@ -52,43 +49,12 @@ public class DataOfferLimitsEnforcer {
         }
 
         // Validate if limits exceeded
-        var dataOfferLimitsExceeded = isDataOfferLimitsExceeded(maxDataOffers);
-        var contractOfferLimitsExceeded = isContractOfferLimitsExceeded(maxContractOffers);
-
-        // Create new list with limited offers
-        return new DataOfferLimitsEnforced(offerList, dataOfferLimitsExceeded, contractOfferLimitsExceeded);
-    }
-
-    public void logEnforcedLimitsIfChanged(ConnectorRecord connector, DataOfferLimitsEnforced enforcedLimits) {
-        // DataOffer
-        if (enforcedLimits.dataOfferLimitsExceeded() && connector.getDataOffersExceeded() == ConnectorDataOffersExceeded.OK) {
-            brokerEventLogger.logConnectorUpdateDataOfferLimitExceeded(offerList.size(), connector.getEndpoint());
-            connector.setDataOffersExceeded(ConnectorDataOffersExceeded.EXCEEDED);
-        } else if (!enforcedLimits.dataOfferLimitsExceeded() && connector.getDataOffersExceeded() == ConnectorDataOffersExceeded.EXCEEDED) {
-            brokerEventLogger.logConnectorUpdateDataOfferLimitOk(offerList.size(), connector.getEndpoint());
-            connector.setDataOffersExceeded(ConnectorDataOffersExceeded.OK);
-        }
-
-        // ContractOffer
-        if (enforcedLimits.contractOfferLimitsExceeded() && connector.getContractOffersExceeded() == ConnectorContractOffersExceeded.OK) {
-            brokerEventLogger.logConnectorUpdateContractOfferLimitExceeded(offerList.size(), connector.getEndpoint());
-            connector.setContractOffersExceeded(ConnectorContractOffersExceeded.EXCEEDED);
-        } else if (!enforcedLimits.contractOfferLimitsExceeded() && connector.getContractOffersExceeded() == ConnectorContractOffersExceeded.EXCEEDED) {
-            brokerEventLogger.logConnectorUpdateContractOfferLimitOk(offerList.size(), connector.getEndpoint());
-            connector.setContractOffersExceeded(ConnectorContractOffersExceeded.OK);
-        }
-    }
-
-    private boolean isDataOfferLimitsExceeded(Integer maxDataOffers) {
+        var dataOfferLimitsExceeded = false;
         if (maxDataOffers != -1 && offerList.size() > maxDataOffers) {
             offerList = offerList.subList(0, maxDataOffers);
-            return true;
+            dataOfferLimitsExceeded = true;
         }
 
-        return false;
-    }
-
-    private boolean isContractOfferLimitsExceeded(Integer maxContractOffers) {
         var contractOfferLimitsExceeded = false;
         for (var dataOffer : offerList) {
             var contractOffers = dataOffer.getContractOffers();
@@ -98,6 +64,27 @@ public class DataOfferLimitsEnforcer {
             }
         }
 
-        return contractOfferLimitsExceeded;
+        // Create new list with limited offers
+        return new DataOfferLimitsEnforced(offerList, dataOfferLimitsExceeded, contractOfferLimitsExceeded);
+    }
+
+    public void logEnforcedLimitsIfChanged(ConnectorRecord connector, DataOfferLimitsEnforced enforcedLimits) {
+        // DataOffer
+        if (enforcedLimits.dataOfferLimitsExceeded() && connector.getDataOffersExceeded() == ConnectorDataOffersExceeded.OK) {
+            brokerEventLogger.logConnectorUpdateDataOfferLimitExceeded(enforcedLimits.abbreviatedDataOffers.size(), connector.getEndpoint());
+            connector.setDataOffersExceeded(ConnectorDataOffersExceeded.EXCEEDED);
+        } else if (!enforcedLimits.dataOfferLimitsExceeded() && connector.getDataOffersExceeded() == ConnectorDataOffersExceeded.EXCEEDED) {
+            brokerEventLogger.logConnectorUpdateDataOfferLimitOk(enforcedLimits.abbreviatedDataOffers.size(), connector.getEndpoint());
+            connector.setDataOffersExceeded(ConnectorDataOffersExceeded.OK);
+        }
+
+        // ContractOffer
+        if (enforcedLimits.contractOfferLimitsExceeded() && connector.getContractOffersExceeded() == ConnectorContractOffersExceeded.OK) {
+            brokerEventLogger.logConnectorUpdateContractOfferLimitExceeded(enforcedLimits.abbreviatedDataOffers.size(), connector.getEndpoint());
+            connector.setContractOffersExceeded(ConnectorContractOffersExceeded.EXCEEDED);
+        } else if (!enforcedLimits.contractOfferLimitsExceeded() && connector.getContractOffersExceeded() == ConnectorContractOffersExceeded.EXCEEDED) {
+            brokerEventLogger.logConnectorUpdateContractOfferLimitOk(enforcedLimits.abbreviatedDataOffers.size(), connector.getEndpoint());
+            connector.setContractOffersExceeded(ConnectorContractOffersExceeded.OK);
+        }
     }
 }
