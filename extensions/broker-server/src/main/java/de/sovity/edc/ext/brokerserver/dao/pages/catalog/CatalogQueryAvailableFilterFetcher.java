@@ -14,15 +14,11 @@
 
 package de.sovity.edc.ext.brokerserver.dao.pages.catalog;
 
-import com.github.t9t.jooq.json.JsonDSL;
 import de.sovity.edc.ext.brokerserver.dao.pages.catalog.models.AvailableFilterValuesQuery;
 import de.sovity.edc.ext.brokerserver.dao.pages.catalog.models.CatalogQueryFilter;
-import de.sovity.edc.ext.brokerserver.dao.utils.MultisetUtils;
 import lombok.RequiredArgsConstructor;
 import org.jooq.Field;
 import org.jooq.JSON;
-import org.jooq.Record;
-import org.jooq.SelectConditionStep;
 import org.jooq.impl.DSL;
 import org.jooq.util.postgres.PostgresDSL;
 

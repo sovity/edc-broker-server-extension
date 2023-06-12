@@ -33,8 +33,8 @@ public class CatalogQueryDataOfferFetcher {
     /**
      * Query data offers
      *
-     * @param fields query fields
-     * @param filter filter
+     * @param fields  query fields
+     * @param filter  filter
      * @param sorting sorting
      * @return {@link Field} of {@link DataOfferRs}s
      */
