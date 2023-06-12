@@ -28,12 +28,12 @@ import java.util.List;
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class JsonDeserializationUtils {
-    private static final ObjectMapper objectMapper = new ObjectMapper();
-    private static final TypeReference<List<List<String>>> stringArray2 = new TypeReference<>() {
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+    private static final TypeReference<List<List<String>>> TYPE_STRING_LIST_2 = new TypeReference<>() {
     };
 
     @SneakyThrows
     public static List<List<String>> deserializeStringArray2(String json) {
-        return objectMapper.readValue(json, stringArray2);
+        return OBJECT_MAPPER.readValue(json, TYPE_STRING_LIST_2);
     }
 }
