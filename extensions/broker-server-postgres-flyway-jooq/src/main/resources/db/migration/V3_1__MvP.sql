@@ -8,8 +8,16 @@ alter table broker_event_log
 
 alter table connector
     alter column endpoint type text collate alphanumeric_with_natural_sort,
-    add column data_offers_exceeded     connector_data_offers_exceeded     not null,
-    add column contract_offers_exceeded connector_contract_offers_exceeded not null;
+    add column data_offers_exceeded     connector_data_offers_exceeded,
+    add column contract_offers_exceeded connector_contract_offers_exceeded;
+
+update connector
+set data_offers_exceeded     = 'OK',
+    contract_offers_exceeded = 'OK';
+
+alter table connector
+    alter column data_offers_exceeded set not null,
+    alter column contract_offers_exceeded set not null;
 
 alter table data_offer
     alter column asset_id type text collate alphanumeric_with_natural_sort,
