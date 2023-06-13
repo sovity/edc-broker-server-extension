@@ -91,7 +91,8 @@ class DataOfferWriterTestDataHelper {
                 dataOffer.getAssetId(),
                 JSONB.valueOf(dummyAssetJson(dataOffer)),
                 old,
-                old
+                old,
+                dataOffer.getAssetName()
         );
     }
 

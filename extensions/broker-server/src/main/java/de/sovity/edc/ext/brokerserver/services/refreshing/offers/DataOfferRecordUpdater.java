@@ -56,6 +56,11 @@ public class DataOfferRecordUpdater {
      * @return whether any fields were updated
      */
     public boolean updateDataOffer(DataOfferRecord dataOffer, FetchedDataOffer fetchedDataOffer, boolean changed) {
+        if (!Objects.equals(fetchedDataOffer.getAssetName(), dataOffer.getAssetName())) {
+            dataOffer.setAssetName(fetchedDataOffer.getAssetName());
+            changed = true;
+        }
+
         String existingAssetProps = JsonbUtils.getDataOrNull(dataOffer.getAssetProperties());
         var fetchedAssetProps = fetchedDataOffer.getAssetPropertiesJson();
         if (!Objects.equals(fetchedAssetProps, existingAssetProps)) {
