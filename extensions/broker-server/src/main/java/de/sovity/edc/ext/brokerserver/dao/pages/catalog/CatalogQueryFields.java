@@ -25,6 +25,7 @@ import org.jooq.Field;
 import org.jooq.impl.DSL;
 
 import java.time.OffsetDateTime;
+import java.util.Map;
 
 /**
  * Tables and fields used in the catalog page query.
@@ -42,12 +43,13 @@ public class CatalogQueryFields {
     Field<String> assetName;
     Field<String> assetDescription;
     Field<String> assetKeywords;
+    Field<String> dataSpace;
 
     // This date should always be non-null
     // It's used in the UI to display the last relevant change date of a connector
     Field<OffsetDateTime> offlineSinceOrLastUpdatedAt;
 
-    public CatalogQueryFields(Connector connectorTable, DataOffer dataOfferTable) {
+    public CatalogQueryFields(Connector connectorTable, DataOffer dataOfferTable, Map<String, String> dataSpaceNames) {
         this.connectorTable = connectorTable;
         this.dataOfferTable = dataOfferTable;
         assetId = dataOfferTable.ASSET_ID;
@@ -58,6 +60,14 @@ public class CatalogQueryFields {
                 connectorTable.LAST_SUCCESSFUL_REFRESH_AT,
                 connectorTable.CREATED_AT
         );
+
+        Field<String> tempDataSpace = null;
+        for (var entry : dataSpaceNames.entrySet()) {
+            var dataSpaceId = entry.getKey();
+            var dataSpaceName = entry.getValue();
+            tempDataSpace = DSL.when(connectorTable.ENDPOINT.eq(dataSpaceId), dataSpaceName).else_("MDS");
+        }
+        dataSpace = tempDataSpace;
     }
 
     public Field<String> getAssetProperty(String name) {
