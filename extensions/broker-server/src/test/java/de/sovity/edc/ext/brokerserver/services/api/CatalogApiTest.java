@@ -136,7 +136,8 @@ class CatalogApiTest {
                             AssetProperty.DATA_SUBCATEGORY,
                             AssetProperty.DATA_MODEL,
                             AssetProperty.TRANSPORT_MODE,
-                            AssetProperty.GEO_REFERENCE_METHOD
+                            AssetProperty.GEO_REFERENCE_METHOD,
+                            AssetProperty.DATA_SPACE
                     );
 
             assertThat(result.getAvailableFilters().getFields())
@@ -146,7 +147,8 @@ class CatalogApiTest {
                             "Data Subcategory",
                             "Data Model",
                             "Transport Mode",
-                            "Geo Reference Method"
+                            "Geo Reference Method",
+                            "Data Space"
                     );
 
             var dataCategory = getAvailableFilter(result, AssetProperty.DATA_CATEGORY);
