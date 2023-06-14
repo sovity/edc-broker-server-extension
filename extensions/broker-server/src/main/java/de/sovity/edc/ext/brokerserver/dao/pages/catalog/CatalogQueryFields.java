@@ -62,20 +62,24 @@ public class CatalogQueryFields {
                 connectorTable.CREATED_AT
         );
 
-        Field<String> tempDataSpace = null;
+        dataSpace = buildDataSpaceField(connectorTable, dataSpaceConfig);
+    }
+
+    private Field<String> buildDataSpaceField(Connector connectorTable, DataSpaceConfig dataSpaceConfig) {
+        Field<String> dataSpace = null;
         var dataSpaceCount = dataSpaceConfig.dataSpaceMap().size();
         var dataSpaceConnectorEndpoints = new ArrayList<>(dataSpaceConfig.dataSpaceMap().keySet());
         var dataSpaceNames = new ArrayList<>(dataSpaceConfig.dataSpaceMap().values());
         var endpoint = connectorTable.ENDPOINT;
         for (int i = 0; i < dataSpaceCount; i++) {
-            tempDataSpace = DSL.when(endpoint.eq(dataSpaceConnectorEndpoints.get(i)), dataSpaceNames.get(i)).else_(tempDataSpace);
+            dataSpace = DSL.when(endpoint.eq(dataSpaceConnectorEndpoints.get(i)), dataSpaceNames.get(i)).else_(dataSpace);
         }
 
-        if (tempDataSpace == null) {
-            tempDataSpace = DSL.val(dataSpaceConfig.defaultDataSpace());
+        if (dataSpace == null) {
+            dataSpace = DSL.val(dataSpaceConfig.defaultDataSpace());
         }
 
-        dataSpace = tempDataSpace;
+        return dataSpace;
     }
 
     public Field<String> getAssetProperty(String name) {
