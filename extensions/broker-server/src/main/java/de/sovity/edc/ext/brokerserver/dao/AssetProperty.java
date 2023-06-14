@@ -41,6 +41,4 @@ public class AssetProperty {
     public static final String DATA_MODEL = "http://w3id.org/mds#dataModel";
     public static final String GEO_REFERENCE_METHOD = "http://w3id.org/mds#geoReferenceMethod";
     public static final String TRANSPORT_MODE = "http://w3id.org/mds#transportMode";
-
-    public static final String DATA_SPACE = "http://w3id.org/mds#dataSpace";
 }
