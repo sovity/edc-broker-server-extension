@@ -48,6 +48,9 @@ public class BrokerServerExtension implements ServiceExtension {
     @Setting
     public static final String CATALOG_PAGE_PAGE_SIZE = "edc.broker.server.catalog.page.page.size";
 
+    @Setting
+    public static final String DEFAULT_CONNECTOR_DATASPACE = "edc.broker.server.default.dataspace";
+
     @Inject
     private ManagementApiConfiguration managementApiConfiguration;
 

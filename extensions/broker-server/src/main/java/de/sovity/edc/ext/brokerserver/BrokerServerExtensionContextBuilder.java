@@ -23,7 +23,6 @@ import de.sovity.edc.ext.brokerserver.dao.pages.catalog.CatalogQueryDataOfferFet
 import de.sovity.edc.ext.brokerserver.dao.pages.catalog.CatalogQueryFilterService;
 import de.sovity.edc.ext.brokerserver.dao.pages.catalog.CatalogQueryService;
 import de.sovity.edc.ext.brokerserver.dao.pages.catalog.CatalogQuerySortingService;
-import de.sovity.edc.ext.brokerserver.dao.pages.catalog.models.DataSpaceConfig;
 import de.sovity.edc.ext.brokerserver.dao.pages.connector.ConnectorPageQueryService;
 import de.sovity.edc.ext.brokerserver.db.DataSourceFactory;
 import de.sovity.edc.ext.brokerserver.db.DslContextFactory;
@@ -65,7 +64,6 @@ import org.eclipse.edc.spi.monitor.Monitor;
 import org.eclipse.edc.spi.system.configuration.Config;
 import org.eclipse.edc.spi.types.TypeManager;
 
-import java.util.HashMap;
 import java.util.List;
 
 
@@ -157,10 +155,6 @@ public class BrokerServerExtensionContextBuilder {
         var quartzScheduleInitializer = new QuartzScheduleInitializer(config, monitor, jobs);
         var brokerServerInitializer = new BrokerServerInitializer(dslContextFactory, knownConnectorsInitializer, quartzScheduleInitializer);
 
-        var dataSpaceMap = new HashMap<String, String>();
-        dataSpaceMap.put("TODO", "Mobilithek"); //TODO: Mobilithek-Connector-Endpoint
-        var dataSpaceConfig = new DataSpaceConfig(dataSpaceMap, "MDS");
-
         // UI Capabilities
         var catalogApiService = new CatalogApiService(
                 paginationMetadataUtils,
@@ -168,8 +162,7 @@ public class BrokerServerExtensionContextBuilder {
                 policyDtoBuilder,
                 assetPropertyParser,
                 catalogFilterService,
-                brokerServerSettings,
-                dataSpaceConfig
+                brokerServerSettings
         );
         var connectorApiService = new ConnectorApiService(
                 connectorPageQueryService,

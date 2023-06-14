@@ -15,12 +15,14 @@
 package de.sovity.edc.ext.brokerserver.services;
 
 import de.sovity.edc.ext.brokerserver.BrokerServerExtension;
+import de.sovity.edc.ext.brokerserver.dao.pages.catalog.models.DataSpaceConfig;
 import lombok.Getter;
 import lombok.NonNull;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.edc.spi.system.configuration.Config;
 
 import java.time.Duration;
+import java.util.HashMap;
 
 public class BrokerServerSettings {
     private final Config config;
@@ -31,10 +33,21 @@ public class BrokerServerSettings {
     @Getter
     private final int catalogPagePageSize;
 
+    @Getter
+    private final DataSpaceConfig dataSpaceConfig;
+
     public BrokerServerSettings(Config config) {
         this.config = config;
         hideOfflineDataOffersAfter = getDurationOrNull(BrokerServerExtension.HIDE_OFFLINE_DATA_OFFERS_AFTER);
         catalogPagePageSize = config.getInteger(BrokerServerExtension.CATALOG_PAGE_PAGE_SIZE, 20);
+
+        var defaultDataSpaces = new HashMap<String, String>();
+        defaultDataSpaces.put("TODO", "Mobilithek"); //TODO: move to settings
+
+        dataSpaceConfig = new DataSpaceConfig(
+                defaultDataSpaces,
+                config.getString(BrokerServerExtension.DEFAULT_CONNECTOR_DATASPACE, "MDS")
+        );
     }
 
     private Duration getDurationOrNull(@NonNull String configProperty) {

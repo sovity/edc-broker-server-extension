@@ -43,7 +43,6 @@ public class CatalogApiService {
     private final AssetPropertyParser assetPropertyParser;
     private final CatalogFilterService catalogFilterService;
     private final BrokerServerSettings brokerServerSettings;
-    private final DataSpaceConfig dataSpaceConfig;
 
     public CatalogPageResult catalogPage(DSLContext dsl, CatalogPageQuery query) {
         Objects.requireNonNull(query, "query must not be null");
@@ -66,7 +65,7 @@ public class CatalogApiService {
                 query.getSorting(),
                 pageQuery,
                 catalogFilterService.getAvailableFiltersQuery(),
-                dataSpaceConfig
+                brokerServerSettings.getDataSpaceConfig()
         );
 
         var paginationMetadata = paginationMetadataUtils.buildPaginationMetadata(
