@@ -77,6 +77,10 @@ public class CatalogFilterService {
                 catalogFilterAttributeDefinitionService.fromAssetProperty(
                         AssetProperty.GEO_REFERENCE_METHOD,
                         "Geo Reference Method"
+                ),
+                catalogFilterAttributeDefinitionService.fromAssetProperty(
+                    AssetProperty.DATA_SPACE,
+                    "Data Space"
                 )
         );
     }
