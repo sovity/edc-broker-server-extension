@@ -71,6 +71,10 @@ public class CatalogQueryFields {
             tempDataSpace = DSL.when(endpoint.eq(dataSpaceConnectorEndpoints.get(i)), dataSpaceNames.get(i)).else_(tempDataSpace);
         }
 
+        if (tempDataSpace == null) {
+            tempDataSpace = DSL.val("MDS");
+        }
+
         dataSpace = tempDataSpace;
     }
 
