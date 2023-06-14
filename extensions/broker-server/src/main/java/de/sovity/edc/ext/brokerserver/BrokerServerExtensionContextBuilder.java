@@ -63,8 +63,14 @@ import org.eclipse.edc.runtime.metamodel.annotation.Inject;
 import org.eclipse.edc.spi.monitor.Monitor;
 import org.eclipse.edc.spi.system.configuration.Config;
 import org.eclipse.edc.spi.types.TypeManager;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 
 /**
@@ -155,6 +161,9 @@ public class BrokerServerExtensionContextBuilder {
         var quartzScheduleInitializer = new QuartzScheduleInitializer(config, monitor, jobs);
         var brokerServerInitializer = new BrokerServerInitializer(dslContextFactory, knownConnectorsInitializer, quartzScheduleInitializer);
 
+        var dataSpaceMap = new HashMap<String, String>();
+        dataSpaceMap.put("TODO", "Mobilithek"); //TODO: Mobilithek-Connector-Endpoint
+
         // UI Capabilities
         var catalogApiService = new CatalogApiService(
                 paginationMetadataUtils,
@@ -162,7 +171,8 @@ public class BrokerServerExtensionContextBuilder {
                 policyDtoBuilder,
                 assetPropertyParser,
                 catalogFilterService,
-                brokerServerSettings
+                brokerServerSettings,
+                dataSpaceMap
         );
         var connectorApiService = new ConnectorApiService(
                 connectorPageQueryService,

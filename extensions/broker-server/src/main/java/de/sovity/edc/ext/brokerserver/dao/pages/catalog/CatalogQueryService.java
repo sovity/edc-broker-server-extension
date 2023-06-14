@@ -24,6 +24,7 @@ import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 
 import java.util.List;
+import java.util.Map;
 
 @RequiredArgsConstructor
 public class CatalogQueryService {
@@ -45,9 +46,10 @@ public class CatalogQueryService {
             CatalogQueryFilter filter,
             CatalogPageSortingType sorting,
             PageQuery pageQuery,
-            List<AvailableFilterValuesQuery> availableFilterValueQueries
+            List<AvailableFilterValuesQuery> availableFilterValueQueries,
+            Map<String, String> dataSpaceMap
     ) {
-        var fields = new CatalogQueryFields(Tables.CONNECTOR, Tables.DATA_OFFER);
+        var fields = new CatalogQueryFields(Tables.CONNECTOR, Tables.DATA_OFFER, dataSpaceMap);
 
         var availableFilterValues = catalogQueryAvailableFilterFetcher
                 .queryAvailableFilterValues(fields, filter, availableFilterValueQueries);

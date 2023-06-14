@@ -32,6 +32,7 @@ import org.jooq.DSLContext;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 @RequiredArgsConstructor
@@ -42,6 +43,7 @@ public class CatalogApiService {
     private final AssetPropertyParser assetPropertyParser;
     private final CatalogFilterService catalogFilterService;
     private final BrokerServerSettings brokerServerSettings;
+    private final Map<String, String> dataSpaceMap;
 
     public CatalogPageResult catalogPage(DSLContext dsl, CatalogPageQuery query) {
         Objects.requireNonNull(query, "query must not be null");
@@ -63,7 +65,8 @@ public class CatalogApiService {
                 filter,
                 query.getSorting(),
                 pageQuery,
-                catalogFilterService.getAvailableFiltersQuery()
+                catalogFilterService.getAvailableFiltersQuery(),
+                dataSpaceMap
         );
 
         var paginationMetadata = paginationMetadataUtils.buildPaginationMetadata(
