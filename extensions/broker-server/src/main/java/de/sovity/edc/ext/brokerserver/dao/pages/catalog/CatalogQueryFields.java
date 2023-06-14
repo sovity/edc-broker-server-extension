@@ -25,6 +25,7 @@ import org.jooq.Field;
 import org.jooq.impl.DSL;
 
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.Map;
 
 /**
@@ -49,7 +50,7 @@ public class CatalogQueryFields {
     // It's used in the UI to display the last relevant change date of a connector
     Field<OffsetDateTime> offlineSinceOrLastUpdatedAt;
 
-    public CatalogQueryFields(Connector connectorTable, DataOffer dataOfferTable, Map<String, String> dataSpaceNames) {
+    public CatalogQueryFields(Connector connectorTable, DataOffer dataOfferTable, Map<String, String> dataSpaceMap) {
         this.connectorTable = connectorTable;
         this.dataOfferTable = dataOfferTable;
         assetId = dataOfferTable.ASSET_ID;
@@ -62,11 +63,14 @@ public class CatalogQueryFields {
         );
 
         Field<String> tempDataSpace = null;
-        for (var entry : dataSpaceNames.entrySet()) {
-            var dataSpaceId = entry.getKey();
-            var dataSpaceName = entry.getValue();
-            tempDataSpace = DSL.when(connectorTable.ENDPOINT.eq(dataSpaceId), dataSpaceName).else_("MDS");
+        var dataSpaceCount = dataSpaceMap.size();
+        var dataSpaceConnectorEndpoints = new ArrayList<>(dataSpaceMap.keySet());
+        var dataSpaceNames = new ArrayList<>(dataSpaceMap.values());
+        var endpoint = connectorTable.ENDPOINT;
+        for (int i = 0; i < dataSpaceCount; i++) {
+            tempDataSpace = DSL.when(endpoint.eq(dataSpaceConnectorEndpoints.get(i)), dataSpaceNames.get(i)).else_(tempDataSpace);
         }
+
         dataSpace = tempDataSpace;
     }
 
