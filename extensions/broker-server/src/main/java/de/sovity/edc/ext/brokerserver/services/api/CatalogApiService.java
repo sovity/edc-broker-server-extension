@@ -18,6 +18,7 @@ import de.sovity.edc.ext.brokerserver.dao.pages.catalog.CatalogQueryService;
 import de.sovity.edc.ext.brokerserver.dao.pages.catalog.models.CatalogQueryFilter;
 import de.sovity.edc.ext.brokerserver.dao.pages.catalog.models.ContractOfferRs;
 import de.sovity.edc.ext.brokerserver.dao.pages.catalog.models.DataOfferRs;
+import de.sovity.edc.ext.brokerserver.dao.pages.catalog.models.DataSpaceConfig;
 import de.sovity.edc.ext.brokerserver.services.BrokerServerSettings;
 import de.sovity.edc.ext.brokerserver.services.api.filtering.CatalogFilterService;
 import de.sovity.edc.ext.wrapper.api.broker.model.CatalogPageQuery;
@@ -32,7 +33,6 @@ import org.jooq.DSLContext;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 @RequiredArgsConstructor
@@ -43,7 +43,7 @@ public class CatalogApiService {
     private final AssetPropertyParser assetPropertyParser;
     private final CatalogFilterService catalogFilterService;
     private final BrokerServerSettings brokerServerSettings;
-    private final Map<String, String> dataSpaceMap;
+    private final DataSpaceConfig dataSpaceConfig;
 
     public CatalogPageResult catalogPage(DSLContext dsl, CatalogPageQuery query) {
         Objects.requireNonNull(query, "query must not be null");
@@ -66,7 +66,7 @@ public class CatalogApiService {
                 query.getSorting(),
                 pageQuery,
                 catalogFilterService.getAvailableFiltersQuery(),
-                dataSpaceMap
+                dataSpaceConfig
         );
 
         var paginationMetadata = paginationMetadataUtils.buildPaginationMetadata(

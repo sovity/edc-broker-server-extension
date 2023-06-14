@@ -17,6 +17,7 @@ package de.sovity.edc.ext.brokerserver.dao.pages.catalog;
 import de.sovity.edc.ext.brokerserver.dao.pages.catalog.models.AvailableFilterValuesQuery;
 import de.sovity.edc.ext.brokerserver.dao.pages.catalog.models.CatalogPageRs;
 import de.sovity.edc.ext.brokerserver.dao.pages.catalog.models.CatalogQueryFilter;
+import de.sovity.edc.ext.brokerserver.dao.pages.catalog.models.DataSpaceConfig;
 import de.sovity.edc.ext.brokerserver.dao.pages.catalog.models.PageQuery;
 import de.sovity.edc.ext.brokerserver.db.jooq.Tables;
 import de.sovity.edc.ext.wrapper.api.broker.model.CatalogPageSortingType;
@@ -24,7 +25,6 @@ import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 
 import java.util.List;
-import java.util.Map;
 
 @RequiredArgsConstructor
 public class CatalogQueryService {
@@ -47,9 +47,9 @@ public class CatalogQueryService {
             CatalogPageSortingType sorting,
             PageQuery pageQuery,
             List<AvailableFilterValuesQuery> availableFilterValueQueries,
-            Map<String, String> dataSpaceMap
+            DataSpaceConfig dataSpaceConfig
     ) {
-        var fields = new CatalogQueryFields(Tables.CONNECTOR, Tables.DATA_OFFER, dataSpaceMap);
+        var fields = new CatalogQueryFields(Tables.CONNECTOR, Tables.DATA_OFFER, dataSpaceConfig);
 
         var availableFilterValues = catalogQueryAvailableFilterFetcher
                 .queryAvailableFilterValues(fields, filter, availableFilterValueQueries);

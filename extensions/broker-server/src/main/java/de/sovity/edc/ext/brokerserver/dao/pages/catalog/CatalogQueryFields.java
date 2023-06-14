@@ -16,6 +16,7 @@ package de.sovity.edc.ext.brokerserver.dao.pages.catalog;
 
 import com.github.t9t.jooq.json.JsonbDSL;
 import de.sovity.edc.ext.brokerserver.dao.AssetProperty;
+import de.sovity.edc.ext.brokerserver.dao.pages.catalog.models.DataSpaceConfig;
 import de.sovity.edc.ext.brokerserver.db.jooq.tables.Connector;
 import de.sovity.edc.ext.brokerserver.db.jooq.tables.DataOffer;
 import lombok.AccessLevel;
@@ -26,7 +27,6 @@ import org.jooq.impl.DSL;
 
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
-import java.util.Map;
 
 /**
  * Tables and fields used in the catalog page query.
@@ -50,7 +50,7 @@ public class CatalogQueryFields {
     // It's used in the UI to display the last relevant change date of a connector
     Field<OffsetDateTime> offlineSinceOrLastUpdatedAt;
 
-    public CatalogQueryFields(Connector connectorTable, DataOffer dataOfferTable, Map<String, String> dataSpaceMap) {
+    public CatalogQueryFields(Connector connectorTable, DataOffer dataOfferTable, DataSpaceConfig dataSpaceConfig) {
         this.connectorTable = connectorTable;
         this.dataOfferTable = dataOfferTable;
         assetId = dataOfferTable.ASSET_ID;
@@ -63,16 +63,16 @@ public class CatalogQueryFields {
         );
 
         Field<String> tempDataSpace = null;
-        var dataSpaceCount = dataSpaceMap.size();
-        var dataSpaceConnectorEndpoints = new ArrayList<>(dataSpaceMap.keySet());
-        var dataSpaceNames = new ArrayList<>(dataSpaceMap.values());
+        var dataSpaceCount = dataSpaceConfig.dataSpaceMap().size();
+        var dataSpaceConnectorEndpoints = new ArrayList<>(dataSpaceConfig.dataSpaceMap().keySet());
+        var dataSpaceNames = new ArrayList<>(dataSpaceConfig.dataSpaceMap().values());
         var endpoint = connectorTable.ENDPOINT;
         for (int i = 0; i < dataSpaceCount; i++) {
             tempDataSpace = DSL.when(endpoint.eq(dataSpaceConnectorEndpoints.get(i)), dataSpaceNames.get(i)).else_(tempDataSpace);
         }
 
         if (tempDataSpace == null) {
-            tempDataSpace = DSL.val("MDS");
+            tempDataSpace = DSL.val(dataSpaceConfig.defaultDataSpace());
         }
 
         dataSpace = tempDataSpace;

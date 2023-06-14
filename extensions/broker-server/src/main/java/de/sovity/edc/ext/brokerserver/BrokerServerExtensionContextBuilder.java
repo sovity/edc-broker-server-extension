@@ -23,6 +23,7 @@ import de.sovity.edc.ext.brokerserver.dao.pages.catalog.CatalogQueryDataOfferFet
 import de.sovity.edc.ext.brokerserver.dao.pages.catalog.CatalogQueryFilterService;
 import de.sovity.edc.ext.brokerserver.dao.pages.catalog.CatalogQueryService;
 import de.sovity.edc.ext.brokerserver.dao.pages.catalog.CatalogQuerySortingService;
+import de.sovity.edc.ext.brokerserver.dao.pages.catalog.models.DataSpaceConfig;
 import de.sovity.edc.ext.brokerserver.dao.pages.connector.ConnectorPageQueryService;
 import de.sovity.edc.ext.brokerserver.db.DataSourceFactory;
 import de.sovity.edc.ext.brokerserver.db.DslContextFactory;
@@ -158,6 +159,7 @@ public class BrokerServerExtensionContextBuilder {
 
         var dataSpaceMap = new HashMap<String, String>();
         dataSpaceMap.put("TODO", "Mobilithek"); //TODO: Mobilithek-Connector-Endpoint
+        var dataSpaceConfig = new DataSpaceConfig(dataSpaceMap, "MDS");
 
         // UI Capabilities
         var catalogApiService = new CatalogApiService(
@@ -167,7 +169,7 @@ public class BrokerServerExtensionContextBuilder {
                 assetPropertyParser,
                 catalogFilterService,
                 brokerServerSettings,
-                dataSpaceMap
+                dataSpaceConfig
         );
         var connectorApiService = new ConnectorApiService(
                 connectorPageQueryService,
