@@ -12,17 +12,17 @@
  *
  */
 
-package de.sovity.edc.ext.brokerserver.services;
+package de.sovity.edc.ext.brokerserver.services.config;
 
 import de.sovity.edc.ext.brokerserver.BrokerServerExtension;
-import de.sovity.edc.ext.brokerserver.dao.pages.catalog.models.DataSpaceConfig;
 import lombok.Getter;
 import lombok.NonNull;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.edc.spi.system.configuration.Config;
 
 import java.time.Duration;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 
 public class BrokerServerSettings {
     private final Config config;
@@ -47,9 +47,9 @@ public class BrokerServerSettings {
         return new DataSpaceConfig(getKnownDataSpaceEndpoints(config), getDefaultDataSpace(config));
     }
 
-    private HashMap<String, String> getKnownDataSpaceEndpoints(Config config) {
+    private List<DataSpaceConnector> getKnownDataSpaceEndpoints(Config config) {
         // Example: "Example1=http://connector-endpoint1.org;Example2=http://connector-endpoint2.org"
-        var defaultDataSpaces = new HashMap<String, String>();
+        var defaultDataSpaces = new ArrayList<DataSpaceConnector>();
         var dataSpacesConfig = config.getString(BrokerServerExtension.KNOWN_DATASPACES_ENDPOINTS, "");
 
         if (StringUtils.isBlank(dataSpacesConfig)) {
@@ -69,7 +69,7 @@ public class BrokerServerSettings {
                 continue;
             }
 
-            defaultDataSpaces.put(dataSpaceName, dataSpaceEndpoint);
+            defaultDataSpaces.add(new DataSpaceConnector(dataSpaceEndpoint, dataSpaceName));
         }
 
         return defaultDataSpaces;

@@ -16,9 +16,9 @@ package de.sovity.edc.ext.brokerserver.dao.pages.catalog;
 
 import com.github.t9t.jooq.json.JsonbDSL;
 import de.sovity.edc.ext.brokerserver.dao.AssetProperty;
-import de.sovity.edc.ext.brokerserver.dao.pages.catalog.models.DataSpaceConfig;
 import de.sovity.edc.ext.brokerserver.db.jooq.tables.Connector;
 import de.sovity.edc.ext.brokerserver.db.jooq.tables.DataOffer;
+import de.sovity.edc.ext.brokerserver.services.config.DataSpaceConfig;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.experimental.FieldDefaults;
@@ -65,17 +65,21 @@ public class CatalogQueryFields {
     }
 
     private Field<String> buildDataSpaceField(Connector connectorTable, DataSpaceConfig dataSpaceConfig) {
-        Field<String> dataSpace = null;
         var endpoint = connectorTable.ENDPOINT;
-        for (var dsp : dataSpaceConfig.dataSpaceMap().entrySet()) {
-            dataSpace = DSL.when(endpoint.eq(dsp.getKey()), dsp.getValue()).else_(dataSpace);
+
+        var connectors = dataSpaceConfig.dataSpaceConnectors();
+        if (connectors.isEmpty()) {
+            return DSL.val(dataSpaceConfig.defaultDataSpace());
         }
 
-        if (dataSpace == null) {
-            dataSpace = DSL.val(dataSpaceConfig.defaultDataSpace());
+        var first = connectors.get(0);
+        var dspCase = DSL.case_(endpoint).when(first.endpoint(), first.dataSpaceName());
+
+        for (var dsp : connectors.subList(1, connectors.size())) {
+            dspCase = dspCase.when(dsp.endpoint(), dsp.dataSpaceName());
         }
 
-        return dataSpace;
+        return dspCase.else_(DSL.val(dataSpaceConfig.defaultDataSpace()));
     }
 
     public Field<String> getAssetProperty(String name) {

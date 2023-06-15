@@ -12,9 +12,12 @@
  *
  */
 
-package de.sovity.edc.ext.brokerserver.dao.pages.catalog.models;
 
-import java.util.Map;
+package de.sovity.edc.ext.brokerserver.services.config;
 
-public record DataSpaceConfig(Map<String, String> dataSpaceMap, String defaultDataSpace) {
+/**
+ * We have special connectors that represent entire other data spaces.
+ * Here we associate the name of the data space with the connector endpoint.
+ */
+public record DataSpaceConnector(String endpoint, String dataSpaceName) {
 }

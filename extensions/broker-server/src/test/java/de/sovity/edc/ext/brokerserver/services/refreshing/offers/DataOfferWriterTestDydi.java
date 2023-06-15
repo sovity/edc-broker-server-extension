@@ -16,7 +16,7 @@ package de.sovity.edc.ext.brokerserver.services.refreshing.offers;
 
 import de.sovity.edc.ext.brokerserver.dao.DataOfferContractOfferQueries;
 import de.sovity.edc.ext.brokerserver.dao.DataOfferQueries;
-import de.sovity.edc.ext.brokerserver.services.BrokerServerSettings;
+import de.sovity.edc.ext.brokerserver.services.config.BrokerServerSettings;
 import lombok.Value;
 import org.eclipse.edc.spi.system.configuration.Config;
 
