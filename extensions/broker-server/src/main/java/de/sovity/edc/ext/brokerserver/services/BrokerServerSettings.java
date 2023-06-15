@@ -41,13 +41,46 @@ public class BrokerServerSettings {
         hideOfflineDataOffersAfter = getDurationOrNull(BrokerServerExtension.HIDE_OFFLINE_DATA_OFFERS_AFTER);
         catalogPagePageSize = config.getInteger(BrokerServerExtension.CATALOG_PAGE_PAGE_SIZE, 20);
 
-        var defaultDataSpaces = new HashMap<String, String>();
-        defaultDataSpaces.put("TODO", "Mobilithek"); //TODO: move to settings
+        // Get known data spaces and endpoints from config
+        var defaultDataSpaces = getKnownDataSpaceEndpoints(config);
 
+        // Get default data space from config for unknown connector endpoints
         dataSpaceConfig = new DataSpaceConfig(
                 defaultDataSpaces,
-                config.getString(BrokerServerExtension.DEFAULT_CONNECTOR_DATASPACE, "MDS")
+                getDefaultDataSpace(config)
         );
+    }
+
+    private HashMap<String, String> getKnownDataSpaceEndpoints(Config config) {
+        // Example: "Example1=http://connector-endpoint1.org;Example2=http://connector-endpoint2.org"
+        var defaultDataSpaces = new HashMap<String, String>();
+        var dataSpacesConfig = config.getString(BrokerServerExtension.KNOWN_DATASPACES_ENDPOINTS, "");
+
+        if (StringUtils.isBlank(dataSpacesConfig)) {
+            return defaultDataSpaces;
+        }
+
+        var allDataSpaces = dataSpacesConfig.split(";");
+        for (var dataSpace : allDataSpaces) {
+            var dataSpaceParts = dataSpace.split("=");
+            if (dataSpaceParts.length != 2) {
+                continue;
+            }
+
+            var dataSpaceName = dataSpaceParts[0].trim();
+            var dataSpaceEndpoint = dataSpaceParts[1].trim();
+            if (StringUtils.isBlank(dataSpaceName) || StringUtils.isBlank(dataSpaceEndpoint)) {
+                continue;
+            }
+
+            defaultDataSpaces.put(dataSpaceName, dataSpaceEndpoint);
+        }
+
+        return defaultDataSpaces;
+    }
+
+    private String getDefaultDataSpace(Config config) {
+        return config.getString(BrokerServerExtension.DEFAULT_CONNECTOR_DATASPACE, "MDS");
     }
 
     private Duration getDurationOrNull(@NonNull String configProperty) {

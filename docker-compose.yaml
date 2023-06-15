@@ -20,6 +20,8 @@ services:
       MY_EDC_JDBC_USER: edc
       MY_EDC_JDBC_PASSWORD: edc
       EDC_BROKER_SERVER_KNOWN_CONNECTORS: "http://connector:11003/api/v1/ids/data"
+      EDC_BROKER_SERVER_DEFAULT_DATASPACE: "MDS"
+      EDC_BROKER_SERVER_KNOWN_DATASPACES_ENDPOINTS: "Example1=http://connector-endpoint1.org;Example2=http://connector-endpoint2.org"
 
       # Local Dev / Docker-Compose Config
       MY_EDC_PROTOCOL: "http://" # We don't have TLS in the docker container
