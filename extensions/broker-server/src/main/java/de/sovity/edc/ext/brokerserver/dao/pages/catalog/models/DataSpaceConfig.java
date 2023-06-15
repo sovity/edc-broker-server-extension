@@ -14,7 +14,7 @@
 
 package de.sovity.edc.ext.brokerserver.dao.pages.catalog.models;
 
-import java.util.HashMap;
+import java.util.Map;
 
-public record DataSpaceConfig(HashMap<String, String> dataSpaceMap, String defaultDataSpace) {
+public record DataSpaceConfig(Map<String, String> dataSpaceMap, String defaultDataSpace) {
 }

@@ -40,15 +40,11 @@ public class BrokerServerSettings {
         this.config = config;
         hideOfflineDataOffersAfter = getDurationOrNull(BrokerServerExtension.HIDE_OFFLINE_DATA_OFFERS_AFTER);
         catalogPagePageSize = config.getInteger(BrokerServerExtension.CATALOG_PAGE_PAGE_SIZE, 20);
+        dataSpaceConfig = buildDataSpaceConfig(config);
+    }
 
-        // Get known data spaces and endpoints from config
-        var defaultDataSpaces = getKnownDataSpaceEndpoints(config);
-
-        // Get default data space from config for unknown connector endpoints
-        dataSpaceConfig = new DataSpaceConfig(
-                defaultDataSpaces,
-                getDefaultDataSpace(config)
-        );
+    private DataSpaceConfig buildDataSpaceConfig(Config config) {
+        return new DataSpaceConfig(getKnownDataSpaceEndpoints(config), getDefaultDataSpace(config));
     }
 
     private HashMap<String, String> getKnownDataSpaceEndpoints(Config config) {
@@ -80,7 +76,7 @@ public class BrokerServerSettings {
     }
 
     private String getDefaultDataSpace(Config config) {
-        return config.getString(BrokerServerExtension.DEFAULT_CONNECTOR_DATASPACE, "MDS");
+        return config.getString(BrokerServerExtension.DEFAULT_CONNECTOR_DATASPACE, "Default");
     }
 
     private Duration getDurationOrNull(@NonNull String configProperty) {

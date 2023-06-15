@@ -26,7 +26,6 @@ import org.jooq.Field;
 import org.jooq.impl.DSL;
 
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
 
 /**
  * Tables and fields used in the catalog page query.
@@ -67,12 +66,9 @@ public class CatalogQueryFields {
 
     private Field<String> buildDataSpaceField(Connector connectorTable, DataSpaceConfig dataSpaceConfig) {
         Field<String> dataSpace = null;
-        var dataSpaceCount = dataSpaceConfig.dataSpaceMap().size();
-        var dataSpaceConnectorEndpoints = new ArrayList<>(dataSpaceConfig.dataSpaceMap().keySet());
-        var dataSpaceNames = new ArrayList<>(dataSpaceConfig.dataSpaceMap().values());
         var endpoint = connectorTable.ENDPOINT;
-        for (int i = 0; i < dataSpaceCount; i++) {
-            dataSpace = DSL.when(endpoint.eq(dataSpaceConnectorEndpoints.get(i)), dataSpaceNames.get(i)).else_(dataSpace);
+        for (var dsp : dataSpaceConfig.dataSpaceMap().entrySet()) {
+            dataSpace = DSL.when(endpoint.eq(dsp.getKey()), dsp.getValue()).else_(dataSpace);
         }
 
         if (dataSpace == null) {
