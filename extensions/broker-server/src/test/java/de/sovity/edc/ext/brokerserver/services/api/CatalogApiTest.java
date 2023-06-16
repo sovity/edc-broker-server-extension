@@ -132,6 +132,7 @@ class CatalogApiTest {
             assertThat(result.getAvailableFilters().getFields())
                     .extracting(CnfFilterAttribute::getId)
                     .containsExactly(
+                            "dataSpace",
                             AssetProperty.DATA_CATEGORY,
                             AssetProperty.DATA_SUBCATEGORY,
                             AssetProperty.DATA_MODEL,
@@ -142,6 +143,7 @@ class CatalogApiTest {
             assertThat(result.getAvailableFilters().getFields())
                     .extracting(CnfFilterAttribute::getTitle)
                     .containsExactly(
+                        "Data Space",
                             "Data Category",
                             "Data Subcategory",
                             "Data Model",
