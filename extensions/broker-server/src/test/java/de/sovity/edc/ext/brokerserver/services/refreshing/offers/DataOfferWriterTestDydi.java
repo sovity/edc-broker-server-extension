@@ -25,7 +25,7 @@ import static org.mockito.Mockito.mock;
 @Value
 class DataOfferWriterTestDydi {
     Config config = mock(Config.class);
-    BrokerServerSettings brokerServerSettings = new BrokerServerSettings(config);
+    BrokerServerSettings brokerServerSettings = mock(BrokerServerSettings.class);
     DataOfferQueries dataOfferQueries = new DataOfferQueries();
     DataOfferContractOfferQueries dataOfferContractOfferQueries = new DataOfferContractOfferQueries();
     ContractOfferRecordUpdater contractOfferRecordUpdater = new ContractOfferRecordUpdater();
