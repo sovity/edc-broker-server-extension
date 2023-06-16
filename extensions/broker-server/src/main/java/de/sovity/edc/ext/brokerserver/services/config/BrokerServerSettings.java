@@ -16,15 +16,12 @@ package de.sovity.edc.ext.brokerserver.services.config;
 
 import lombok.Builder;
 import lombok.Value;
-import org.eclipse.edc.spi.system.configuration.Config;
 
 import java.time.Duration;
 
 @Value
 @Builder
 public class BrokerServerSettings {
-    Config config;
-
     Duration hideOfflineDataOffersAfter;
 
     int catalogPagePageSize;

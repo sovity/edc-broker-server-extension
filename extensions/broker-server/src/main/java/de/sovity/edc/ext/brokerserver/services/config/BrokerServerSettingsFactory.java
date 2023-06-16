@@ -49,10 +49,6 @@ public class BrokerServerSettingsFactory {
         var defaultDataSpaces = new ArrayList<DataSpaceConnector>();
         var dataSpacesConfig = config.getString(BrokerServerExtension.KNOWN_DATASPACES_ENDPOINTS, "");
 
-        if (StringUtils.isBlank(dataSpacesConfig)) {
-            return defaultDataSpaces;
-        }
-
         var allDataSpaces = dataSpacesConfig.split(";");
         for (var dataSpace : allDataSpaces) {
             var dataSpaceParts = dataSpace.split("=");
