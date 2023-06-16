@@ -66,6 +66,39 @@ class CatalogApiTest {
     }
 
     @Test
+    void testDataSpace() {
+        System.setProperty("EDC_BROKER_SERVER_DEFAULT_DATASPACE", "MDS");
+        System.setProperty("EDC_BROKER_SERVER_KNOWN_DATASPACES_ENDPOINTS", "Example1=http://my-connector/ids/data");
+
+        TEST_DATABASE.testTransaction(dsl -> {
+            // arrange
+            var today = OffsetDateTime.now().withNano(0);
+
+            createConnector(dsl, today); // Dataspace: Example1
+            createConnector2(dsl, today); // Dataspace: MDS
+            createDataOffer(dsl, today, Map.of(
+                AssetProperty.ASSET_ID, "urn:artifact:my-asset",
+                AssetProperty.ASSET_NAME, "my-asset"
+            )); // Dataspace: Example1
+            createDataOffer2(dsl, today, Map.of(
+                AssetProperty.ASSET_ID, "urn:artifact:my-asset",
+                AssetProperty.ASSET_NAME, "my-asset"
+            )); // Dataspace: MDS
+
+            var query = new CatalogPageQuery();
+            query.setFilter(new CnfFilterValue(List.of(
+                //new CnfFilterValueAttribute("dataSpace", List.of("MDS"))
+            )));
+
+            var result = edcClient().brokerServerApi().catalogPage(query);
+            assertThat(result.getDataOffers()).hasSize(2);
+
+            var dataOfferResult = result.getDataOffers().get(0);
+            assertThat(dataOfferResult.getConnectorEndpoint()).isEqualTo("http://my-connector/ids/data");
+        });
+    }
+
+    @Test
     void testDataOfferDetails() {
         TEST_DATABASE.testTransaction(dsl -> {
             // arrange
@@ -289,10 +322,43 @@ class CatalogApiTest {
         contractOffer.insert();
     }
 
+    private void createDataOffer2(DSLContext dsl, OffsetDateTime today, Map<String, String> assetProperties) {
+        var dataOffer = dsl.newRecord(Tables.DATA_OFFER);
+        dataOffer.setAssetId(assetProperties.get(AssetProperty.ASSET_ID));
+        dataOffer.setAssetName(assetProperties.getOrDefault(AssetProperty.ASSET_NAME, dataOffer.getAssetId()));
+        dataOffer.setAssetProperties(JSONB.jsonb(assetProperties(assetProperties)));
+        dataOffer.setConnectorEndpoint("http://my-connector2/ids/data");
+        dataOffer.setCreatedAt(today.minusDays(5));
+        dataOffer.setUpdatedAt(today);
+        dataOffer.insert();
+
+        var contractOffer = dsl.newRecord(Tables.DATA_OFFER_CONTRACT_OFFER);
+        contractOffer.setContractOfferId("my-contract-offer-1");
+        contractOffer.setConnectorEndpoint("http://my-connector2/ids/data");
+        contractOffer.setAssetId(assetProperties.get(AssetProperty.ASSET_ID));
+        contractOffer.setCreatedAt(today.minusDays(5));
+        contractOffer.setUpdatedAt(today);
+        contractOffer.setPolicy(JSONB.jsonb(policyToJson(dummyPolicy())));
+        contractOffer.insert();
+    }
+
     private void createConnector(DSLContext dsl, OffsetDateTime today) {
         var connector = dsl.newRecord(Tables.CONNECTOR);
         connector.setConnectorId("http://my-connector");
         connector.setEndpoint("http://my-connector/ids/data");
+        connector.setOnlineStatus(ConnectorOnlineStatus.ONLINE);
+        connector.setCreatedAt(today.minusDays(1));
+        connector.setLastRefreshAttemptAt(today);
+        connector.setLastSuccessfulRefreshAt(today);
+        connector.setDataOffersExceeded(ConnectorDataOffersExceeded.OK);
+        connector.setContractOffersExceeded(ConnectorContractOffersExceeded.OK);
+        connector.insert();
+    }
+
+    private void createConnector2(DSLContext dsl, OffsetDateTime today) {
+        var connector = dsl.newRecord(Tables.CONNECTOR);
+        connector.setConnectorId("http://my-connector2");
+        connector.setEndpoint("http://my-connector2/ids/data");
         connector.setOnlineStatus(ConnectorOnlineStatus.ONLINE);
         connector.setCreatedAt(today.minusDays(1));
         connector.setLastRefreshAttemptAt(today);
