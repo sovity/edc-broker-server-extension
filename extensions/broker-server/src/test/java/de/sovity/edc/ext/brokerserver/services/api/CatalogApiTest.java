@@ -68,7 +68,7 @@ class CatalogApiTest {
     }
 
     @Test
-    void testDataSpace() {
+    void testDataSpace_two_dataspaces_filter_for_one() {
         TEST_DATABASE.testTransaction(dsl -> {
             // arrange
             var today = OffsetDateTime.now().withNano(0);
@@ -94,6 +94,40 @@ class CatalogApiTest {
 
             var dataOfferResult = result.getDataOffers().get(0);
             assertThat(dataOfferResult.getConnectorEndpoint()).isEqualTo("http://my-connector2/ids/data");
+        });
+    }
+
+    @Test
+    void test_available_filter_values_to_filter_by() {
+        TEST_DATABASE.testTransaction(dsl -> {
+            // arrange
+            var today = OffsetDateTime.now().withNano(0);
+
+            createConnector(dsl, today, "http://my-connector/ids/data"); // Dataspace: Example1
+            createConnector(dsl, today, "http://my-connector2/ids/data"); // Dataspace: MDS
+            createDataOffer(dsl, today, Map.of(
+                AssetProperty.ASSET_ID, "urn:artifact:my-asset",
+                AssetProperty.ASSET_NAME, "my-asset",
+                AssetProperty.LANGUAGE, "de"
+            ), "http://my-connector/ids/data"); // Dataspace: Example1
+            createDataOffer(dsl, today, Map.of(
+                AssetProperty.ASSET_ID, "urn:artifact:my-asset",
+                AssetProperty.ASSET_NAME, "my-asset",
+                AssetProperty.LANGUAGE, "en"
+            ), "http://my-connector2/ids/data"); // Dataspace: MDS
+            createDataOffer(dsl, today, Map.of(
+                AssetProperty.ASSET_ID, "urn:artifact:my-asset2",
+                AssetProperty.ASSET_NAME, "my-asset",
+                AssetProperty.LANGUAGE, "fr"
+            ), "http://my-connector2/ids/data"); // Dataspace: MDS
+
+            // get all available filter values
+            var result = edcClient().brokerServerApi().catalogPage(new CatalogPageQuery()).getAvailableFilters();
+
+            // assert that the filter values are correct
+            assertThat(result.getFields()).hasSize(6);
+            assertThat(result.getFields().get(0).getId()).isEqualTo("dataSpace");
+            assertThat(result.getFields().get(0).getValues()).hasSize(2); // Example1, MDS (deduplicated)
         });
     }
 
