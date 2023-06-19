@@ -125,9 +125,8 @@ class CatalogApiTest {
             var result = edcClient().brokerServerApi().catalogPage(new CatalogPageQuery()).getAvailableFilters();
 
             // assert that the filter values are correct
-            assertThat(result.getFields()).hasSize(6);
-            assertThat(result.getFields().get(0).getId()).isEqualTo("dataSpace");
-            assertThat(result.getFields().get(0).getValues()).hasSize(2); // Example1, MDS (deduplicated)
+            var dataSpace = getAvailableFilter(edcClient().brokerServerApi().catalogPage(new CatalogPageQuery()), "dataSpace");
+            assertThat(dataSpace.getValues()).containsExactly(new CnfFilterItem("Example1", "Example1"), new CnfFilterItem("MDS", "MDS"));
         });
     }
 
