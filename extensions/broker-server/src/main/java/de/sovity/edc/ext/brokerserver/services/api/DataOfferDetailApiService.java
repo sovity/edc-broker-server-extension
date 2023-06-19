@@ -30,7 +30,7 @@ public class DataOfferDetailApiService {
     public DataOfferDetailPageResult dataOfferDetailPage(DSLContext dsl, DataOfferDetailPageQuery query) {
         Objects.requireNonNull(query, "query must not be null");
 
-        var connectorDbRows = dataOfferDetailPageQueryService.queryDataOfferDetailsPage(dsl, query.getAssetId());
+        var dataOfferDbRow = dataOfferDetailPageQueryService.queryDataOfferDetailsPage(dsl, query.getAssetId());
 
         var result = new DataOfferDetailPageResult();
         return result;

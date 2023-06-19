@@ -38,13 +38,20 @@ public class ConnectorPageQueryService {
                 .fetchInto(ConnectorRs.class);
     }
 
-    public List<ConnectorRs>  queryConnectorDetailPage(DSLContext dsl, String connectorEndpoint) {
+    public ConnectorRs queryConnectorDetailPage(DSLContext dsl, String connectorEndpoint) {
         var c = Tables.CONNECTOR;
         var filterBySearchQuery = SearchUtils.simpleSearch(connectorEndpoint, List.of(c.ENDPOINT, c.CONNECTOR_ID));
-        return dsl.select(c.asterisk(), dataOfferCount(c.ENDPOINT).as("numDataOffers"))
-            .from(c)
-            .where(filterBySearchQuery)
-            .fetchInto(ConnectorRs.class);
+
+        var connector = dsl.select(c.asterisk(), dataOfferCount(c.ENDPOINT).as("numDataOffers"))
+                .from(c)
+                .where(filterBySearchQuery)
+                .fetchInto(ConnectorRs.class);
+
+        if (!connector.isEmpty()) {
+            return connector.get(0);
+        } else {
+            throw new IllegalArgumentException("Connector not found");
+        }
     }
 
     @NotNull
