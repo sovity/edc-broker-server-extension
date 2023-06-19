@@ -14,6 +14,7 @@
 
 package de.sovity.edc.ext.brokerserver.dao.pages.dataoffer;
 
+import de.sovity.edc.ext.brokerserver.dao.pages.catalog.models.DataOfferRs;
 import de.sovity.edc.ext.brokerserver.dao.utils.SearchUtils;
 import de.sovity.edc.ext.brokerserver.db.jooq.Tables;
 import de.sovity.edc.ext.brokerserver.db.jooq.tables.DataOffer;
@@ -26,14 +27,14 @@ import org.jooq.impl.DSL;
 import java.util.List;
 
 public class DataOfferDetailPageQueryService {
-    public DataOffer queryDataOfferDetailsPage(DSLContext dsl, String assetId) {
+    public DataOfferRs queryDataOfferDetailsPage(DSLContext dsl, String assetId) {
         var d = Tables.DATA_OFFER;
         var filterBySearchQuery = SearchUtils.simpleSearch(assetId, List.of(d.ASSET_NAME, d.ASSET_ID, d.CONNECTOR_ENDPOINT));
         var dataOffers = dsl.select(d.asterisk(), dataOfferCount(d.ASSET_ID).as("numDataOffers"))
                 .from(d)
                 .where(filterBySearchQuery)
                 .orderBy(sortDataOfferDetailsPage(d))
-                .fetchInto(DataOffer.class);
+                .fetchInto(DataOfferRs.class);
 
         if (!dataOffers.isEmpty()) {
             return dataOffers.get(0);
