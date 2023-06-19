@@ -61,21 +61,20 @@ class CatalogApiTest {
     @BeforeEach
     void setUp(EdcExtension extension) {
         extension.setConfiguration(createConfiguration(TEST_DATABASE, Map.of(
-                BrokerServerExtension.CATALOG_PAGE_PAGE_SIZE, "10"
+                BrokerServerExtension.CATALOG_PAGE_PAGE_SIZE, "10",
+                BrokerServerExtension.DEFAULT_CONNECTOR_DATASPACE, "MDS",
+                BrokerServerExtension.KNOWN_DATASPACES_ENDPOINTS, "Example1=http://my-connector/ids/data"
         )));
     }
 
     @Test
     void testDataSpace() {
-        System.setProperty("EDC_BROKER_SERVER_DEFAULT_DATASPACE", "MDS");
-        System.setProperty("EDC_BROKER_SERVER_KNOWN_DATASPACES_ENDPOINTS", "Example1=http://my-connector/ids/data");
-
         TEST_DATABASE.testTransaction(dsl -> {
             // arrange
             var today = OffsetDateTime.now().withNano(0);
 
-            createConnector(dsl, today); // Dataspace: Example1
-            createConnector2(dsl, today); // Dataspace: MDS
+            createConnector(dsl, today, "http://my-connector/ids/data"); // Dataspace: Example1
+            createConnector(dsl, today, "http://my-connector2/ids/data"); // Dataspace: MDS
             createDataOffer(dsl, today, Map.of(
                 AssetProperty.ASSET_ID, "urn:artifact:my-asset",
                 AssetProperty.ASSET_NAME, "my-asset"
@@ -87,14 +86,14 @@ class CatalogApiTest {
 
             var query = new CatalogPageQuery();
             query.setFilter(new CnfFilterValue(List.of(
-                //new CnfFilterValueAttribute("dataSpace", List.of("MDS"))
+                new CnfFilterValueAttribute("dataSpace", List.of("MDS"))
             )));
 
             var result = edcClient().brokerServerApi().catalogPage(query);
-            assertThat(result.getDataOffers()).hasSize(2);
+            assertThat(result.getDataOffers()).hasSize(1);
 
             var dataOfferResult = result.getDataOffers().get(0);
-            assertThat(dataOfferResult.getConnectorEndpoint()).isEqualTo("http://my-connector/ids/data");
+            assertThat(dataOfferResult.getConnectorEndpoint()).isEqualTo("http://my-connector2/ids/data");
         });
     }
 
@@ -104,7 +103,7 @@ class CatalogApiTest {
             // arrange
             var today = OffsetDateTime.now().withNano(0);
 
-            createConnector(dsl, today);
+            createConnector(dsl, today, "http://my-connector/ids/data");
             createDataOffer(dsl, today, Map.of(
                     AssetProperty.ASSET_ID, "urn:artifact:my-asset",
                     AssetProperty.ASSET_NAME, "my-asset"
@@ -134,7 +133,7 @@ class CatalogApiTest {
             // arrange
             var today = OffsetDateTime.now().withNano(0);
 
-            createConnector(dsl, today);
+            createConnector(dsl, today, "http://my-connector/ids/data");
             createDataOffer(dsl, today, Map.of(
                     AssetProperty.ASSET_ID, "urn:artifact:my-asset-1",
                     AssetProperty.DATA_CATEGORY, "my-category-1",
@@ -213,7 +212,7 @@ class CatalogApiTest {
             // arrange
             var today = OffsetDateTime.now().withNano(0);
 
-            createConnector(dsl, today);
+            createConnector(dsl, today, "http://my-connector/ids/data");
             createDataOffer(dsl, today, Map.of(
                     AssetProperty.ASSET_ID, "urn:artifact:my-asset-1",
                     AssetProperty.DATA_CATEGORY, "my-category"
@@ -244,7 +243,7 @@ class CatalogApiTest {
             // arrange
             var today = OffsetDateTime.now().withNano(0);
 
-            createConnector(dsl, today);
+            createConnector(dsl, today, "http://my-connector/ids/data");
             IntStream.range(0, 15).forEach(i -> createDataOffer(dsl, today, Map.of(
                     AssetProperty.ASSET_ID, "urn:artifact:my-asset-%d".formatted(i)
             )));
@@ -275,7 +274,7 @@ class CatalogApiTest {
             // arrange
             var today = OffsetDateTime.now().withNano(0);
 
-            createConnector(dsl, today);
+            createConnector(dsl, today, "http://my-connector/ids/data");
             IntStream.range(0, 15).forEach(i -> createDataOffer(dsl, today, Map.of(
                     AssetProperty.ASSET_ID, "urn:artifact:my-asset-%d".formatted(i)
             )));
@@ -342,23 +341,10 @@ class CatalogApiTest {
         contractOffer.insert();
     }
 
-    private void createConnector(DSLContext dsl, OffsetDateTime today) {
+    private void createConnector(DSLContext dsl, OffsetDateTime today, String connectorEndpoint) {
         var connector = dsl.newRecord(Tables.CONNECTOR);
         connector.setConnectorId("http://my-connector");
-        connector.setEndpoint("http://my-connector/ids/data");
-        connector.setOnlineStatus(ConnectorOnlineStatus.ONLINE);
-        connector.setCreatedAt(today.minusDays(1));
-        connector.setLastRefreshAttemptAt(today);
-        connector.setLastSuccessfulRefreshAt(today);
-        connector.setDataOffersExceeded(ConnectorDataOffersExceeded.OK);
-        connector.setContractOffersExceeded(ConnectorContractOffersExceeded.OK);
-        connector.insert();
-    }
-
-    private void createConnector2(DSLContext dsl, OffsetDateTime today) {
-        var connector = dsl.newRecord(Tables.CONNECTOR);
-        connector.setConnectorId("http://my-connector2");
-        connector.setEndpoint("http://my-connector2/ids/data");
+        connector.setEndpoint(connectorEndpoint);
         connector.setOnlineStatus(ConnectorOnlineStatus.ONLINE);
         connector.setCreatedAt(today.minusDays(1));
         connector.setLastRefreshAttemptAt(today);
