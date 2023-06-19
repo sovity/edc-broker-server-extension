@@ -52,8 +52,16 @@ public class ConnectorApiService {
         Objects.requireNonNull(query, "query must not be null");
 
         var connectorDbRow = connectorPageQueryService.queryConnectorDetailPage(dsl, query.getConnectorEndpoint());
+        var connector = buildConnectorListEntry(connectorDbRow);
 
         var result = new ConnectorDetailPageResult();
+        result.setCreatedAt(connector.getCreatedAt());
+        result.setEndpoint(connector.getEndpoint());
+        result.setId(connector.getId());
+        result.setLastRefreshAttemptAt(connector.getLastRefreshAttemptAt());
+        result.setLastSuccessfulRefreshAt(connector.getLastSuccessfulRefreshAt());
+        result.setNumContractOffers(connector.getNumContractOffers());
+        result.setOnlineStatus(connector.getOnlineStatus());
         return result;
     }
 
