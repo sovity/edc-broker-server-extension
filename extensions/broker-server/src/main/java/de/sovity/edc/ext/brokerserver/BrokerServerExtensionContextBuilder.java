@@ -24,6 +24,7 @@ import de.sovity.edc.ext.brokerserver.dao.pages.catalog.CatalogQueryFilterServic
 import de.sovity.edc.ext.brokerserver.dao.pages.catalog.CatalogQueryService;
 import de.sovity.edc.ext.brokerserver.dao.pages.catalog.CatalogQuerySortingService;
 import de.sovity.edc.ext.brokerserver.dao.pages.connector.ConnectorPageQueryService;
+import de.sovity.edc.ext.brokerserver.dao.pages.dataoffer.DataOfferDetailPageQueryService;
 import de.sovity.edc.ext.brokerserver.db.DataSourceFactory;
 import de.sovity.edc.ext.brokerserver.db.DslContextFactory;
 import de.sovity.edc.ext.brokerserver.services.BrokerServerInitializer;
@@ -32,6 +33,7 @@ import de.sovity.edc.ext.brokerserver.services.KnownConnectorsInitializer;
 import de.sovity.edc.ext.brokerserver.services.api.AssetPropertyParser;
 import de.sovity.edc.ext.brokerserver.services.api.CatalogApiService;
 import de.sovity.edc.ext.brokerserver.services.api.ConnectorApiService;
+import de.sovity.edc.ext.brokerserver.services.api.DataOfferDetailApiService;
 import de.sovity.edc.ext.brokerserver.services.api.PaginationMetadataUtils;
 import de.sovity.edc.ext.brokerserver.services.api.PolicyDtoBuilder;
 import de.sovity.edc.ext.brokerserver.services.api.filtering.CatalogFilterAttributeDefinitionService;
@@ -100,6 +102,7 @@ public class BrokerServerExtensionContextBuilder {
         var catalogQueryAvailableFilterFetcher = new CatalogQueryAvailableFilterFetcher(catalogQueryFilterService);
         var catalogQueryService = new CatalogQueryService(catalogQueryDataOfferFetcher, catalogQueryAvailableFilterFetcher);
         var connectorPageQueryService = new ConnectorPageQueryService();
+        var dataOfferDetailPageQueryService = new DataOfferDetailPageQueryService();
 
 
         // Services
@@ -169,10 +172,17 @@ public class BrokerServerExtensionContextBuilder {
                 connectorPageQueryService,
                 paginationMetadataUtils
         );
+
+        var dataOfferDetailApiService = new DataOfferDetailApiService(
+                dataOfferDetailPageQueryService,
+                paginationMetadataUtils
+        );
+
         var brokerServerResource = new BrokerServerResourceImpl(
                 dslContextFactory,
                 connectorApiService,
-                catalogApiService
+                catalogApiService,
+                dataOfferDetailApiService
         );
         return new BrokerServerExtensionContext(
                 brokerServerResource,
