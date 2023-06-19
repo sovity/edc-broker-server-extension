@@ -56,7 +56,6 @@ public class DataOfferDetailApiService {
         dto.setAssetId(dataOffer.getAssetId());
         dto.setContractOffers(getContractOffers(dataOffer));
         dto.setConnectorEndpoint(dataOffer.getConnectorEndpoint());
-        dto.setConnectorOnlineStatus(ConnectorOnlineStatus.valueOf(dataOffer.getConnectorOnlineStatus().name()));
         dto.setConnectorOfflineSinceOrLastUpdatedAt(dataOffer.getConnectorOfflineSinceOrLastUpdatedAt());
         dto.setCreatedAt(dataOffer.getCreatedAt());
         dto.setUpdatedAt(dataOffer.getUpdatedAt());
@@ -65,6 +64,11 @@ public class DataOfferDetailApiService {
 
     private List<DataOfferListEntryContractOffer> getContractOffers(DataOfferRs dataOffer) {
         List<DataOfferListEntryContractOffer> dataOfferList = new ArrayList<>();
+
+        if (dataOffer.getContractOffers() == null) {
+            return dataOfferList;
+        }
+
         for (ContractOfferRs contractOffer : dataOffer.getContractOffers()) {
             var dto = new DataOfferListEntryContractOffer();
             dto.setContractOfferId(contractOffer.getContractOfferId());

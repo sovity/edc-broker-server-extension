@@ -14,6 +14,7 @@
 
 package de.sovity.edc.ext.brokerserver.services.api;
 
+import de.sovity.edc.client.gen.model.ConnectorDetailPageQuery;
 import de.sovity.edc.client.gen.model.ConnectorPageQuery;
 import de.sovity.edc.ext.brokerserver.BrokerServerExtension;
 import de.sovity.edc.ext.brokerserver.db.TestDatabase;
@@ -55,5 +56,12 @@ class ConnectorApiTest {
         assertThat(connector.getEndpoint()).isEqualTo("https://example.com/ids/data");
         assertThat(connector.getId()).isEqualTo("https://example.com");
         assertThat(connector.getOnlineStatus()).isEqualTo(OFFLINE);
+    }
+
+    @Test
+    void testQueryConnectorDetails() {
+        var connector = edcClient().brokerServerApi().connectorDetailPage(new ConnectorDetailPageQuery());
+        assertThat(connector.getEndpoint()).isEqualTo("https://example.com/ids/data");
+        assertThat(connector.getId()).isEqualTo("https://example.com");
     }
 }
