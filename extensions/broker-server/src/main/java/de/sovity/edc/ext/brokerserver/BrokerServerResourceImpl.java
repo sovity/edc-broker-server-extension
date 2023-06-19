@@ -56,7 +56,7 @@ public class BrokerServerResourceImpl implements BrokerServerResource {
     }
 
     @Override
-    public ConnectorDetailPageResult connectorDetailPage(ConnectorDetailPageQuery connectorDetailPageQuery) {
-        throw new IllegalStateException("Not yet implemented!");
+    public ConnectorDetailPageResult connectorDetailPage(ConnectorDetailPageQuery query) {
+        return dslContextFactory.transactionResult(dsl -> connectorApiService.connectorDetailPage(dsl, query));
     }
 }

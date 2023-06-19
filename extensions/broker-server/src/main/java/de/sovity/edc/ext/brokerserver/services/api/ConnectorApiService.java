@@ -16,6 +16,8 @@ package de.sovity.edc.ext.brokerserver.services.api;
 
 import de.sovity.edc.ext.brokerserver.dao.pages.connector.ConnectorPageQueryService;
 import de.sovity.edc.ext.brokerserver.dao.pages.connector.model.ConnectorRs;
+import de.sovity.edc.ext.wrapper.api.broker.model.ConnectorDetailPageQuery;
+import de.sovity.edc.ext.wrapper.api.broker.model.ConnectorDetailPageResult;
 import de.sovity.edc.ext.wrapper.api.broker.model.ConnectorListEntry;
 import de.sovity.edc.ext.wrapper.api.broker.model.ConnectorOnlineStatus;
 import de.sovity.edc.ext.wrapper.api.broker.model.ConnectorPageQuery;
@@ -43,6 +45,15 @@ public class ConnectorApiService {
         result.setAvailableSortings(buildAvailableSortings());
         result.setPaginationMetadata(paginationMetadataUtils.buildDummyPaginationMetadata(connectorDbRows.size()));
         result.setConnectors(buildConnectorListEntries(connectorDbRows));
+        return result;
+    }
+
+    public ConnectorDetailPageResult connectorDetailPage(DSLContext dsl, ConnectorDetailPageQuery query) {
+        Objects.requireNonNull(query, "query must not be null");
+
+        var connectorDbRow = connectorPageQueryService.queryConnectorDetailPage(dsl, query.getConnectorEndpoint());
+
+        var result = new ConnectorDetailPageResult();
         return result;
     }
 
