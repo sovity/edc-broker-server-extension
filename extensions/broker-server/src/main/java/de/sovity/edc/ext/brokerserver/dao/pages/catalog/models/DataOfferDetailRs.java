@@ -26,7 +26,7 @@ import java.util.List;
 @Getter
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class DataOfferRs {
+public class DataOfferDetailRs {
     String assetId;
     String assetPropertiesJson;
     OffsetDateTime createdAt;

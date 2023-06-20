@@ -42,16 +42,10 @@ public class ConnectorPageQueryService {
         var c = Tables.CONNECTOR;
         var filterBySearchQuery = SearchUtils.simpleSearch(connectorEndpoint, List.of(c.ENDPOINT, c.CONNECTOR_ID));
 
-        var connector = dsl.select(c.asterisk(), dataOfferCount(c.ENDPOINT).as("numDataOffers"))
+        return dsl.select(c.asterisk(), dataOfferCount(c.ENDPOINT).as("numDataOffers"))
                 .from(c)
                 .where(filterBySearchQuery)
-                .fetchInto(ConnectorRs.class);
-
-        if (!connector.isEmpty()) {
-            return connector.get(0);
-        } else {
-            throw new IllegalArgumentException("Connector not found");
-        }
+                .fetchOneInto(ConnectorRs.class);
     }
 
     @NotNull

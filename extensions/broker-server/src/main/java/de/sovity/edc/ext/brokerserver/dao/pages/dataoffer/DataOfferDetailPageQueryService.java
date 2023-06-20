@@ -14,45 +14,24 @@
 
 package de.sovity.edc.ext.brokerserver.dao.pages.dataoffer;
 
-import de.sovity.edc.ext.brokerserver.dao.pages.catalog.models.DataOfferRs;
-import de.sovity.edc.ext.brokerserver.dao.utils.SearchUtils;
+import de.sovity.edc.ext.brokerserver.dao.pages.catalog.models.DataOfferDetailRs;
 import de.sovity.edc.ext.brokerserver.db.jooq.Tables;
-import de.sovity.edc.ext.brokerserver.db.jooq.tables.DataOffer;
-import org.jetbrains.annotations.NotNull;
 import org.jooq.DSLContext;
-import org.jooq.Field;
-import org.jooq.OrderField;
-import org.jooq.impl.DSL;
-
-import java.util.List;
 
 public class DataOfferDetailPageQueryService {
-    public DataOfferRs queryDataOfferDetailsPage(DSLContext dsl, String assetId) {
+    public DataOfferDetailRs queryDataOfferDetailsPage(DSLContext dsl, String assetId, String endpoint) {
         var d = Tables.DATA_OFFER;
-        var filterBySearchQuery = SearchUtils.simpleSearch(assetId, List.of(d.ASSET_NAME, d.ASSET_ID, d.CONNECTOR_ENDPOINT));
-        var dataOffers = dsl.select(d.asterisk(), dataOfferCount(d.ASSET_ID).as("numDataOffers"))
-                .from(d)
-                .where(filterBySearchQuery)
-                .orderBy(sortDataOfferDetailsPage(d))
-                .fetchInto(DataOfferRs.class);
+        var c = Tables.CONNECTOR;
 
-        if (!dataOffers.isEmpty()) {
-            return dataOffers.get(0);
-        } else {
-            throw new IllegalArgumentException("Data offer not found");
-        }
-    }
-
-    @NotNull
-    private List<OrderField<?>> sortDataOfferDetailsPage(DataOffer d) {
-        var alphabetically = d.ASSET_NAME.asc();
-        var recentFirst = d.CREATED_AT.desc();
-
-        return List.of(alphabetically, recentFirst);
-    }
-
-    private Field<Long> dataOfferCount(Field<String> endpoint) {
-        var d = Tables.DATA_OFFER;
-        return DSL.select(DSL.count()).from(d).where(d.CONNECTOR_ENDPOINT.eq(endpoint)).asField();
+        return dsl.select(
+                d.ASSET_ID,
+                d.ASSET_PROPERTIES.cast(String.class).as("assetPropertiesJson"),
+                d.CREATED_AT,
+                d.UPDATED_AT,
+                c.ENDPOINT.as("connectorEndpoint"),
+                c.ONLINE_STATUS.as("connectorOnlineStatus"))
+                .from(d).leftJoin(c).on(c.ENDPOINT.eq(d.CONNECTOR_ENDPOINT))
+                .where(d.ASSET_ID.eq(assetId).or(d.CONNECTOR_ENDPOINT.eq(endpoint)))
+                .fetchOneInto(DataOfferDetailRs.class);
     }
 }

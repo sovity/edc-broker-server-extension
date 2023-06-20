@@ -174,8 +174,7 @@ public class BrokerServerExtensionContextBuilder {
         );
 
         var dataOfferDetailApiService = new DataOfferDetailApiService(
-                dataOfferDetailPageQueryService,
-                paginationMetadataUtils
+                dataOfferDetailPageQueryService
         );
 
         var brokerServerResource = new BrokerServerResourceImpl(

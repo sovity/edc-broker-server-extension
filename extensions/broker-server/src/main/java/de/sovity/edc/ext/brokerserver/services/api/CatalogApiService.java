@@ -17,7 +17,7 @@ package de.sovity.edc.ext.brokerserver.services.api;
 import de.sovity.edc.ext.brokerserver.dao.pages.catalog.CatalogQueryService;
 import de.sovity.edc.ext.brokerserver.dao.pages.catalog.models.CatalogQueryFilter;
 import de.sovity.edc.ext.brokerserver.dao.pages.catalog.models.ContractOfferRs;
-import de.sovity.edc.ext.brokerserver.dao.pages.catalog.models.DataOfferRs;
+import de.sovity.edc.ext.brokerserver.dao.pages.catalog.models.DataOfferListEntryRs;
 import de.sovity.edc.ext.brokerserver.services.config.BrokerServerSettings;
 import de.sovity.edc.ext.brokerserver.services.api.filtering.CatalogFilterService;
 import de.sovity.edc.ext.wrapper.api.broker.model.CatalogPageQuery;
@@ -82,13 +82,13 @@ public class CatalogApiService {
         return result;
     }
 
-    private List<DataOfferListEntry> buildDataOfferListEntries(List<DataOfferRs> dataOfferRs) {
+    private List<DataOfferListEntry> buildDataOfferListEntries(List<DataOfferListEntryRs> dataOfferRs) {
         return dataOfferRs.stream()
                 .map(this::buildDataOfferListEntry)
                 .toList();
     }
 
-    private DataOfferListEntry buildDataOfferListEntry(DataOfferRs dataOfferRs) {
+    private DataOfferListEntry buildDataOfferListEntry(DataOfferListEntryRs dataOfferRs) {
         var dataOffer = new DataOfferListEntry();
         dataOffer.setAssetId(dataOfferRs.getAssetId());
         dataOffer.setCreatedAt(dataOfferRs.getCreatedAt());
@@ -101,7 +101,7 @@ public class CatalogApiService {
         return dataOffer;
     }
 
-    private List<DataOfferListEntryContractOffer> buildDataOfferListEntryContractOffers(DataOfferRs dataOfferRs) {
+    private List<DataOfferListEntryContractOffer> buildDataOfferListEntryContractOffers(DataOfferListEntryRs dataOfferRs) {
         return dataOfferRs.getContractOffers().stream()
                 .map(this::buildDataOfferListEntryContractOffer)
                 .toList();
@@ -116,7 +116,7 @@ public class CatalogApiService {
         return contractOffer;
     }
 
-    private ConnectorOnlineStatus getOnlineStatus(DataOfferRs dataOfferRs) {
+    private ConnectorOnlineStatus getOnlineStatus(DataOfferListEntryRs dataOfferRs) {
         return switch (dataOfferRs.getConnectorOnlineStatus()) {
             case ONLINE -> ConnectorOnlineStatus.ONLINE;
             case OFFLINE -> ConnectorOnlineStatus.OFFLINE;

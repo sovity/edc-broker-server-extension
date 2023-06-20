@@ -15,13 +15,11 @@
 package de.sovity.edc.ext.brokerserver.services.api;
 
 import de.sovity.edc.ext.brokerserver.dao.pages.catalog.models.ContractOfferRs;
-import de.sovity.edc.ext.brokerserver.dao.pages.catalog.models.DataOfferRs;
 import de.sovity.edc.ext.brokerserver.dao.pages.dataoffer.DataOfferDetailPageQueryService;
-import de.sovity.edc.ext.wrapper.api.broker.model.ConnectorOnlineStatus;
 import de.sovity.edc.ext.wrapper.api.broker.model.DataOfferDetailPageQuery;
 import de.sovity.edc.ext.wrapper.api.broker.model.DataOfferDetailPageResult;
-import de.sovity.edc.ext.wrapper.api.broker.model.DataOfferListEntry;
 import de.sovity.edc.ext.wrapper.api.broker.model.DataOfferListEntryContractOffer;
+import de.sovity.edc.ext.wrapper.api.common.model.PolicyDto;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 
@@ -32,51 +30,49 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class DataOfferDetailApiService {
     private final DataOfferDetailPageQueryService dataOfferDetailPageQueryService;
-    private final PaginationMetadataUtils paginationMetadataUtils;
 
     public DataOfferDetailPageResult dataOfferDetailPage(DSLContext dsl, DataOfferDetailPageQuery query) {
         Objects.requireNonNull(query, "query must not be null");
 
-        var dataOfferDbRow = dataOfferDetailPageQueryService.queryDataOfferDetailsPage(dsl, query.getAssetId());
-        var dataOffer = buildDataOfferListEntry(dataOfferDbRow);
+        var dataOffer = dataOfferDetailPageQueryService.queryDataOfferDetailsPage(dsl, query.getAssetId(), query.getConnectorEndpoint());
 
         var result = new DataOfferDetailPageResult();
         result.setAssetId(dataOffer.getAssetId());
         result.setConnectorEndpoint(dataOffer.getConnectorEndpoint());
-        result.setConnectorOnlineStatus(dataOffer.getConnectorOnlineStatus());
+        result.setConnectorOnlineStatus(mapConnectorOnlineStatus(dataOffer.getConnectorOnlineStatus()));
         result.setConnectorOfflineSinceOrLastUpdatedAt(dataOffer.getConnectorOfflineSinceOrLastUpdatedAt());
         result.setCreatedAt(dataOffer.getCreatedAt());
         result.setUpdatedAt(dataOffer.getUpdatedAt());
-        result.setContractOffers(dataOffer.getContractOffers());
+        result.setContractOffers(mapContractOffer(dataOffer.getContractOffers()));
         return result;
     }
 
-    private DataOfferListEntry buildDataOfferListEntry(DataOfferRs dataOffer) {
-        var dto = new DataOfferListEntry();
-        dto.setAssetId(dataOffer.getAssetId());
-        dto.setContractOffers(getContractOffers(dataOffer));
-        dto.setConnectorEndpoint(dataOffer.getConnectorEndpoint());
-        dto.setConnectorOfflineSinceOrLastUpdatedAt(dataOffer.getConnectorOfflineSinceOrLastUpdatedAt());
-        dto.setCreatedAt(dataOffer.getCreatedAt());
-        dto.setUpdatedAt(dataOffer.getUpdatedAt());
-        return dto;
+    private de.sovity.edc.ext.wrapper.api.broker.model.ConnectorOnlineStatus mapConnectorOnlineStatus(de.sovity.edc.ext.brokerserver.db.jooq.enums.ConnectorOnlineStatus connectorOnlineStatus) {
+        if (connectorOnlineStatus == null) {
+            return de.sovity.edc.ext.wrapper.api.broker.model.ConnectorOnlineStatus.OFFLINE;
+        }
+
+        return switch (connectorOnlineStatus) {
+            case ONLINE -> de.sovity.edc.ext.wrapper.api.broker.model.ConnectorOnlineStatus.ONLINE;
+            case OFFLINE -> de.sovity.edc.ext.wrapper.api.broker.model.ConnectorOnlineStatus.OFFLINE;
+        };
     }
 
-    private List<DataOfferListEntryContractOffer> getContractOffers(DataOfferRs dataOffer) {
-        List<DataOfferListEntryContractOffer> dataOfferList = new ArrayList<>();
+    private List<DataOfferListEntryContractOffer> mapContractOffer(List<ContractOfferRs> contractOffer) {
+        List<DataOfferListEntryContractOffer> result = new ArrayList<>();
 
-        if (dataOffer.getContractOffers() == null) {
-            return dataOfferList;
+        if (contractOffer == null) {
+            return result;
         }
 
-        for (ContractOfferRs contractOffer : dataOffer.getContractOffers()) {
-            var dto = new DataOfferListEntryContractOffer();
-            dto.setContractOfferId(contractOffer.getContractOfferId());
-            dto.setCreatedAt(contractOffer.getCreatedAt());
-            dto.setUpdatedAt(contractOffer.getUpdatedAt());
-            dataOfferList.add(dto);
+        for (var offer : contractOffer) {
+            var newOffer = new DataOfferListEntryContractOffer();
+            newOffer.setCreatedAt(offer.getCreatedAt());
+            newOffer.setUpdatedAt(offer.getUpdatedAt());
+            newOffer.setContractOfferId(offer.getContractOfferId());
+            newOffer.setContractPolicy(new PolicyDto(offer.getPolicyJson()));
+            result.add(newOffer);
         }
-
-        return dataOfferList;
+        return result;
     }
 }

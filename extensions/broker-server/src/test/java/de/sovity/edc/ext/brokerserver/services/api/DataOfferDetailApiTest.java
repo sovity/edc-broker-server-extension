@@ -65,12 +65,14 @@ class DataOfferDetailApiTest {
             createConnector(dsl, today, "http://my-connector/ids/data");
             createDataOffer(dsl, today, Map.of(
                 AssetProperty.ASSET_ID, "urn:artifact:my-asset-1",
-                AssetProperty.DATA_CATEGORY, "my-category"
+                AssetProperty.DATA_CATEGORY, "my-category",
+                AssetProperty.ASSET_NAME, "My Asset 1"
             ), "http://my-connector/ids/data");
 
-            var connectors = edcClient().brokerServerApi().connectorPage(new ConnectorPageQuery());
-            assertThat(connectors).isNotNull();
-            assertThat(connectors.getConnectors()).hasSize(1);
+            var result = edcClient().brokerServerApi().dataOfferDetailPage(new DataOfferDetailPageQuery("http://my-connector/ids/data", "urn:artifact:my-asset-1"));
+            assertThat(result).isNotNull();
+            assertThat(result.getConnectorEndpoint()).isEqualTo("http://my-connector/ids/data");
+            assertThat(result.getAssetId()).isEqualTo("urn:artifact:my-asset-1");
         });
     }
 

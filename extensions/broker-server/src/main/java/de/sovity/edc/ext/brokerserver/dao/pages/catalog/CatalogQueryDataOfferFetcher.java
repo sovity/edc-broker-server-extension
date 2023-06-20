@@ -15,7 +15,7 @@
 package de.sovity.edc.ext.brokerserver.dao.pages.catalog;
 
 import de.sovity.edc.ext.brokerserver.dao.pages.catalog.models.CatalogQueryFilter;
-import de.sovity.edc.ext.brokerserver.dao.pages.catalog.models.DataOfferRs;
+import de.sovity.edc.ext.brokerserver.dao.pages.catalog.models.DataOfferListEntryRs;
 import de.sovity.edc.ext.brokerserver.dao.pages.catalog.models.PageQuery;
 import de.sovity.edc.ext.brokerserver.dao.utils.MultisetUtils;
 import de.sovity.edc.ext.wrapper.api.broker.model.CatalogPageSortingType;
@@ -41,9 +41,9 @@ public class CatalogQueryDataOfferFetcher {
      * @param filter    filter
      * @param sorting   sorting
      * @param pageQuery pagination
-     * @return {@link Field} of {@link DataOfferRs}s
+     * @return {@link Field} of {@link DataOfferListEntryRs}s
      */
-    public Field<List<DataOfferRs>> queryDataOffers(
+    public Field<List<DataOfferListEntryRs>> queryDataOffers(
             CatalogQueryFields fields,
             CatalogQueryFilter filter,
             CatalogPageSortingType sorting,
@@ -68,7 +68,7 @@ public class CatalogQueryDataOfferFetcher {
                 .orderBy(catalogQuerySortingService.getOrderBy(fields, sorting))
                 .limit(pageQuery.offset(), pageQuery.limit());
 
-        return MultisetUtils.multiset(query, DataOfferRs.class);
+        return MultisetUtils.multiset(query, DataOfferListEntryRs.class);
     }
 
     /**

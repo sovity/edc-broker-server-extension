@@ -60,7 +60,7 @@ class ConnectorApiTest {
 
     @Test
     void testQueryConnectorDetails() {
-        var connector = edcClient().brokerServerApi().connectorDetailPage(new ConnectorDetailPageQuery());
+        var connector = edcClient().brokerServerApi().connectorDetailPage(new ConnectorDetailPageQuery("https://example.com/ids/data"));
         assertThat(connector.getEndpoint()).isEqualTo("https://example.com/ids/data");
         assertThat(connector.getId()).isEqualTo("https://example.com");
     }
