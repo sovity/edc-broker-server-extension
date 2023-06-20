@@ -68,12 +68,25 @@ class DataOfferDetailApiTest {
                 AssetProperty.DATA_CATEGORY, "my-category",
                 AssetProperty.ASSET_NAME, "My Asset 1"
             ), "http://my-connector/ids/data");
+            createContractOffer(dsl, today);
+
 
             var result = edcClient().brokerServerApi().dataOfferDetailPage(new DataOfferDetailPageQuery("http://my-connector/ids/data", "urn:artifact:my-asset-1"));
             assertThat(result).isNotNull();
             assertThat(result.getConnectorEndpoint()).isEqualTo("http://my-connector/ids/data");
             assertThat(result.getAssetId()).isEqualTo("urn:artifact:my-asset-1");
         });
+    }
+
+    private void createContractOffer(DSLContext dsl, OffsetDateTime today) {
+        var contractOffer = dsl.newRecord(Tables.DATA_OFFER_CONTRACT_OFFER);
+        contractOffer.setContractOfferId("my-contract-offer-2");
+        contractOffer.setConnectorEndpoint("http://my-connector/ids/data");
+        contractOffer.setAssetId("urn:artifact:my-asset-1");
+        contractOffer.setCreatedAt(today.minusDays(5));
+        contractOffer.setUpdatedAt(today);
+        contractOffer.setPolicy(JSONB.jsonb(policyToJson(dummyPolicy())));
+        contractOffer.insert();
     }
 
     private void createConnector(DSLContext dsl, OffsetDateTime today, String connectorEndpoint) {
