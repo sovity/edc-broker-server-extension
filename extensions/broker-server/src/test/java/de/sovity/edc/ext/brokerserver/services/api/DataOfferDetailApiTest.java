@@ -71,10 +71,12 @@ class DataOfferDetailApiTest {
             createContractOffer(dsl, today);
 
 
-            var result = edcClient().brokerServerApi().dataOfferDetailPage(new DataOfferDetailPageQuery("http://my-connector/ids/data", "urn:artifact:my-asset-1"));
-            assertThat(result).isNotNull();
-            assertThat(result.getConnectorEndpoint()).isEqualTo("http://my-connector/ids/data");
-            assertThat(result.getAssetId()).isEqualTo("urn:artifact:my-asset-1");
+            var dataOfferDetailPageResult = edcClient().brokerServerApi().dataOfferDetailPage(new DataOfferDetailPageQuery("http://my-connector/ids/data", "urn:artifact:my-asset-1"));
+            assertThat(dataOfferDetailPageResult).isNotNull();
+            assertThat(dataOfferDetailPageResult.getConnectorEndpoint()).isEqualTo("http://my-connector/ids/data");
+            assertThat(dataOfferDetailPageResult.getAssetId()).isEqualTo("urn:artifact:my-asset-1");
+            assertThat(dataOfferDetailPageResult.getCreatedAt()).isEqualTo(today.minusDays(5));
+            assertThat(dataOfferDetailPageResult.getUpdatedAt()).isEqualTo(today);
         });
     }
 
