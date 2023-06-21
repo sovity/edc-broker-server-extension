@@ -77,6 +77,12 @@ class DataOfferDetailApiTest {
             assertThat(dataOfferDetailPageResult.getAssetId()).isEqualTo("urn:artifact:my-asset-1");
             assertThat(dataOfferDetailPageResult.getCreatedAt()).isEqualTo(today.minusDays(5));
             assertThat(dataOfferDetailPageResult.getUpdatedAt()).isEqualTo(today);
+            dataOfferDetailPageResult.getContractOffers().forEach(contractOffer -> {
+                assertThat(contractOffer.getContractOfferId()).isEqualTo("my-contract-offer-2");
+                assertThat(contractOffer.getCreatedAt()).isEqualTo(today.minusDays(5));
+                assertThat(contractOffer.getUpdatedAt()).isEqualTo(today);
+                assertThat(contractOffer.getContractPolicy().toJson()).isEqualTo(toJson(dummyPolicy()));
+            });
         });
     }
 
