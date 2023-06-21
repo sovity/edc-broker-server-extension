@@ -44,13 +44,9 @@ public class CollectionUtils2 {
         return collection != null && !collection.isEmpty();
     }
 
-    public static <T> List<T> allElementsExceptForIndex(List<T> source, int skipIndex) {
-        var result = new ArrayList<T>(source.size() - 1);
-        for (int i = 0; i < source.size(); i++) {
-            if (i != skipIndex) {
-                result.add(source.get(i));
-            }
-        }
+    public static <T> List<T> allElementsExceptForIndex(Collection<T> source, int skipIndex) {
+        var result = new ArrayList<>(source);
+        result.remove(skipIndex);
         return result;
     }
 }
