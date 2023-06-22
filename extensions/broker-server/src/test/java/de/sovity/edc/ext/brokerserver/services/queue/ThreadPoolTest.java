@@ -20,7 +20,6 @@ import org.eclipse.edc.spi.monitor.Monitor;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
