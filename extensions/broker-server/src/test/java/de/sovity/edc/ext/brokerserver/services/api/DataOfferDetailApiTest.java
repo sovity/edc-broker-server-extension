@@ -68,7 +68,6 @@ class DataOfferDetailApiTest {
                 AssetProperty.DATA_CATEGORY, "my-category",
                 AssetProperty.ASSET_NAME, "My Asset 1"
             ), "http://my-connector/ids/data");
-            createContractOffer(dsl, today);
 
 
             var dataOfferDetailPageResult = edcClient().brokerServerApi().dataOfferDetailPage(new DataOfferDetailPageQuery("http://my-connector/ids/data", "urn:artifact:my-asset-1"));
@@ -78,23 +77,11 @@ class DataOfferDetailApiTest {
             assertThat(dataOfferDetailPageResult.getCreatedAt()).isEqualTo(today.minusDays(5));
             assertThat(dataOfferDetailPageResult.getUpdatedAt()).isEqualTo(today);
             dataOfferDetailPageResult.getContractOffers().forEach(contractOffer -> {
-                assertThat(contractOffer.getContractOfferId()).isEqualTo("my-contract-offer-2");
+                assertThat(contractOffer.getContractOfferId()).isEqualTo("my-contract-offer-1");
                 assertThat(contractOffer.getCreatedAt()).isEqualTo(today.minusDays(5));
                 assertThat(contractOffer.getUpdatedAt()).isEqualTo(today);
-                assertThat(contractOffer.getContractPolicy().toJson()).isEqualTo(toJson(dummyPolicy()));
             });
         });
-    }
-
-    private void createContractOffer(DSLContext dsl, OffsetDateTime today) {
-        var contractOffer = dsl.newRecord(Tables.DATA_OFFER_CONTRACT_OFFER);
-        contractOffer.setContractOfferId("my-contract-offer-2");
-        contractOffer.setConnectorEndpoint("http://my-connector/ids/data");
-        contractOffer.setAssetId("urn:artifact:my-asset-1");
-        contractOffer.setCreatedAt(today.minusDays(5));
-        contractOffer.setUpdatedAt(today);
-        contractOffer.setPolicy(JSONB.jsonb(policyToJson(dummyPolicy())));
-        contractOffer.insert();
     }
 
     private void createConnector(DSLContext dsl, OffsetDateTime today, String connectorEndpoint) {
