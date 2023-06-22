@@ -65,7 +65,7 @@ public class BrokerEventLogger {
         logEntry.setEvent(BrokerEventType.CONNECTOR_DATA_OFFER_LIMIT_EXCEEDED);
         logEntry.setEventStatus(BrokerEventStatus.OK);
         logEntry.setConnectorEndpoint(endpoint);
-        logEntry.setUserMessage("Connector has exceeded the maximum number of data offers limit of " + maxDataOffersPerConnector);
+        logEntry.setUserMessage("Connector has more than %d data offers. Exceeding data offers will be ignored.".formatted(maxDataOffersPerConnector));
         logEntry.setCreatedAt(OffsetDateTime.now());
         logEntry.insert();
     }
@@ -85,7 +85,7 @@ public class BrokerEventLogger {
         logEntry.setEvent(BrokerEventType.CONNECTOR_CONTRACT_OFFER_LIMIT_EXCEEDED);
         logEntry.setEventStatus(BrokerEventStatus.OK);
         logEntry.setConnectorEndpoint(endpoint);
-        logEntry.setUserMessage("Connector has exceeded the maximum number of contract offers per data offer limit: " + maxContractOffersPerConnector);
+        logEntry.setUserMessage("Some data offers have more than %d contract offers. Exceeding contract offers will be ignored.: ".formatted(maxContractOffersPerConnector));
         logEntry.setCreatedAt(OffsetDateTime.now());
         logEntry.insert();
     }
