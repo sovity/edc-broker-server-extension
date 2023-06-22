@@ -32,9 +32,9 @@ public class DataOfferDetailPageQueryService {
         var c = Tables.CONNECTOR;
 
         var fields = new CatalogQueryFields(
-            Tables.CONNECTOR,
-            Tables.DATA_OFFER,
-            brokerServerSettings.getDataSpaceConfig()
+                Tables.CONNECTOR,
+                Tables.DATA_OFFER,
+                brokerServerSettings.getDataSpaceConfig()
         );
 
         return dsl.select(
