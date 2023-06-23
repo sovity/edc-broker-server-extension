@@ -57,7 +57,7 @@ public class BrokerServerExtension implements ServiceExtension {
     public static final String KNOWN_DATASPACE_CONNECTORS = toEdcProp("EDC_BROKER_SERVER_KNOWN_DATASPACE_CONNECTORS");
 
     @Setting
-    public static final String DELETE_OFFLINE_CONNECTORS_AFTER_HOURS = toEdcProp("EDC_BROKER_SERVER_DELETE_OFFLINE_CONNECTORS_AFTER");
+    public static final String DELETE_OFFLINE_CONNECTORS_AFTER = toEdcProp("EDC_BROKER_SERVER_DELETE_OFFLINE_CONNECTORS_AFTER");
 
     @Inject
     private ManagementApiConfiguration managementApiConfiguration;

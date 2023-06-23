@@ -55,7 +55,7 @@ public class ConnectorUpdater {
         dslContextFactory.transaction(dsl -> {
             var connectorLastUpdated = connectorQueries.findByEndpoint(dsl, connectorEndpoint).getLastSuccessfulRefreshAt();
 
-            if (connectorLastUpdated != null && connectorLastUpdated.plusHours(config.getInteger(BrokerServerExtension.DELETE_OFFLINE_CONNECTORS_AFTER_HOURS)).isBefore(OffsetDateTime.now())) {
+            if (connectorLastUpdated != null && connectorLastUpdated.plusHours(config.getInteger(BrokerServerExtension.DELETE_OFFLINE_CONNECTORS_AFTER)).isBefore(OffsetDateTime.now())) {
                 monitor.info("Deleting inactive connector: " + connectorEndpoint);
                 connectorQueries.deleteByConnectorEndpoint(dsl, connectorEndpoint);
                 inactive.set(true);

@@ -55,6 +55,7 @@ import de.sovity.edc.ext.brokerserver.services.refreshing.offers.DataOfferPatchB
 import de.sovity.edc.ext.brokerserver.services.refreshing.offers.DataOfferRecordUpdater;
 import de.sovity.edc.ext.brokerserver.services.refreshing.offers.DataOfferWriter;
 import de.sovity.edc.ext.brokerserver.services.schedules.ConnectorRefreshJob;
+import de.sovity.edc.ext.brokerserver.services.schedules.DeadConnectorRemoval;
 import de.sovity.edc.ext.brokerserver.services.schedules.QuartzScheduleInitializer;
 import de.sovity.edc.ext.brokerserver.services.schedules.utils.CronJobRef;
 import lombok.NoArgsConstructor;
@@ -166,6 +167,11 @@ public class BrokerServerExtensionContextBuilder {
                         BrokerServerExtension.CRON_CONNECTOR_REFRESH,
                         ConnectorRefreshJob.class,
                         () -> new ConnectorRefreshJob(dslContextFactory, connectorQueueFiller)
+                ),
+                new CronJobRef<>(
+                        BrokerServerExtension.DELETE_OFFLINE_CONNECTORS_AFTER,
+                        DeadConnectorRemoval.class,
+                        () -> new DeadConnectorRemoval(dslContextFactory, connectorQueries, brokerEventLogger)
                 )
         );
 
