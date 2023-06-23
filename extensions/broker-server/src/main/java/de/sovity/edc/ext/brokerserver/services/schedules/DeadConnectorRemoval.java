@@ -34,7 +34,7 @@ public class DeadConnectorRemoval implements Job {
     @Override
     public void execute(JobExecutionContext context) {
         dslContextFactory.transaction(
-            dsl -> {
+                dsl -> {
                 var deleteOfflineConnectorsAfter = config.getInteger("DELETE_OFFLINE_CONNECTORS_AFTER", 5);
                 var toDelete = connectorQueries.findAllConnectorsForDeletion(dsl, deleteOfflineConnectorsAfter);
 
