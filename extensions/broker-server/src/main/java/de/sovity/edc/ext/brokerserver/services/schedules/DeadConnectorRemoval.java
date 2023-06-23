@@ -20,11 +20,13 @@ import de.sovity.edc.ext.brokerserver.db.DslContextFactory;
 import de.sovity.edc.ext.brokerserver.db.jooq.Tables;
 import de.sovity.edc.ext.brokerserver.services.logging.BrokerEventLogger;
 import lombok.RequiredArgsConstructor;
+import org.eclipse.edc.spi.system.configuration.Config;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 
 @RequiredArgsConstructor
 public class DeadConnectorRemoval implements Job {
+    private final Config config;
     private final DslContextFactory dslContextFactory;
     private final ConnectorQueries connectorQueries;
     private final BrokerEventLogger brokerEventLogger;
@@ -33,7 +35,8 @@ public class DeadConnectorRemoval implements Job {
     public void execute(JobExecutionContext context) {
         dslContextFactory.transaction(
             dsl -> {
-                var toDelete = connectorQueries.findAllConnectorsForDeletion(dsl);
+                var deleteOfflineConnectorsAfter = config.getInteger("DELETE_OFFLINE_CONNECTORS_AFTER", 5);
+                var toDelete = connectorQueries.findAllConnectorsForDeletion(dsl, deleteOfflineConnectorsAfter);
 
                 // delete in batches, child entities first.
                 dsl.deleteFrom(Tables.DATA_OFFER_CONTRACT_OFFER).where(PostgresqlUtils.in(Tables.DATA_OFFER_CONTRACT_OFFER.CONNECTOR_ENDPOINT, toDelete)).execute();

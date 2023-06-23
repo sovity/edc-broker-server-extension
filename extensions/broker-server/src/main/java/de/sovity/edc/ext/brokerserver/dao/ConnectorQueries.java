@@ -51,10 +51,10 @@ public class ConnectorQueries {
         dataOfferQueries.deleteByConnectorEndpoint(dsl, connectorEndpoint);
     }
 
-    public List<String> findAllConnectorsForDeletion(DSLContext dsl) {
+    public List<String> findAllConnectorsForDeletion(DSLContext dsl, Integer deleteOfflineConnectorsAfter) {
         var c = Tables.CONNECTOR;
         return dsl.select(c.ENDPOINT).from(c)
-                .where(c.LAST_SUCCESSFUL_REFRESH_AT.lt(OffsetDateTime.now().minusDays(5)))
+                .where(c.LAST_SUCCESSFUL_REFRESH_AT.gt(OffsetDateTime.now().minusDays(deleteOfflineConnectorsAfter)))
                 .fetch(c.ENDPOINT);
     }
 }
