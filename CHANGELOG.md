@@ -37,7 +37,7 @@ Broker MvP using Core EDC MS8.
     # Maximum number of Data Offers per Connector (default: 50)
     EDC_BROKER_SERVER_MAX_DATA_OFFERS_PER_CONNECTOR: 50
     
-    # Maximum number of Contract Offers per Data Offer (default: 50)
+    # Maximum number of Contract Offers per Data Offer (default: 10)
     EDC_BROKER_SERVER_MAX_CONTRACT_OFFERS_PER_DATA_OFFER: 10
    
     # Pagination Configuration: Catalog Page Size (default: 20)
