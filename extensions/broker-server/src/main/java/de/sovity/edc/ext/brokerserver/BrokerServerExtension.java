@@ -43,7 +43,7 @@ public class BrokerServerExtension implements ServiceExtension {
     public static final String MAX_DATA_OFFERS_PER_CONNECTOR = "edc.broker.server.max.data.offers.per.connector";
 
     @Setting
-    public static final String MAX_CONTRACT_OFFERS_PER_CONNECTOR = "edc.broker.server.max.contract.offers.per.connector";
+    public static final String MAX_CONTRACT_OFFERS_PER_DATA_OFFER = "edc.broker.server.max.contract.offers.per.data.offer";
 
     @Setting
     public static final String CATALOG_PAGE_PAGE_SIZE = "edc.broker.server.catalog.page.page.size";
@@ -52,7 +52,7 @@ public class BrokerServerExtension implements ServiceExtension {
     public static final String DEFAULT_CONNECTOR_DATASPACE = "edc.broker.server.default.dataspace";
 
     @Setting
-    public static final String KNOWN_DATASPACES_ENDPOINTS = "edc.broker.server.known.dataspaces.endpoints";
+    public static final String KNOWN_DATASPACE_CONNECTORS = "edc.broker.server.known.dataspace.connectors";
 
     @Inject
     private ManagementApiConfiguration managementApiConfiguration;
