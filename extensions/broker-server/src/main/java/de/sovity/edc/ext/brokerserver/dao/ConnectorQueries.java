@@ -19,6 +19,7 @@ import de.sovity.edc.ext.brokerserver.db.jooq.Tables;
 import de.sovity.edc.ext.brokerserver.db.jooq.tables.records.ConnectorRecord;
 import org.jooq.DSLContext;
 
+import java.time.Duration;
 import java.time.OffsetDateTime;
 import java.util.Collection;
 import java.util.List;
@@ -51,10 +52,10 @@ public class ConnectorQueries {
         dataOfferQueries.deleteByConnectorEndpoint(dsl, connectorEndpoint);
     }
 
-    public List<String> findAllConnectorsForDeletion(DSLContext dsl, Integer deleteOfflineConnectorsAfter) {
+    public List<String> findAllConnectorsForDeletion(DSLContext dsl, Duration deleteOfflineConnectorsAfter) {
         var c = Tables.CONNECTOR;
         return dsl.select(c.ENDPOINT).from(c)
-                .where(c.LAST_SUCCESSFUL_REFRESH_AT.gt(OffsetDateTime.now().minusDays(deleteOfflineConnectorsAfter)))
+                .where(c.LAST_SUCCESSFUL_REFRESH_AT.gt(OffsetDateTime.now().minusDays(deleteOfflineConnectorsAfter.toDays())))
                 .fetch(c.ENDPOINT);
     }
 }
