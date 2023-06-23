@@ -19,6 +19,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Broker MvP using Core EDC MS8.
 
+### Detailed Changes
+
+#### Minor
+
+- Implemented Catalog Page Filters:
+    - Data Space Filter
+    - Data Category
+    - Data Subcategory
+    - Data Model
+    - Transport Mode
+    - Geo Reference Method
+- Implemented Catalog Page Sorting:
+    - Most Recent
+    - By Title
+    - By Connector
+- Implemented Catalog Page Pagination.
+
+#### Patch
+
+- Fix: Data Offer Filter available values are no longer limited to the selected value if a value is selected.
+- Fix: Missing file system vault prevented data space login.
+- Fix: Parallel crawling was not actually parallel
+
 ### Deployment Migration Notes
 
 1. There are new **required** configuration properties:
@@ -47,30 +70,26 @@ Broker MvP using Core EDC MS8.
 4. Added a reference to [connector/.env](connector/.env) as source for other possible broker server configuration
    options, that have defaults, but might have use cases for overriding.
 
-### Minor
+#### Compatible Versions
 
-- Implemented Catalog Page Filters:
-    - Data Space Filter
-    - Data Category
-    - Data Subcategory
-    - Data Model
-    - Transport Mode
-    - Geo Reference Method
-- Implemented Catalog Page Sorting:
-    - Most Recent
-    - By Title
-    - By Connector
-- Implemented Catalog Page Pagination.
-
-### Patch
-
-- Fix: Data Offer Filter available values are no longer limited to the selected value if a value is selected.
-- Fix: Missing file system vault prevented data space login.
-- Fix: Parallel crawling was not actually parallel
+- Broker Backend Docker Image: `ghcr.io/sovity/broker-server-ce:0.1.0`
+- Broker UI Docker Image: `ghcr.io/sovity/edc-ui:0.0.1-milestone-8-sovity8`
+- Sovity EDC CE: [`3.3.0`](https://github.com/sovity/edc-extensions/tree/v3.3.0/connector)
 
 ## [v0.0.1] Broker PoC Release - 2023-06-02
 
 Initial Broker PoC Release with a minimalistic feature set.
+
+### Detailed Changes
+
+#### Major
+
+- Implemented a Broker PoC with EDC MS8:
+    - Periodic Crawling of Connectors
+    - Query Data Offers via UI
+    - Query Connectors via UI
+    - Persistence of Connector Status Updates
+    - Persistence of Crawling Execution Times
 
 ### Deployment Migration Notes
 
@@ -81,12 +100,3 @@ Please view the [Deployment Section in the README.md](README.md#deployment) for 
 - Broker Backend Docker Image: `ghcr.io/sovity/broker-server-ce:0.0.1`
 - Broker UI Docker Image: `ghcr.io/sovity/edc-ui:0.0.1-milestone-8-sovity6`
 - Sovity EDC CE: [`3.3.0`](https://github.com/sovity/edc-extensions/tree/v3.3.0/connector)
-
-### Major
-
-- Implemented a Broker PoC with EDC MS8:
-    - Periodic Crawling of Connectors
-    - Query Data Offers via UI
-    - Query Connectors via UI
-    - Persistence of Connector Status Updates
-    - Persistence of Crawling Execution Times
