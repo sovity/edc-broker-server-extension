@@ -17,6 +17,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [v0.1.0] Broker MvP Release - 2023-06-23
 
+### Overview
+
 Broker MvP using Core EDC MS8.
 
 ### Detailed Changes
@@ -77,6 +79,8 @@ Broker MvP using Core EDC MS8.
 - Sovity EDC CE: [`3.3.0`](https://github.com/sovity/edc-extensions/tree/v3.3.0/connector)
 
 ## [v0.0.1] Broker PoC Release - 2023-06-02
+
+### Overview
 
 Initial Broker PoC Release with a minimalistic feature set.
 
