@@ -16,6 +16,7 @@ package de.sovity.edc.ext.brokerserver.services.config;
 
 import de.sovity.edc.ext.brokerserver.BrokerServerExtension;
 import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.edc.spi.monitor.Monitor;
 import org.eclipse.edc.spi.system.configuration.Config;
@@ -24,14 +25,12 @@ import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
 
+@RequiredArgsConstructor
 public class BrokerServerSettingsFactory {
-    private Config config;
-    private Monitor monitor;
+    private final Config config;
+    private final Monitor monitor;
 
-    public BrokerServerSettings buildBrokerServerSettings(Config config, Monitor monitor) {
-        this.config = config;
-        this.monitor = monitor;
-
+    public BrokerServerSettings buildBrokerServerSettings() {
         var hideOfflineDataOffersAfter = getDurationOrNull(BrokerServerExtension.HIDE_OFFLINE_DATA_OFFERS_AFTER);
         var catalogPagePageSize = config.getInteger(BrokerServerExtension.CATALOG_PAGE_PAGE_SIZE, 20);
         var dataSpaceConfig = buildDataSpaceConfig(config);
