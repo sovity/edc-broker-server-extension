@@ -136,6 +136,7 @@ public class BrokerServerExtensionContextBuilder {
         var fetchedDataOfferBuilder = new DataOfferBuilder(objectMapper);
         var dataOfferFetcher = new DataOfferFetcher(contractOfferFetcher, fetchedDataOfferBuilder);
         var connectorUpdater = new ConnectorUpdater(
+                config,
                 dataOfferFetcher,
                 connectorUpdateSuccessWriter,
                 connectorUpdateFailureWriter,
