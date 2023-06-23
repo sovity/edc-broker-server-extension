@@ -54,6 +54,9 @@ public class BrokerServerExtension implements ServiceExtension {
     @Setting
     public static final String KNOWN_DATASPACES_ENDPOINTS = "edc.broker.server.known.dataspaces.endpoints";
 
+    @Setting
+    public static final String DELETE_OFFLINE_CONNECTORS_AFTER_HOURS = "edc.broker.server.delete.offline.connectors.after.hours";
+
     @Inject
     private ManagementApiConfiguration managementApiConfiguration;
 
