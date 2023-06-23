@@ -28,6 +28,9 @@ Broker MvP using Core EDC MS8.
     ```
 2. There are new **optional** configuration properties available for overriding:
     ```yaml
+    # Parallelization for Crawling (default: 3)
+    EDC_BROKER_SERVER_NUM_THREADS: 16
+   
     # Default Data Space Name (default: MDS)
     EDC_BROKER_SERVER_DEFAULT_DATASPACE: MDS
   
@@ -41,20 +44,22 @@ Broker MvP using Core EDC MS8.
     EDC_BROKER_SERVER_CATALOG_PAGE_PAGE_SIZE: 20
     ```
 3. An issue prevented the keystore file from being read, preventing a successful data space log in.
+4. Added a reference to [connector/.env](connector/.env) as source for other possible broker server configuration
+   options, that have defaults, but might have use cases for overriding.
 
 ### Minor
 
 - Implemented Catalog Page Filters:
-  - Data Space Filter
-  - Data Category
-  - Data Subcategory
-  - Data Model
-  - Transport Mode
-  - Geo Reference Method
+    - Data Space Filter
+    - Data Category
+    - Data Subcategory
+    - Data Model
+    - Transport Mode
+    - Geo Reference Method
 - Implemented Catalog Page Sorting:
-  - Most Recent
-  - By Title
-  - By Connector
+    - Most Recent
+    - By Title
+    - By Connector
 - Implemented Catalog Page Pagination.
 
 ### Patch
