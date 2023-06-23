@@ -40,4 +40,12 @@ public class ConnectorQueries {
                 .where(PostgresqlUtils.in(c.ENDPOINT, connectorEndpoints))
                 .fetchSet(c.ENDPOINT);
     }
+
+    public void deleteByConnectorEndpoint(DSLContext dsl, String connectorEndpoint) {
+        var c = Tables.CONNECTOR;
+        dsl.deleteFrom(c).where(c.ENDPOINT.eq(connectorEndpoint)).execute();
+
+        var dataOfferQueries = new DataOfferQueries();
+        dataOfferQueries.deleteByConnectorEndpoint(dsl, connectorEndpoint);
+    }
 }
