@@ -168,10 +168,17 @@ class CatalogApiTest {
             ));
             assertThat(dataOfferResult.getCreatedAt()).isEqualTo(today.minusDays(5));
 
-            var isPolicy = new JSONObject(dataOfferResult.getContractOffers().get(0).getContractPolicy().getLegacyPolicy());
-            var expectedPolicy = new JSONObject(toJson(dummyPolicy()));
-            assertThat(isPolicy.similar(expectedPolicy)).isTrue();
+            // Key order of Json-String might differ, so we compare the JSON-Objects for similarity
+            var actual = dataOfferResult.getContractOffers().get(0).getContractPolicy().getLegacyPolicy();
+            var expected = toJson(dummyPolicy());
+            assertEqualJson(expected, actual);
         });
+    }
+
+    private void assertEqualJson(String expected, String actual) {
+        var expectedJson = new JSONObject(expected);
+        var actualJson = new JSONObject(actual);
+        assertThat(actualJson.similar(expectedJson)).isTrue();
     }
 
     /**
