@@ -145,7 +145,7 @@ public class BrokerServerExtensionContextBuilder {
                 monitor,
                 brokerExecutionTimeLogger
         );
-        var policyDtoBuilder = new PolicyDtoBuilder(objectMapper);
+        var policyDtoBuilder = new PolicyDtoBuilder();
         var assetPropertyParser = new AssetPropertyParser(objectMapper);
         var paginationMetadataUtils = new PaginationMetadataUtils();
         var threadPool = new ThreadPool(brokerServerSettings, monitor);
