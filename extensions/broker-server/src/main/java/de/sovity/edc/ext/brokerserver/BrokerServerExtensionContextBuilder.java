@@ -86,8 +86,8 @@ public class BrokerServerExtensionContextBuilder {
             TypeManager typeManager,
             CatalogService catalogService
     ) {
-        var brokerServerSettingsFactory = new BrokerServerSettingsFactory();
-        var brokerServerSettings = brokerServerSettingsFactory.buildBrokerServerSettings(config);
+        var brokerServerSettingsFactory = new BrokerServerSettingsFactory(config, monitor);
+        var brokerServerSettings = brokerServerSettingsFactory.buildBrokerServerSettings();
 
         // Dao
         var dataOfferQueries = new DataOfferQueries();
