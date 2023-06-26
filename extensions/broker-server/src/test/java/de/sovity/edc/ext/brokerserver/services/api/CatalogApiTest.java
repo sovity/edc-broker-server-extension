@@ -36,6 +36,7 @@ import org.eclipse.edc.junit.extensions.EdcExtension;
 import org.eclipse.edc.policy.model.Policy;
 import org.jooq.DSLContext;
 import org.jooq.JSONB;
+import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -166,7 +167,10 @@ class CatalogApiTest {
                     AssetProperty.ASSET_NAME, "my-asset"
             ));
             assertThat(dataOfferResult.getCreatedAt()).isEqualTo(today.minusDays(5));
-            assertThat(toJson(dataOfferResult.getContractOffers().get(0).getContractPolicy().getLegacyPolicy())).isEqualTo(toJson(dummyPolicy()));
+
+            var isPolicy = new JSONObject(dataOfferResult.getContractOffers().get(0).getContractPolicy().getLegacyPolicy());
+            var expectedPolicy = new JSONObject(toJson(dummyPolicy()));
+            assertThat(isPolicy.similar(expectedPolicy)).isTrue();
         });
     }
 
