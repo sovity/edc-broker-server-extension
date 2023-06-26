@@ -44,14 +44,6 @@ public class ConnectorQueries {
                 .fetchSet(c.ENDPOINT);
     }
 
-    public void deleteByConnectorEndpoint(DSLContext dsl, String connectorEndpoint) {
-        var c = Tables.CONNECTOR;
-        dsl.deleteFrom(c).where(c.ENDPOINT.eq(connectorEndpoint)).execute();
-
-        var dataOfferQueries = new DataOfferQueries();
-        dataOfferQueries.deleteByConnectorEndpoint(dsl, connectorEndpoint);
-    }
-
     public List<String> findAllConnectorsForDeletion(DSLContext dsl, Duration deleteOfflineConnectorsAfter) {
         var c = Tables.CONNECTOR;
         return dsl.select(c.ENDPOINT).from(c)

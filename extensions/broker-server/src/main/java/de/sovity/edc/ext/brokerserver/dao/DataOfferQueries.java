@@ -28,12 +28,4 @@ public class DataOfferQueries {
         var d = Tables.DATA_OFFER;
         return dsl.selectFrom(d).where(d.CONNECTOR_ENDPOINT.eq(connectorEndpoint)).stream().toList();
     }
-
-    public void deleteByConnectorEndpoint(DSLContext dsl, String connectorEndpoint) {
-        var d = Tables.DATA_OFFER;
-        dsl.deleteFrom(d).where(d.CONNECTOR_ENDPOINT.eq(connectorEndpoint)).execute();
-
-        var dataOfferContractOfferQueries = new DataOfferContractOfferQueries();
-        dataOfferContractOfferQueries.deleteByConnectorEndpoint(dsl, connectorEndpoint);
-    }
 }
