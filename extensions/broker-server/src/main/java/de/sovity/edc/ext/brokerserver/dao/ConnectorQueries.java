@@ -47,7 +47,7 @@ public class ConnectorQueries {
     public List<String> findAllConnectorsForDeletion(DSLContext dsl, Duration deleteOfflineConnectorsAfter) {
         var c = Tables.CONNECTOR;
         return dsl.select(c.ENDPOINT).from(c)
-                .where(c.LAST_SUCCESSFUL_REFRESH_AT.gt(OffsetDateTime.now().minusDays(deleteOfflineConnectorsAfter.toDays())))
+                .where(c.LAST_SUCCESSFUL_REFRESH_AT.lt(OffsetDateTime.now().minusDays(deleteOfflineConnectorsAfter.toDays())))
                 .fetch(c.ENDPOINT);
     }
 }

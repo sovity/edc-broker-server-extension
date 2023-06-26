@@ -18,7 +18,6 @@ import de.sovity.edc.ext.brokerserver.BrokerServerExtension;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
-import org.eclipse.edc.spi.EdcException;
 import org.eclipse.edc.spi.monitor.Monitor;
 import org.eclipse.edc.spi.system.configuration.Config;
 
@@ -80,10 +79,12 @@ public class BrokerServerSettingsFactory {
     }
 
     private Duration getDuration(@NonNull String configProperty, Duration defaultValue) {
-        try {
-            return Duration.parse(config.getString(configProperty));
-        } catch (EdcException e) {
+        var value = config.getString(configProperty, "");
+
+        if (StringUtils.isBlank(value)) {
             return defaultValue;
         }
+
+        return Duration.parse(value);
     }
 }

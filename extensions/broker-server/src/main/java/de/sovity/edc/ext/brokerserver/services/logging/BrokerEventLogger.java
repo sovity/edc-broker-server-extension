@@ -108,7 +108,7 @@ public class BrokerEventLogger {
             logEntry.setEvent(BrokerEventType.CONNECTOR_DELETED_DUE_TO_INACTIVITY);
             logEntry.setEventStatus(BrokerEventStatus.OK);
             logEntry.setCreatedAt(OffsetDateTime.now());
-            logEntry.setUserMessage("Connector were deleted due to inactivity.");
+            logEntry.setUserMessage("Connector was removed for being offline too long.");
             logEntry.setConnectorEndpoint(endpoint);
             return logEntry;
         }).collect(Collectors.toList());

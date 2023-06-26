@@ -17,7 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Deployment Migration Notes
 
-1. There are new **required** configuration properties:
+1. There are new **optional** configuration properties:
     ```yaml
     # Deletion of Connectors after they have been offline for a certain amount of time
     EDC_BROKER_SERVER_DELETE_OFFLINE_CONNECTORS_AFTER=P5D
