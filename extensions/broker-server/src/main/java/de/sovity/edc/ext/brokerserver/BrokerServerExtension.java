@@ -59,6 +59,9 @@ public class BrokerServerExtension implements ServiceExtension {
     @Setting
     public static final String DELETE_OFFLINE_CONNECTORS_AFTER = toEdcProp("EDC_BROKER_SERVER_DELETE_OFFLINE_CONNECTORS_AFTER");
 
+    @Setting
+    public static final String SCHEDULED_DELETE_DEAD_CONNECTORS = toEdcProp("EDC_BROKER_SERVER_SCHEDULED_DELETE_DEAD_CONNECTORS");
+
     @Inject
     private ManagementApiConfiguration managementApiConfiguration;
 

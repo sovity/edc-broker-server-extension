@@ -168,7 +168,7 @@ public class BrokerServerExtensionContextBuilder {
                         () -> new ConnectorRefreshJob(dslContextFactory, connectorQueueFiller)
                 ),
                 new CronJobRef<>(
-                        BrokerServerExtension.DELETE_OFFLINE_CONNECTORS_AFTER,
+                        BrokerServerExtension.SCHEDULED_DELETE_DEAD_CONNECTORS,
                         DeadConnectorRemoval.class,
                         () -> new DeadConnectorRemoval(brokerServerSettings, dslContextFactory, connectorQueries, brokerEventLogger)
                 )
