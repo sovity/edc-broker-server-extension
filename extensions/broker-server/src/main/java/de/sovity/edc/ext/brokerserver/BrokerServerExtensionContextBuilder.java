@@ -200,11 +200,13 @@ public class BrokerServerExtensionContextBuilder {
                 connectorApiService,
                 catalogApiService
         );
+        var deadConnectorRemoval = new DeadConnectorRemoval(brokerServerSettings, dslContextFactory, connectorQueries, brokerEventLogger);
         return new BrokerServerExtensionContext(
                 brokerServerResource,
                 brokerServerInitializer,
                 connectorUpdater,
-                connectorCreator
+                connectorCreator,
+                deadConnectorRemoval
         );
     }
 }

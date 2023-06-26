@@ -17,6 +17,7 @@ package de.sovity.edc.ext.brokerserver;
 import de.sovity.edc.ext.brokerserver.services.BrokerServerInitializer;
 import de.sovity.edc.ext.brokerserver.services.ConnectorCreator;
 import de.sovity.edc.ext.brokerserver.services.refreshing.ConnectorUpdater;
+import de.sovity.edc.ext.brokerserver.services.schedules.DeadConnectorRemoval;
 import de.sovity.edc.ext.wrapper.api.broker.BrokerServerResource;
 
 
@@ -32,7 +33,8 @@ public record BrokerServerExtensionContext(
 
         // Required for Integration Tests
         ConnectorUpdater connectorUpdater,
-        ConnectorCreator connectorCreator
+        ConnectorCreator connectorCreator,
+        DeadConnectorRemoval deadConnectorRemoval
 ) {
     /**
      * This is a hack for our tests.
