@@ -18,6 +18,7 @@ import de.sovity.edc.ext.brokerserver.BrokerServerExtension;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
+import org.eclipse.edc.spi.EdcException;
 import org.eclipse.edc.spi.monitor.Monitor;
 import org.eclipse.edc.spi.system.configuration.Config;
 
@@ -31,11 +32,11 @@ public class BrokerServerSettingsFactory {
     private final Monitor monitor;
 
     public BrokerServerSettings buildBrokerServerSettings() {
-        var hideOfflineDataOffersAfter = getDuration(BrokerServerExtension.HIDE_OFFLINE_DATA_OFFERS_AFTER, "");
+        var hideOfflineDataOffersAfter = getDuration(BrokerServerExtension.HIDE_OFFLINE_DATA_OFFERS_AFTER, null);
         var catalogPagePageSize = config.getInteger(BrokerServerExtension.CATALOG_PAGE_PAGE_SIZE, 20);
         var dataSpaceConfig = buildDataSpaceConfig(config);
         var numThreads = config.getInteger(BrokerServerExtension.NUM_THREADS, 1);
-        var deleteOfflineConnectorsAfter = getDuration(BrokerServerExtension.DELETE_OFFLINE_CONNECTORS_AFTER, "P5D");
+        var deleteOfflineConnectorsAfter = getDuration(BrokerServerExtension.DELETE_OFFLINE_CONNECTORS_AFTER, Duration.ofDays(5));
 
         return BrokerServerSettings.builder()
                 .hideOfflineDataOffersAfter(hideOfflineDataOffersAfter)
@@ -78,12 +79,11 @@ public class BrokerServerSettingsFactory {
         return config.getString(BrokerServerExtension.DEFAULT_CONNECTOR_DATASPACE, "Default");
     }
 
-    private Duration getDuration(@NonNull String configProperty, String defaultValue) {
-        var durationAsString = config.getString(configProperty, defaultValue);
-        if (StringUtils.isBlank(durationAsString)) {
-            return null;
+    private Duration getDuration(@NonNull String configProperty, Duration defaultValue) {
+        try {
+            return Duration.parse(config.getString(configProperty));
+        } catch (EdcException e) {
+            return defaultValue;
         }
-
-        return Duration.parse(durationAsString);
     }
 }
