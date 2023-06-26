@@ -33,8 +33,7 @@ public class DeadConnectorRemoval implements Job {
 
     @Override
     public void execute(JobExecutionContext context) {
-        dslContextFactory.transaction(
-                dsl -> {
+        dslContextFactory.transaction(dsl -> {
                 var deleteOfflineConnectorsAfter = brokerServerSettings.getDeleteOfflineConnectorsAfter();
                 var toDelete = connectorQueries.findAllConnectorsForDeletion(dsl, deleteOfflineConnectorsAfter);
 
