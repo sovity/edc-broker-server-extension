@@ -34,17 +34,16 @@ public class DeadConnectorRemoval implements Job {
     @Override
     public void execute(JobExecutionContext context) {
         dslContextFactory.transaction(dsl -> {
-                var deleteOfflineConnectorsAfter = brokerServerSettings.getDeleteOfflineConnectorsAfter();
-                var toDelete = connectorQueries.findAllConnectorsForDeletion(dsl, deleteOfflineConnectorsAfter);
+            var deleteOfflineConnectorsAfter = brokerServerSettings.getDeleteOfflineConnectorsAfter();
+            var toDelete = connectorQueries.findAllConnectorsForDeletion(dsl, deleteOfflineConnectorsAfter);
 
-                // delete in batches, child entities first.
-                dsl.deleteFrom(Tables.DATA_OFFER_CONTRACT_OFFER).where(PostgresqlUtils.in(Tables.DATA_OFFER_CONTRACT_OFFER.CONNECTOR_ENDPOINT, toDelete)).execute();
-                dsl.deleteFrom(Tables.DATA_OFFER).where(PostgresqlUtils.in(Tables.DATA_OFFER.CONNECTOR_ENDPOINT, toDelete)).execute();
-                dsl.deleteFrom(Tables.CONNECTOR).where(PostgresqlUtils.in(Tables.CONNECTOR.ENDPOINT, toDelete)).execute();
+            // delete in batches, child entities first.
+            dsl.deleteFrom(Tables.DATA_OFFER_CONTRACT_OFFER).where(PostgresqlUtils.in(Tables.DATA_OFFER_CONTRACT_OFFER.CONNECTOR_ENDPOINT, toDelete)).execute();
+            dsl.deleteFrom(Tables.DATA_OFFER).where(PostgresqlUtils.in(Tables.DATA_OFFER.CONNECTOR_ENDPOINT, toDelete)).execute();
+            dsl.deleteFrom(Tables.CONNECTOR).where(PostgresqlUtils.in(Tables.CONNECTOR.ENDPOINT, toDelete)).execute();
 
-                // add log messages
-                brokerEventLogger.addDeletedDueToInactivityMessages(dsl, toDelete);
-            }
-        );
+            // add log messages
+            brokerEventLogger.addDeletedDueToInactivityMessages(dsl, toDelete);
+        });
     }
 }
