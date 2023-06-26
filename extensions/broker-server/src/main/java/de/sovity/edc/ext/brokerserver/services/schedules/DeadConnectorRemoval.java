@@ -18,19 +18,15 @@ import de.sovity.edc.ext.brokerserver.dao.ConnectorQueries;
 import de.sovity.edc.ext.brokerserver.dao.utils.PostgresqlUtils;
 import de.sovity.edc.ext.brokerserver.db.DslContextFactory;
 import de.sovity.edc.ext.brokerserver.db.jooq.Tables;
+import de.sovity.edc.ext.brokerserver.services.config.BrokerServerSettings;
 import de.sovity.edc.ext.brokerserver.services.logging.BrokerEventLogger;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
-import org.eclipse.edc.spi.system.configuration.Config;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 
-import java.time.Duration;
-
 @RequiredArgsConstructor
 public class DeadConnectorRemoval implements Job {
-    private final Config config;
+    private final BrokerServerSettings brokerServerSettings;
     private final DslContextFactory dslContextFactory;
     private final ConnectorQueries connectorQueries;
     private final BrokerEventLogger brokerEventLogger;
@@ -39,7 +35,7 @@ public class DeadConnectorRemoval implements Job {
     public void execute(JobExecutionContext context) {
         dslContextFactory.transaction(
                 dsl -> {
-                var deleteOfflineConnectorsAfter = getDurationOrNull("DELETE_OFFLINE_CONNECTORS_AFTER");
+                var deleteOfflineConnectorsAfter = brokerServerSettings.getDeleteOfflineConnectorsAfter();
                 var toDelete = connectorQueries.findAllConnectorsForDeletion(dsl, deleteOfflineConnectorsAfter);
 
                 // delete in batches, child entities first.
@@ -51,14 +47,5 @@ public class DeadConnectorRemoval implements Job {
                 brokerEventLogger.addDeletedDueToInactivityMessages(dsl, toDelete);
             }
         );
-    }
-
-    private Duration getDurationOrNull(@NonNull String configProperty) {
-        var durationAsString = config.getString(configProperty, "");
-        if (StringUtils.isBlank(durationAsString)) {
-            return null;
-        }
-
-        return Duration.parse(durationAsString);
     }
 }

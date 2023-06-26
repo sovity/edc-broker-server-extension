@@ -31,16 +31,18 @@ public class BrokerServerSettingsFactory {
     private final Monitor monitor;
 
     public BrokerServerSettings buildBrokerServerSettings() {
-        var hideOfflineDataOffersAfter = getDurationOrNull(BrokerServerExtension.HIDE_OFFLINE_DATA_OFFERS_AFTER);
+        var hideOfflineDataOffersAfter = getDuration(BrokerServerExtension.HIDE_OFFLINE_DATA_OFFERS_AFTER, "");
         var catalogPagePageSize = config.getInteger(BrokerServerExtension.CATALOG_PAGE_PAGE_SIZE, 20);
         var dataSpaceConfig = buildDataSpaceConfig(config);
         var numThreads = config.getInteger(BrokerServerExtension.NUM_THREADS, 1);
+        var deleteOfflineConnectorsAfter = getDuration(BrokerServerExtension.DELETE_OFFLINE_CONNECTORS_AFTER, "P5D");
 
         return BrokerServerSettings.builder()
                 .hideOfflineDataOffersAfter(hideOfflineDataOffersAfter)
                 .catalogPagePageSize(catalogPagePageSize)
                 .dataSpaceConfig(dataSpaceConfig)
                 .numThreads(numThreads)
+                .deleteOfflineConnectorsAfter(deleteOfflineConnectorsAfter)
                 .build();
     }
 
@@ -76,8 +78,8 @@ public class BrokerServerSettingsFactory {
         return config.getString(BrokerServerExtension.DEFAULT_CONNECTOR_DATASPACE, "Default");
     }
 
-    private Duration getDurationOrNull(@NonNull String configProperty) {
-        var durationAsString = config.getString(configProperty, "");
+    private Duration getDuration(@NonNull String configProperty, String defaultValue) {
+        var durationAsString = config.getString(configProperty, defaultValue);
         if (StringUtils.isBlank(durationAsString)) {
             return null;
         }
