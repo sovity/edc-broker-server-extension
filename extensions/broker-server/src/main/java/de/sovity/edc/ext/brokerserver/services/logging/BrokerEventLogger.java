@@ -102,10 +102,10 @@ public class BrokerEventLogger {
         logEntry.insert();
     }
 
-    public void addDeletedDueToInactivityMessages(DSLContext dsl, List<String> toDelete) {
+    public void addDeletedDueToInactivityMessages(DSLContext dsl, List<String> deletedConnectorEndpoints) {
         List<BrokerEventLogRecord> logEntries = new ArrayList<>();
 
-        for (String endpoint : toDelete) {
+        for (var endpoint : deletedConnectorEndpoints) {
             var logEntry = dsl.newRecord(Tables.BROKER_EVENT_LOG);
             logEntry.setEvent(BrokerEventType.CONNECTOR_DELETED_DUE_TO_INACTIVITY);
             logEntry.setEventStatus(BrokerEventStatus.OK);
