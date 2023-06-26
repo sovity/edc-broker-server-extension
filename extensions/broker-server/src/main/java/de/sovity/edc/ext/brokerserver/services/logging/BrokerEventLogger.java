@@ -22,8 +22,8 @@ import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Updates a single connector.
@@ -103,17 +103,15 @@ public class BrokerEventLogger {
     }
 
     public void addDeletedDueToInactivityMessages(DSLContext dsl, List<String> deletedConnectorEndpoints) {
-        List<BrokerEventLogRecord> logEntries = new ArrayList<>();
-
-        for (var endpoint : deletedConnectorEndpoints) {
+        var logEntries = deletedConnectorEndpoints.stream().map(endpoint -> {
             var logEntry = dsl.newRecord(Tables.BROKER_EVENT_LOG);
             logEntry.setEvent(BrokerEventType.CONNECTOR_DELETED_DUE_TO_INACTIVITY);
             logEntry.setEventStatus(BrokerEventStatus.OK);
             logEntry.setCreatedAt(OffsetDateTime.now());
             logEntry.setUserMessage("Connector were deleted due to inactivity.");
             logEntry.setConnectorEndpoint(endpoint);
-            logEntries.add(logEntry);
-        }
+            return logEntry;
+        }).collect(Collectors.toList());
 
         dsl.batchInsert(logEntries).execute();
     }
