@@ -44,6 +44,7 @@ class DeadConnectorRemovalTest {
     private static final TestDatabase TEST_DATABASE = TestDatabaseFactory.getTestDatabase();
 
     private final JobExecutionContext context = mock(JobExecutionContext.class);
+
     @BeforeEach
     void setUp(EdcExtension extension) {
         extension.setConfiguration(createConfiguration(TEST_DATABASE, Map.of(
@@ -89,7 +90,6 @@ class DeadConnectorRemovalTest {
             .set(CONNECTOR.LAST_SUCCESSFUL_REFRESH_AT, OffsetDateTime.now().minusDays(createdDaysAgo))
             .set(CONNECTOR.CREATED_AT, OffsetDateTime.now().minusDays(6))
             .set(CONNECTOR.DATA_OFFERS_EXCEEDED, ConnectorDataOffersExceeded.OK)
-            .set(CONNECTOR.CONTRACT_OFFERS_EXCEEDED, ConnectorContractOffersExceeded.OK)
-            .execute();
+            .set(CONNECTOR.CONTRACT_OFFERS_EXCEEDED, ConnectorContractOffersExceeded.OK).execute();
     }
 }
