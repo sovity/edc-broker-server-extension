@@ -37,11 +37,11 @@ public class CatalogQueryDataOfferFetcher {
     /**
      * Query data offers
      *
-     * @param fields    query fields
+     * @param fields      query fields
      * @param searchQuery search query
      * @param filters     filters (queries + filter clauses)
-     * @param sorting   sorting
-     * @param pageQuery pagination
+     * @param sorting     sorting
+     * @param pageQuery   pagination
      * @return {@link Field} of {@link DataOfferListEntryRs}s
      */
     public Field<List<DataOfferListEntryRs>> queryDataOffers(

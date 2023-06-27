@@ -63,9 +63,9 @@ class ConnectorApiTest {
 
             createConnector(dsl, today, "http://my-connector/ids/data");
             createDataOffer(dsl, today, Map.of(
-                AssetProperty.ASSET_ID, "urn:artifact:my-asset-1",
-                AssetProperty.DATA_CATEGORY, "my-category",
-                AssetProperty.ASSET_NAME, "My Asset 1"
+                    AssetProperty.ASSET_ID, "urn:artifact:my-asset-1",
+                    AssetProperty.DATA_CATEGORY, "my-category",
+                    AssetProperty.ASSET_NAME, "My Asset 1"
             ), "http://my-connector/ids/data");
 
             var result = edcClient().brokerServerApi().connectorPage(new ConnectorPageQuery());
@@ -87,9 +87,9 @@ class ConnectorApiTest {
 
             createConnector(dsl, today, "http://my-connector/ids/data");
             createDataOffer(dsl, today, Map.of(
-                AssetProperty.ASSET_ID, "urn:artifact:my-asset-1",
-                AssetProperty.DATA_CATEGORY, "my-category",
-                AssetProperty.ASSET_NAME, "My Asset 1"
+                    AssetProperty.ASSET_ID, "urn:artifact:my-asset-1",
+                    AssetProperty.DATA_CATEGORY, "my-category",
+                    AssetProperty.ASSET_NAME, "My Asset 1"
             ), "http://my-connector/ids/data");
 
             var connector = edcClient().brokerServerApi().connectorDetailPage(new ConnectorDetailPageQuery("http://my-connector/ids/data"));
@@ -133,10 +133,11 @@ class ConnectorApiTest {
         contractOffer.setPolicy(JSONB.jsonb(policyToJson(dummyPolicy())));
         contractOffer.insert();
     }
+
     private Policy dummyPolicy() {
         return Policy.Builder.newInstance()
-            .assignee("Example Assignee")
-            .build();
+                .assignee("Example Assignee")
+                .build();
     }
 
     private String policyToJson(Policy policy) {

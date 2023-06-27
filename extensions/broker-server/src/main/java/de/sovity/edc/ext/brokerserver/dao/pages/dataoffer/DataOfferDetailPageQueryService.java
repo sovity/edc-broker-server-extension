@@ -16,7 +16,7 @@ package de.sovity.edc.ext.brokerserver.dao.pages.dataoffer;
 
 import de.sovity.edc.ext.brokerserver.dao.pages.catalog.CatalogQueryContractOfferFetcher;
 import de.sovity.edc.ext.brokerserver.dao.pages.catalog.CatalogQueryFields;
-import de.sovity.edc.ext.brokerserver.dao.pages.catalog.models.DataOfferDetailRs;
+import de.sovity.edc.ext.brokerserver.dao.pages.dataoffer.model.DataOfferDetailRs;
 import de.sovity.edc.ext.brokerserver.db.jooq.Tables;
 import de.sovity.edc.ext.brokerserver.services.config.BrokerServerSettings;
 import lombok.RequiredArgsConstructor;
@@ -28,23 +28,24 @@ public class DataOfferDetailPageQueryService {
     private final BrokerServerSettings brokerServerSettings;
 
     public DataOfferDetailRs queryDataOfferDetailsPage(DSLContext dsl, String assetId, String endpoint) {
-        var d = Tables.DATA_OFFER;
-        var c = Tables.CONNECTOR;
-
+        // We are re-using the catalog page query stuff as long as we can get away with it
         var fields = new CatalogQueryFields(
                 Tables.CONNECTOR,
                 Tables.DATA_OFFER,
                 brokerServerSettings.getDataSpaceConfig()
         );
 
+        var d = fields.getDataOfferTable();
+        var c = fields.getConnectorTable();
+
         return dsl.select(
-                d.ASSET_ID,
-                d.ASSET_PROPERTIES.cast(String.class).as("assetPropertiesJson"),
-                d.CREATED_AT,
-                d.UPDATED_AT,
-                catalogQueryContractOfferFetcher.getContractOffers(fields).as("contractOffers"),
-                c.ENDPOINT.as("connectorEndpoint"),
-                c.ONLINE_STATUS.as("connectorOnlineStatus"))
+                        d.ASSET_ID,
+                        d.ASSET_PROPERTIES.cast(String.class).as("assetPropertiesJson"),
+                        d.CREATED_AT,
+                        d.UPDATED_AT,
+                        catalogQueryContractOfferFetcher.getContractOffers(fields).as("contractOffers"),
+                        c.ENDPOINT.as("connectorEndpoint"),
+                        c.ONLINE_STATUS.as("connectorOnlineStatus"))
                 .from(d).leftJoin(c).on(c.ENDPOINT.eq(d.CONNECTOR_ENDPOINT))
                 .where(d.ASSET_ID.eq(assetId).or(d.CONNECTOR_ENDPOINT.eq(endpoint)))
                 .fetchOneInto(DataOfferDetailRs.class);

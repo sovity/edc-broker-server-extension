@@ -14,6 +14,7 @@
 
 package de.sovity.edc.ext.brokerserver.dao.pages.catalog.models;
 
+import de.sovity.edc.ext.brokerserver.dao.pages.dataoffer.model.ContractOfferRs;
 import de.sovity.edc.ext.brokerserver.db.jooq.enums.ConnectorOnlineStatus;
 import lombok.AccessLevel;
 import lombok.Getter;

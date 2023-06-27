@@ -27,9 +27,9 @@ import de.sovity.edc.ext.wrapper.api.broker.model.ConnectorPageSortingType;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 @RequiredArgsConstructor
 public class ConnectorApiService {
@@ -90,6 +90,9 @@ public class ConnectorApiService {
     }
 
     private List<ConnectorPageSortingItem> buildAvailableSortings() {
-        return Arrays.stream(ConnectorPageSortingType.values()).map(it -> new ConnectorPageSortingItem(it, it.getTitle())).toList();
+        return Stream.of(
+                ConnectorPageSortingType.MOST_RECENT,
+                ConnectorPageSortingType.TITLE
+        ).map(it -> new ConnectorPageSortingItem(it, it.getTitle())).toList();
     }
 }

@@ -15,13 +15,13 @@
 package de.sovity.edc.ext.brokerserver.services.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import de.sovity.edc.client.gen.model.CatalogDataOffer;
 import de.sovity.edc.client.gen.model.CatalogPageQuery;
 import de.sovity.edc.client.gen.model.CatalogPageResult;
 import de.sovity.edc.client.gen.model.CnfFilterAttribute;
 import de.sovity.edc.client.gen.model.CnfFilterItem;
 import de.sovity.edc.client.gen.model.CnfFilterValue;
 import de.sovity.edc.client.gen.model.CnfFilterValueAttribute;
-import de.sovity.edc.client.gen.model.DataOfferListEntry;
 import de.sovity.edc.ext.brokerserver.BrokerServerExtension;
 import de.sovity.edc.ext.brokerserver.dao.AssetProperty;
 import de.sovity.edc.ext.brokerserver.db.TestDatabase;
@@ -47,7 +47,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.IntStream;
 
-import static de.sovity.edc.client.gen.model.DataOfferListEntry.ConnectorOnlineStatusEnum.ONLINE;
 import static de.sovity.edc.ext.brokerserver.TestUtils.createConfiguration;
 import static de.sovity.edc.ext.brokerserver.TestUtils.edcClient;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -160,7 +159,7 @@ class CatalogApiTest {
             var dataOfferResult = result.getDataOffers().get(0);
             assertThat(dataOfferResult.getConnectorEndpoint()).isEqualTo("http://my-connector/ids/data");
             assertThat(dataOfferResult.getConnectorOfflineSinceOrLastUpdatedAt()).isEqualTo(today);
-            assertThat(dataOfferResult.getConnectorOnlineStatus()).isEqualTo(ONLINE);
+            assertThat(dataOfferResult.getConnectorOnlineStatus()).isEqualTo(CatalogDataOffer.ConnectorOnlineStatusEnum.ONLINE);
             assertThat(dataOfferResult.getAssetId()).isEqualTo("urn:artifact:my-asset");
             assertThat(dataOfferResult.getProperties()).isEqualTo(Map.of(
                     AssetProperty.ASSET_ID, "urn:artifact:my-asset",
@@ -341,7 +340,7 @@ class CatalogApiTest {
             query.setSorting(CatalogPageQuery.SortingEnum.TITLE);
 
             var result = edcClient().brokerServerApi().catalogPage(query);
-            assertThat(result.getDataOffers()).extracting(DataOfferListEntry::getAssetId)
+            assertThat(result.getDataOffers()).extracting(CatalogDataOffer::getAssetId)
                     .isEqualTo(IntStream.range(0, 10).mapToObj("urn:artifact:my-asset-%d"::formatted).toList());
 
             var actual = result.getPaginationMetadata();
@@ -374,7 +373,7 @@ class CatalogApiTest {
 
             var result = edcClient().brokerServerApi().catalogPage(query);
 
-            assertThat(result.getDataOffers()).extracting(DataOfferListEntry::getAssetId)
+            assertThat(result.getDataOffers()).extracting(CatalogDataOffer::getAssetId)
                     .isEqualTo(IntStream.range(10, 15).mapToObj("urn:artifact:my-asset-%d"::formatted).toList());
 
             var actual = result.getPaginationMetadata();
