@@ -46,7 +46,9 @@ class DeadConnectorRemovalTest {
     private final JobExecutionContext context = mock(JobExecutionContext.class);
     @BeforeEach
     void setUp(EdcExtension extension) {
-        extension.setConfiguration(createConfiguration(TEST_DATABASE, Map.of()));
+        extension.setConfiguration(createConfiguration(TEST_DATABASE, Map.of(
+                "EDC_BROKER_SERVER_DELETE_OFFLINE_CONNECTORS_AFTER", "P5D"
+        )));
     }
 
     @Test
