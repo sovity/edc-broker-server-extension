@@ -14,6 +14,7 @@
 
 package de.sovity.edc.ext.brokerserver.services.schedules;
 
+import de.sovity.edc.ext.brokerserver.BrokerServerExtension;
 import de.sovity.edc.ext.brokerserver.BrokerServerExtensionContext;
 import de.sovity.edc.ext.brokerserver.TestUtils;
 import de.sovity.edc.ext.brokerserver.db.TestDatabase;
@@ -38,7 +39,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
 @ExtendWith(EdcExtension.class)
-class DeadConnectorRemovalTest {
+class OfflineConnectorRemovalJobTest {
 
     @RegisterExtension
     private static final TestDatabase TEST_DATABASE = TestDatabaseFactory.getTestDatabase();
@@ -48,19 +49,19 @@ class DeadConnectorRemovalTest {
     @BeforeEach
     void setUp(EdcExtension extension) {
         extension.setConfiguration(createConfiguration(TEST_DATABASE, Map.of(
-                "EDC_BROKER_SERVER_DELETE_OFFLINE_CONNECTORS_AFTER", "P5D"
+                BrokerServerExtension.DELETE_OFFLINE_CONNECTORS_AFTER, "P5D"
         )));
     }
 
     @Test
-    void test_deadConnectorRemoval_should_remove() {
+    void test_offlineConnectorRemoval_should_remove() {
         TEST_DATABASE.testTransaction(dsl -> {
             // arrange
             createConnector(dsl, 6);
-            var deadConnectorRemoval = BrokerServerExtensionContext.instance.deadConnectorRemoval();
+            var offlineConnectorRemoval = BrokerServerExtensionContext.instance.offlineConnectorRemoval();
 
             // act
-            deadConnectorRemoval.execute(context);
+            offlineConnectorRemoval.execute(context);
 
             // assert
             assertThat(dsl.selectCount().from(CONNECTOR).fetchOne(0, Integer.class)).isZero();
@@ -68,14 +69,14 @@ class DeadConnectorRemovalTest {
     }
 
     @Test
-    void test_deadConnectorRemoval_should_not_remove() {
+    void test_offlineConnectorRemoval_should_not_remove() {
         TEST_DATABASE.testTransaction(dsl -> {
             // arrange
             createConnector(dsl, 2);
-            var deadConnectorRemoval = BrokerServerExtensionContext.instance.deadConnectorRemoval();
+            var offlineConnectorRemoval = BrokerServerExtensionContext.instance.offlineConnectorRemoval();
 
             // act
-            deadConnectorRemoval.execute(context);
+            offlineConnectorRemoval.execute(context);
 
             // assert
             assertThat(dsl.selectCount().from(CONNECTOR).fetchOne(0, Integer.class)).isNotZero();
