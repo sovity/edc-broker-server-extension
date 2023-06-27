@@ -165,7 +165,6 @@ public class BrokerServerExtensionContextBuilder {
         var catalogFilterService = new CatalogFilterService(catalogFilterAttributeDefinitionService);
 
         var offlineConnectorRemover = new OfflineConnectorRemover(brokerServerSettings, connectorQueries, brokerEventLogger);
-        var offlineConnectorRemovalJob = new OfflineConnectorRemovalJob(dslContextFactory, offlineConnectorRemover);
 
         // Schedules
         List<CronJobRef<?>> jobs = List.of(
@@ -220,8 +219,7 @@ public class BrokerServerExtensionContextBuilder {
                 brokerServerResource,
                 brokerServerInitializer,
                 connectorUpdater,
-                connectorCreator,
-                offlineConnectorRemovalJob
+                connectorCreator
         );
     }
 }

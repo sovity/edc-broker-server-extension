@@ -14,54 +14,63 @@
 
 package de.sovity.edc.ext.brokerserver.services.schedules;
 
-import de.sovity.edc.ext.brokerserver.BrokerServerExtension;
-import de.sovity.edc.ext.brokerserver.BrokerServerExtensionContext;
 import de.sovity.edc.ext.brokerserver.TestUtils;
+import de.sovity.edc.ext.brokerserver.dao.ConnectorQueries;
+import de.sovity.edc.ext.brokerserver.db.FlywayTestUtils;
 import de.sovity.edc.ext.brokerserver.db.TestDatabase;
 import de.sovity.edc.ext.brokerserver.db.TestDatabaseFactory;
 import de.sovity.edc.ext.brokerserver.db.jooq.enums.ConnectorContractOffersExceeded;
 import de.sovity.edc.ext.brokerserver.db.jooq.enums.ConnectorDataOffersExceeded;
 import de.sovity.edc.ext.brokerserver.db.jooq.enums.ConnectorOnlineStatus;
-import org.eclipse.edc.junit.extensions.EdcExtension;
+import de.sovity.edc.ext.brokerserver.services.OfflineConnectorRemover;
+import de.sovity.edc.ext.brokerserver.services.config.BrokerServerSettings;
+import de.sovity.edc.ext.brokerserver.services.logging.BrokerEventLogger;
 import org.jooq.DSLContext;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.RegisterExtension;
-import org.quartz.JobExecutionContext;
 
+import java.time.Duration;
 import java.time.OffsetDateTime;
-import java.util.Map;
 
-import static de.sovity.edc.ext.brokerserver.TestUtils.createConfiguration;
 import static de.sovity.edc.ext.brokerserver.db.jooq.tables.Connector.CONNECTOR;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-@ExtendWith(EdcExtension.class)
 class OfflineConnectorRemovalJobTest {
 
     @RegisterExtension
     private static final TestDatabase TEST_DATABASE = TestDatabaseFactory.getTestDatabase();
 
-    private final JobExecutionContext context = mock(JobExecutionContext.class);
+    BrokerServerSettings brokerServerSettings;
+    OfflineConnectorRemover offlineConnectorRemover;
+
+    @BeforeAll
+    static void beforeAll() {
+        FlywayTestUtils.migrate(TEST_DATABASE);
+    }
 
     @BeforeEach
-    void setUp(EdcExtension extension) {
-        extension.setConfiguration(createConfiguration(TEST_DATABASE, Map.of(
-                BrokerServerExtension.DELETE_OFFLINE_CONNECTORS_AFTER, "P5D"
-        )));
+    void beforeEach() {
+        brokerServerSettings = mock(BrokerServerSettings.class);
+        offlineConnectorRemover = new OfflineConnectorRemover(
+                brokerServerSettings,
+                new ConnectorQueries(),
+                new BrokerEventLogger()
+        );
     }
 
     @Test
     void test_offlineConnectorRemoval_should_remove() {
         TEST_DATABASE.testTransaction(dsl -> {
             // arrange
+            when(brokerServerSettings.getDeleteOfflineConnectorsAfter()).thenReturn(Duration.ofDays(5));
             createConnector(dsl, 6);
-            var offlineConnectorRemoval = BrokerServerExtensionContext.instance.offlineConnectorRemoval();
 
             // act
-            offlineConnectorRemoval.execute(context);
+            offlineConnectorRemover.removeIfOfflineTooLong(dsl);
 
             // assert
             assertThat(dsl.selectCount().from(CONNECTOR).fetchOne(0, Integer.class)).isZero();
@@ -72,11 +81,11 @@ class OfflineConnectorRemovalJobTest {
     void test_offlineConnectorRemoval_should_not_remove() {
         TEST_DATABASE.testTransaction(dsl -> {
             // arrange
+            when(brokerServerSettings.getDeleteOfflineConnectorsAfter()).thenReturn(Duration.ofDays(5));
             createConnector(dsl, 2);
-            var offlineConnectorRemoval = BrokerServerExtensionContext.instance.offlineConnectorRemoval();
 
             // act
-            offlineConnectorRemoval.execute(context);
+            offlineConnectorRemover.removeIfOfflineTooLong(dsl);
 
             // assert
             assertThat(dsl.selectCount().from(CONNECTOR).fetchOne(0, Integer.class)).isNotZero();
