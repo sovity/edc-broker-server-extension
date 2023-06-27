@@ -195,7 +195,8 @@ public class BrokerServerExtensionContextBuilder {
 
         var dataOfferDetailApiService = new DataOfferDetailApiService(
                 dataOfferDetailPageQueryService,
-                policyDtoBuilder
+                policyDtoBuilder,
+                assetPropertyParser
         );
 
         var brokerServerResource = new BrokerServerResourceImpl(

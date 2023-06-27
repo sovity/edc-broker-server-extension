@@ -44,6 +44,7 @@ public class DataOfferDetailPageQueryService {
                         d.CREATED_AT,
                         d.UPDATED_AT,
                         catalogQueryContractOfferFetcher.getContractOffers(fields).as("contractOffers"),
+                        fields.getOfflineSinceOrLastUpdatedAt().as("connectorOfflineSinceOrLastUpdatedAt"),
                         c.ENDPOINT.as("connectorEndpoint"),
                         c.ONLINE_STATUS.as("connectorOnlineStatus"))
                 .from(d).leftJoin(c).on(c.ENDPOINT.eq(d.CONNECTOR_ENDPOINT))

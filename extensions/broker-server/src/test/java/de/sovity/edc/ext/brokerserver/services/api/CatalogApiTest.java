@@ -36,7 +36,6 @@ import org.eclipse.edc.junit.extensions.EdcExtension;
 import org.eclipse.edc.policy.model.Policy;
 import org.jooq.DSLContext;
 import org.jooq.JSONB;
-import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -47,6 +46,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.IntStream;
 
+import static de.sovity.edc.ext.brokerserver.AssertionUtils.assertEqualJson;
 import static de.sovity.edc.ext.brokerserver.TestUtils.createConfiguration;
 import static de.sovity.edc.ext.brokerserver.TestUtils.edcClient;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -172,12 +172,6 @@ class CatalogApiTest {
             var expected = toJson(dummyPolicy());
             assertEqualJson(expected, actual);
         });
-    }
-
-    private void assertEqualJson(String expected, String actual) {
-        var expectedJson = new JSONObject(expected);
-        var actualJson = new JSONObject(actual);
-        assertThat(actualJson.similar(expectedJson)).isTrue();
     }
 
     /**

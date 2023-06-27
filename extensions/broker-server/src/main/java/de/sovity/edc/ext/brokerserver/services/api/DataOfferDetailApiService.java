@@ -30,6 +30,7 @@ import java.util.Objects;
 public class DataOfferDetailApiService {
     private final DataOfferDetailPageQueryService dataOfferDetailPageQueryService;
     private final PolicyDtoBuilder policyDtoBuilder;
+    private final AssetPropertyParser assetPropertyParser;
 
     public DataOfferDetailPageResult dataOfferDetailPage(DSLContext dsl, DataOfferDetailPageQuery query) {
         Objects.requireNonNull(query, "query must not be null");
@@ -41,6 +42,7 @@ public class DataOfferDetailApiService {
         result.setConnectorEndpoint(dataOffer.getConnectorEndpoint());
         result.setConnectorOnlineStatus(mapConnectorOnlineStatus(dataOffer.getConnectorOnlineStatus()));
         result.setConnectorOfflineSinceOrLastUpdatedAt(dataOffer.getConnectorOfflineSinceOrLastUpdatedAt());
+        result.setProperties(assetPropertyParser.parsePropertiesFromJsonString(dataOffer.getAssetPropertiesJson()));
         result.setCreatedAt(dataOffer.getCreatedAt());
         result.setUpdatedAt(dataOffer.getUpdatedAt());
         result.setContractOffers(buildDataOfferDetailContractOffers(dataOffer.getContractOffers()));
