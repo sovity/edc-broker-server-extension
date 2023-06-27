@@ -164,7 +164,7 @@ public class BrokerServerExtensionContextBuilder {
         var catalogFilterAttributeDefinitionService = new CatalogFilterAttributeDefinitionService();
         var catalogFilterService = new CatalogFilterService(catalogFilterAttributeDefinitionService);
 
-        var offlineConnectorRemover = new OfflineConnectorRemover(brokerServerSettings,connectorQueries, brokerEventLogger);
+        var offlineConnectorRemover = new OfflineConnectorRemover(brokerServerSettings, connectorQueries, brokerEventLogger);
         var offlineConnectorRemovalJob = new OfflineConnectorRemovalJob(dslContextFactory, offlineConnectorRemover);
 
         // Schedules
