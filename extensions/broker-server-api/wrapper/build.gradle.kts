@@ -2,6 +2,8 @@ val edcVersion: String by project
 val edcGroup: String by project
 val restAssured: String by project
 val assertj: String by project
+val sovityEdcExtensionGroup: String by project
+val sovityEdcExtensionsVersion: String by project
 
 plugins {
     `java-library`
@@ -38,7 +40,7 @@ dependencies {
     testImplementation("${edcGroup}:control-plane-core:${edcVersion}")
     testImplementation("${edcGroup}:junit:${edcVersion}")
     testImplementation("${edcGroup}:http:${edcVersion}")
-    testImplementation(project(":extensions:policy-always-true"))
+    testImplementation("${sovityEdcExtensionGroup}:policy-always-true:${sovityEdcExtensionsVersion}")
     testImplementation("io.rest-assured:rest-assured:${restAssured}")
     testImplementation("org.assertj:assertj-core:${assertj}")
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.3")
