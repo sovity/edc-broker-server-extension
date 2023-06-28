@@ -43,7 +43,7 @@ public class CatalogQuerySortingService {
             );
         } else if (sorting == CatalogPageSortingType.VIEW_COUNT) {
             orderBy = List.of(
-                    fields.getDataOfferTable().VIEW_COUNT.desc(),
+                    fields.getViewCount().desc(),
                     fields.getConnectorTable().ENDPOINT.asc()
             );
         } else {
