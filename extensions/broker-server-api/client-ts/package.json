@@ -1,19 +1,19 @@
 {
     "name": "@sovity.de/broker-server-api",
     "version": "0.0.0",
-    "description": "TypeScript API Client for our EDC API Wrapper.",
+    "description": "TypeScript API Client for our Broker Server.",
     "author": "sovity GmbH",
     "license": "Apache-2.0",
     "homepage": "https://sovity.de",
     "repository": {
         "type": "git",
-        "url": "https://github.com/sovity/edc-extensions/"
+        "url": "https://github.com/sovity/edc-broker-server-extension/"
     },
     "publishConfig": {
         "registry": "https://registry.npmjs.org/"
     },
     "bugs": {
-        "url": "https://github.com/sovity/edc-extensions/issues/new/choose"
+        "url": "https://github.com/sovity/edc-broker-server-extension/issues/new/choose"
     },
     "keywords": [
         "sovity",
