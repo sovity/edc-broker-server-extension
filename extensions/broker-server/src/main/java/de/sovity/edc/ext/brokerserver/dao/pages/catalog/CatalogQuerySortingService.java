@@ -41,6 +41,11 @@ public class CatalogQuerySortingService {
                     fields.getConnectorTable().ENDPOINT.asc(),
                     fields.getAssetName().asc()
             );
+        } else if (sorting == CatalogPageSortingType.VIEW_COUNT) {
+            orderBy = List.of(
+                    fields.getDataOfferTable().VIEW_COUNT.desc(),
+                    fields.getConnectorTable().ENDPOINT.asc()
+            );
         } else {
             throw new IllegalArgumentException("Unknown %s: %s".formatted(CatalogPageSortingType.class.getName(), sorting));
         }

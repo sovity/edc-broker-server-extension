@@ -18,6 +18,7 @@ import de.sovity.edc.ext.brokerserver.dao.pages.catalog.CatalogQueryContractOffe
 import de.sovity.edc.ext.brokerserver.dao.pages.catalog.CatalogQueryFields;
 import de.sovity.edc.ext.brokerserver.dao.pages.dataoffer.model.DataOfferDetailRs;
 import de.sovity.edc.ext.brokerserver.db.jooq.Tables;
+import de.sovity.edc.ext.brokerserver.db.jooq.tables.DataOffer;
 import de.sovity.edc.ext.brokerserver.services.config.BrokerServerSettings;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
@@ -38,6 +39,8 @@ public class DataOfferDetailPageQueryService {
         var d = fields.getDataOfferTable();
         var c = fields.getConnectorTable();
 
+        increaseDataOfferViewCount(dsl, assetId, endpoint, d);
+
         return dsl.select(
                         d.ASSET_ID,
                         d.ASSET_PROPERTIES.cast(String.class).as("assetPropertiesJson"),
@@ -50,5 +53,12 @@ public class DataOfferDetailPageQueryService {
                 .from(d).leftJoin(c).on(c.ENDPOINT.eq(d.CONNECTOR_ENDPOINT))
                 .where(d.ASSET_ID.eq(assetId).or(d.CONNECTOR_ENDPOINT.eq(endpoint)))
                 .fetchOneInto(DataOfferDetailRs.class);
+    }
+
+    private void increaseDataOfferViewCount(DSLContext dsl, String assetId, String endpoint, DataOffer d) {
+        dsl.update(d)
+                .set(d.VIEW_COUNT, d.VIEW_COUNT.add(1))
+                .where(d.ASSET_ID.eq(assetId).and(d.CONNECTOR_ENDPOINT.eq(endpoint)))
+                .execute();
     }
 }
