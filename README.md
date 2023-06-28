@@ -95,7 +95,7 @@ or if it's broken.
 - The mapping should look like this:
     - `/backend/api/v1/ids` -> `broker-backend:11003/backend/api/v1/ids`
     - `/backend/api/v1/management` -> `broker-backend:11002/backend/api/v1/management`
-    - All other requests should be redirected to `broker-ui:80`
+    - All other requests should be mapped to `broker-ui:80`
 
 #### Backend Configuration
 
