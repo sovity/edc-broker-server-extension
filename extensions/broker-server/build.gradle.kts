@@ -8,8 +8,6 @@ val jupiterVersion: String by project
 val mockitoVersion: String by project
 val assertj: String by project
 val okHttpVersion: String by project
-val sovityEdcGroup: String by project
-val sovityEdcExtensionsVersion: String by project
 val restAssured: String by project
 val testcontainersVersion: String by project
 
@@ -26,7 +24,7 @@ dependencies {
     implementation("${edcGroup}:management-api-configuration:${edcVersion}")
 
     api(project(":extensions:broker-server-postgres-flyway-jooq"))
-    api("${sovityEdcGroup}:wrapper-broker-api:${sovityEdcExtensionsVersion}") { isChanging = true }
+    api(project(":extensions:broker-server-api:wrapper-broker-api"))
 
     implementation("com.squareup.okhttp3:okhttp:${okHttpVersion}")
 
@@ -42,7 +40,7 @@ dependencies {
     testImplementation("${edcGroup}:ids:${edcVersion}")
     testImplementation("${edcGroup}:monitor-jdk-logger:${edcVersion}")
     testImplementation("${edcGroup}:configuration-filesystem:${edcVersion}")
-    testImplementation("${sovityEdcGroup}:client:${sovityEdcExtensionsVersion}")
+    testImplementation(project(":extensions:broker-server-api:client"))
     testImplementation("io.rest-assured:rest-assured:${restAssured}")
     testImplementation("org.testcontainers:testcontainers:${testcontainersVersion}")
     testImplementation("org.testcontainers:junit-jupiter:${testcontainersVersion}")

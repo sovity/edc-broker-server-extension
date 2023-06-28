@@ -120,9 +120,6 @@ tasks.withType<Javadoc> {
     fullOptions.addStringOption("Xdoclint:none", "-quiet")
 }
 
-val sovityEdcGroup: String by project
-group = sovityEdcGroup
-
 publishing {
     publications {
         create<MavenPublication>(project.name) {

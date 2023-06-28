@@ -18,9 +18,6 @@ dependencies {
     implementation("org.apache.commons:commons-lang3:3.12.0")
 }
 
-val sovityEdcGroup: String by project
-group = sovityEdcGroup
-
 publishing {
     publications {
         create<MavenPublication>(project.name) {
