@@ -5,6 +5,8 @@ on:
     branches: [ main ]
   release:
     types: [ published ]
+  pull_request:
+    branches: [ main ]
 
 jobs:
   build-and-publish-npm-package:
@@ -27,7 +29,7 @@ jobs:
           node-version: 16
           cache: 'npm'
           registry-url: 'https://registry.npmjs.org'
-          cache-dependency-path: ./extensions/broker-server-api/wrapper/client-ts/package-lock.json
+          cache-dependency-path: ./extensions/broker-server-api/client-ts/package-lock.json
       - name: Generate openapi.yaml & Client Code
         run: |
           ./gradlew :extensions:broker-server-api:wrapper:clean :extensions:broker-server-api:wrapper:build -x test --no-daemon
@@ -45,11 +47,11 @@ jobs:
           npm version $VERSION
           echo "DIST_TAG=$DIST_TAG" >> $GITHUB_ENV
       - name: Build NPM Library
-        working-directory: ./extensions/broker-server-api/wrapper/client-ts
+        working-directory: ./extensions/broker-server-api/client-ts
         run: |
           npm ci && npm run build
       - name: Publish NPM Library
-        working-directory: ./extensions/broker-server-api/wrapper/client-ts
+        working-directory: ./extensions/broker-server-api/client-ts
         run: |
           npm set //registry.npmjs.org/:_authToken $NODE_AUTH_TOKEN
           npm set //registry.npmjs.org/:username $NODE_USER
