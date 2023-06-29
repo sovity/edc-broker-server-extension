@@ -2,3 +2,4 @@
 
 -- Connector deleted due to being offline for too long
 alter type broker_event_type add value 'CONNECTOR_DELETED_DUE_TO_OFFLINE_FOR_TOO_LONG';
+alter type connector_online_status add value 'DEAD';

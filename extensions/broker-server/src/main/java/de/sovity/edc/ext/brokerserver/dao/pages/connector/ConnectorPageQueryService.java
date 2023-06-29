@@ -18,6 +18,7 @@ import de.sovity.edc.ext.brokerserver.api.model.ConnectorPageSortingType;
 import de.sovity.edc.ext.brokerserver.dao.pages.connector.model.ConnectorRs;
 import de.sovity.edc.ext.brokerserver.dao.utils.SearchUtils;
 import de.sovity.edc.ext.brokerserver.db.jooq.Tables;
+import de.sovity.edc.ext.brokerserver.db.jooq.enums.ConnectorOnlineStatus;
 import de.sovity.edc.ext.brokerserver.db.jooq.tables.Connector;
 import org.jetbrains.annotations.NotNull;
 import org.jooq.DSLContext;
@@ -34,6 +35,7 @@ public class ConnectorPageQueryService {
         return dsl.select(c.asterisk(), dataOfferCount(c.ENDPOINT).as("numDataOffers"))
                 .from(c)
                 .where(filterBySearchQuery)
+                .and(c.ONLINE_STATUS.notEqual(ConnectorOnlineStatus.DEAD))
                 .orderBy(sortConnectorPage(c, sorting))
                 .fetchInto(ConnectorRs.class);
     }
