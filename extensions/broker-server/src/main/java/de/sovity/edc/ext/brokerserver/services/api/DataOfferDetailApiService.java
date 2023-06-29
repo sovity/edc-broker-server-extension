@@ -36,6 +36,7 @@ public class DataOfferDetailApiService {
         Objects.requireNonNull(query, "query must not be null");
 
         var dataOffer = dataOfferDetailPageQueryService.queryDataOfferDetailsPage(dsl, query.getAssetId(), query.getConnectorEndpoint());
+        var viewCount = dataOfferDetailPageQueryService.queryDataOfferDetailsViewCount(dsl, query.getAssetId(), query.getConnectorEndpoint());
 
         var result = new DataOfferDetailPageResult();
         result.setAssetId(dataOffer.getAssetId());
@@ -46,6 +47,7 @@ public class DataOfferDetailApiService {
         result.setCreatedAt(dataOffer.getCreatedAt());
         result.setUpdatedAt(dataOffer.getUpdatedAt());
         result.setContractOffers(buildDataOfferDetailContractOffers(dataOffer.getContractOffers()));
+        result.setViewCount(viewCount);
         return result;
     }
 

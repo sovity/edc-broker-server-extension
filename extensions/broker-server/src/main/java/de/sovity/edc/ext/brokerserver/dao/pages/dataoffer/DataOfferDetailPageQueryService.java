@@ -17,12 +17,15 @@ package de.sovity.edc.ext.brokerserver.dao.pages.dataoffer;
 import de.sovity.edc.ext.brokerserver.dao.pages.catalog.CatalogQueryContractOfferFetcher;
 import de.sovity.edc.ext.brokerserver.dao.pages.catalog.CatalogQueryFields;
 import de.sovity.edc.ext.brokerserver.dao.pages.dataoffer.model.DataOfferDetailRs;
+import de.sovity.edc.ext.brokerserver.dao.pages.dataoffer.model.ViewCountDetailRs;
 import de.sovity.edc.ext.brokerserver.db.jooq.Tables;
 import de.sovity.edc.ext.brokerserver.services.config.BrokerServerSettings;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 
 import java.time.OffsetDateTime;
+
+import static org.jooq.impl.DSL.count;
 
 @RequiredArgsConstructor
 public class DataOfferDetailPageQueryService {
@@ -63,5 +66,15 @@ public class DataOfferDetailPageQueryService {
         dsl.insertInto(v, v.ASSET_ID, v.CONNECTOR_ENDPOINT, v.DATE)
                 .values(assetId, endpoint, OffsetDateTime.now())
                 .execute();
+    }
+
+    public ViewCountDetailRs queryDataOfferDetailsViewCount(DSLContext dsl, String assetId, String connectorEndpoint) {
+        var v = Tables.DATA_OFFER_VIEW_COUNT;
+
+        return dsl.select(count(v.ASSET_ID))
+                .from(v)
+                .where(v.ASSET_ID.eq(assetId).and(v.CONNECTOR_ENDPOINT.eq(connectorEndpoint)))
+                .groupBy(v.ASSET_ID, v.CONNECTOR_ENDPOINT)
+                .fetchOneInto(ViewCountDetailRs.class);
     }
 }
