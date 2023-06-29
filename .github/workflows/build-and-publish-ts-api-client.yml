@@ -5,6 +5,8 @@ on:
     branches: [ main ]
   release:
     types: [ published ]
+  pull_request:
+      branches: [ main ]
 
 jobs:
   build-and-publish-npm-package:
@@ -52,6 +54,7 @@ jobs:
         run: |
           npm ci && npm run build
       - name: Publish NPM Library
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/tags/v*'
         working-directory: ./extensions/broker-server-api/client-ts
         run: |
           npm set //registry.npmjs.org/:_authToken $NODE_AUTH_TOKEN
