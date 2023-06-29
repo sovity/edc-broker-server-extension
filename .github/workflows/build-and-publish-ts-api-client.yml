@@ -37,7 +37,7 @@ jobs:
             USERNAME: ${{ github.actor }}
             TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: NPM Package Dist Tag & Version
-        working-directory: ./extensions/broker-server-api/wrapper/client-ts
+        working-directory: ./extensions/broker-server-api/client-ts
         run: |
           if [ "${{ startsWith(github.ref, 'refs/tags/') }}" == "true" ]; then
             # Full Release
