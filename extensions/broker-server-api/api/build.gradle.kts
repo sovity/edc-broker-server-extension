@@ -33,7 +33,7 @@ dependencies {
 }
 
 val openapiFileDir = "${project.buildDir}/swagger"
-val openapiFileFilename = "edc-api-wrapper.yaml"
+val openapiFileFilename = "broker-server.yaml"
 val openapiFile = "$openapiFileDir/$openapiFileFilename"
 
 tasks.withType<io.swagger.v3.plugins.gradle.tasks.ResolveTask> {

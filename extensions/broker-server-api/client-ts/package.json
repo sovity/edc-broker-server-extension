@@ -21,7 +21,9 @@
         "edc",
         "eclipse dataspace components",
         "mobility data space",
-        "Catena-X"
+        "Catena-X",
+        "Mobilithek",
+        "broker"
     ],
     "type": "module",
     "main": "./dist/sovity-broker-server-client.umd.cjs",
