@@ -1,2 +1,2 @@
-export * from './EdcClient';
+export * from './BrokerServerClient';
 export * from './generated';
