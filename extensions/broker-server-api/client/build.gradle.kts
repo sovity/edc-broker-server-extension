@@ -68,7 +68,7 @@ tasks.getByName<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("op
     configOptions.set(mutableMapOf(
             "invokerPackage" to "de.sovity.edc.client.gen",
             "apiPackage" to "de.sovity.edc.client.gen.api",
-            "modelPackage" to "de.sovity.edc.client.gen.model",
+            "modelPackage" to "de.sovity.edc.ext.brokerserver.client",
             "caseInsensitiveResponseHeaders" to "true",
             "additionalModelTypeAnnotations" to "@lombok.AllArgsConstructor\n@lombok.Builder",
             "annotationLibrary" to "swagger1",

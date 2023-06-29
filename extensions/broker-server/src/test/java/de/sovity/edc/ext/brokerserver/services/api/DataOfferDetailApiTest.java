@@ -15,8 +15,8 @@
 package de.sovity.edc.ext.brokerserver.services.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import de.sovity.edc.client.gen.model.DataOfferDetailPageQuery;
-import de.sovity.edc.client.gen.model.DataOfferDetailPageResult;
+import de.sovity.edc.ext.brokerserver.client.DataOfferDetailPageQuery;
+import de.sovity.edc.ext.brokerserver.client.DataOfferDetailPageResult;
 import de.sovity.edc.ext.brokerserver.dao.AssetProperty;
 import de.sovity.edc.ext.brokerserver.db.TestDatabase;
 import de.sovity.edc.ext.brokerserver.db.TestDatabaseFactory;

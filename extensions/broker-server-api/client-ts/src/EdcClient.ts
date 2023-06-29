@@ -2,26 +2,24 @@ import {
     BrokerServerApi,
     Configuration,
     ConfigurationParameters,
-    EnterpriseEditionApi,
     UIApi,
     UseCaseApi,
 } from './generated';
 
 /**
- * API Client for our sovity EDC
+ * API Client for our sovity Broker Server Client
  */
-export interface EdcClient {
+export interface BrokerServerClient {
     uiApi: UIApi;
     useCaseApi: UseCaseApi;
-    enterpriseEditionApi: EnterpriseEditionApi;
     brokerServerApi: BrokerServerApi;
 }
 
 /**
- * Configure & Build new EDC Client
+ * Configure & Build new Broker Server Client
  * @param opts opts
  */
-export function buildEdcClient(opts: EdcClientOptions): EdcClient {
+export function buildBrokerServerClient(opts: BrokerServerClientOptions): BrokerServerClient {
     const config = new Configuration({
         basePath: opts.managementApiUrl,
         headers: {
@@ -34,7 +32,6 @@ export function buildEdcClient(opts: EdcClientOptions): EdcClient {
     return {
         uiApi: new UIApi(config),
         useCaseApi: new UseCaseApi(config),
-        enterpriseEditionApi: new EnterpriseEditionApi(config),
         brokerServerApi: new BrokerServerApi(config),
     };
 }
@@ -42,7 +39,7 @@ export function buildEdcClient(opts: EdcClientOptions): EdcClient {
 /**
  * Options for instantiating an EDC API Client
  */
-export interface EdcClientOptions {
+export interface BrokerServerClientOptions {
     managementApiUrl: string;
     managementApiKey?: string;
     configOverrides?: Partial<ConfigurationParameters>;

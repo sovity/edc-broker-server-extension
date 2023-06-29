@@ -4,6 +4,7 @@ val restAssured: String by project
 val assertj: String by project
 val sovityEdcExtensionGroup: String by project
 val sovityEdcExtensionsVersion: String by project
+val sovityEdcGroup: String by project
 
 plugins {
     `java-library`
@@ -19,8 +20,8 @@ dependencies {
 
     implementation("${edcGroup}:api-core:${edcVersion}")
     implementation("${edcGroup}:management-api-configuration:${edcVersion}")
-    implementation(project(":extensions:broker-server-api:wrapper-broker-api"))
-    implementation(project(":extensions:broker-server-api:wrapper-common-api"))
+    implementation(project(":extensions:broker-server-api:api"))
+    implementation("${sovityEdcGroup}:wrapper-common-api:${sovityEdcExtensionsVersion}")
     api("${edcGroup}:contract-definition-api:${edcVersion}")
     api("${edcGroup}:asset-api:${edcVersion}")
     api("${edcGroup}:control-plane-spi:${edcVersion}")
