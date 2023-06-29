@@ -1,13 +1,11 @@
 name: TypeScript API Client Library
 
 on:
-  push:
-    branches: [ main ]
-  release:
-    types: [ published ]
+  pull_request:
+      branches: [ main ]
 
 jobs:
-  build-and-publish-npm-package:
+  build-npm-package:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     permissions:
@@ -35,7 +33,7 @@ jobs:
             USERNAME: ${{ github.actor }}
             TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: NPM Package Dist Tag & Version
-        working-directory: ./extensions/broker-server-api/wrapper/client-ts
+        working-directory: ./extensions/broker-server-api/client-ts
         run: |
           if [ "${{ startsWith(github.ref, 'refs/tags/') }}" == "true" ]; then
             # Full Release
@@ -51,12 +49,3 @@ jobs:
         working-directory: ./extensions/broker-server-api/client-ts
         run: |
           npm ci && npm run build
-      - name: Publish NPM Library
-        working-directory: ./extensions/broker-server-api/client-ts
-        run: |
-          npm set //registry.npmjs.org/:_authToken $NODE_AUTH_TOKEN
-          npm set //registry.npmjs.org/:username $NODE_USER
-          npm publish --access public --tag "${{ env.DIST_TAG }}"
-        env:
-          NODE_USER: richardtreier-sovity
-          NODE_AUTH_TOKEN: ${{ secrets.SOVITY_EDC_CLIENT_NPM_AUTH }}

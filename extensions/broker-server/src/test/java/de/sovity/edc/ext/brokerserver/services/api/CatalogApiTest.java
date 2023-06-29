@@ -15,14 +15,14 @@
 package de.sovity.edc.ext.brokerserver.services.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import de.sovity.edc.client.gen.model.CatalogDataOffer;
+import de.sovity.edc.client.gen.model.CatalogPageQuery;
+import de.sovity.edc.client.gen.model.CatalogPageResult;
+import de.sovity.edc.client.gen.model.CnfFilterAttribute;
+import de.sovity.edc.client.gen.model.CnfFilterItem;
+import de.sovity.edc.client.gen.model.CnfFilterValue;
+import de.sovity.edc.client.gen.model.CnfFilterValueAttribute;
 import de.sovity.edc.ext.brokerserver.BrokerServerExtension;
-import de.sovity.edc.ext.brokerserver.client.CatalogDataOffer;
-import de.sovity.edc.ext.brokerserver.client.CatalogPageQuery;
-import de.sovity.edc.ext.brokerserver.client.CatalogPageResult;
-import de.sovity.edc.ext.brokerserver.client.CnfFilterAttribute;
-import de.sovity.edc.ext.brokerserver.client.CnfFilterItem;
-import de.sovity.edc.ext.brokerserver.client.CnfFilterValue;
-import de.sovity.edc.ext.brokerserver.client.CnfFilterValueAttribute;
 import de.sovity.edc.ext.brokerserver.dao.AssetProperty;
 import de.sovity.edc.ext.brokerserver.db.TestDatabase;
 import de.sovity.edc.ext.brokerserver.db.TestDatabaseFactory;

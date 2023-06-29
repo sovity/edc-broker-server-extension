@@ -1,17 +1,13 @@
 import {
     BrokerServerApi,
     Configuration,
-    ConfigurationParameters,
-    UIApi,
-    UseCaseApi,
+    ConfigurationParameters
 } from './generated';
 
 /**
  * API Client for our sovity Broker Server Client
  */
 export interface BrokerServerClient {
-    uiApi: UIApi;
-    useCaseApi: UseCaseApi;
     brokerServerApi: BrokerServerApi;
 }
 
@@ -30,8 +26,6 @@ export function buildBrokerServerClient(opts: BrokerServerClientOptions): Broker
     });
 
     return {
-        uiApi: new UIApi(config),
-        useCaseApi: new UseCaseApi(config),
         brokerServerApi: new BrokerServerApi(config),
     };
 }

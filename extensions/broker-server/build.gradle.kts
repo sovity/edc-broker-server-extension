@@ -10,6 +10,8 @@ val assertj: String by project
 val okHttpVersion: String by project
 val restAssured: String by project
 val testcontainersVersion: String by project
+val sovityEdcGroup: String by project
+val sovityEdcExtensionsVersion: String by project
 
 configurations.all {
     resolutionStrategy.cacheChangingModulesFor(0, TimeUnit.SECONDS)
@@ -40,7 +42,7 @@ dependencies {
     testImplementation("${edcGroup}:ids:${edcVersion}")
     testImplementation("${edcGroup}:monitor-jdk-logger:${edcVersion}")
     testImplementation("${edcGroup}:configuration-filesystem:${edcVersion}")
-    testImplementation(project(":extensions:broker-server-api:client"))
+    testImplementation("${sovityEdcGroup}:client:${sovityEdcExtensionsVersion}")
     testImplementation("io.rest-assured:rest-assured:${restAssured}")
     testImplementation("org.testcontainers:testcontainers:${testcontainersVersion}")
     testImplementation("org.testcontainers:junit-jupiter:${testcontainersVersion}")
