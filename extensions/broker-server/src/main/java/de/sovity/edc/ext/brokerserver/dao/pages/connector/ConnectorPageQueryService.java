@@ -30,10 +30,16 @@ import java.util.List;
 public class ConnectorPageQueryService {
     public List<ConnectorRs> queryConnectorPage(DSLContext dsl, String searchQuery, ConnectorPageSortingType sorting) {
         var c = Tables.CONNECTOR;
+        var betm = Tables.BROKER_EXECUTION_TIME_MEASUREMENT;
         var filterBySearchQuery = SearchUtils.simpleSearch(searchQuery, List.of(c.ENDPOINT, c.CONNECTOR_ID));
+
         return dsl.select(c.asterisk(), dataOfferCount(c.ENDPOINT).as("numDataOffers"))
-                .from(c)
+            .select(DSL.min(betm.DURATION_IN_MS).as("connectorCrawlingTimeMin"),
+                    DSL.max(betm.DURATION_IN_MS).as("connectorCrawlingTimeMax"),
+                    DSL.avg(betm.DURATION_IN_MS).as("connectorCrawlingTimeAvg"))
+                .from(c).leftJoin(betm).on(betm.CONNECTOR_ENDPOINT.eq(c.ENDPOINT))
                 .where(filterBySearchQuery)
+                .groupBy(c.ENDPOINT)
                 .orderBy(sortConnectorPage(c, sorting))
                 .fetchInto(ConnectorRs.class);
     }

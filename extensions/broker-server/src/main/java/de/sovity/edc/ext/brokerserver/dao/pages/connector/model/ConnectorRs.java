@@ -28,9 +28,9 @@ import java.time.OffsetDateTime;
 public class ConnectorRs {
     String endpoint;
     String connectorId;
-    private OffsetDateTime createdAt;
-    private OffsetDateTime lastSuccessfulRefreshAt;
-    private OffsetDateTime lastRefreshAttemptAt;
+    OffsetDateTime createdAt;
+    OffsetDateTime lastSuccessfulRefreshAt;
+    OffsetDateTime lastRefreshAttemptAt;
     ConnectorOnlineStatus onlineStatus;
     Integer numDataOffers;
     long connectorCrawlingTimeMin;
