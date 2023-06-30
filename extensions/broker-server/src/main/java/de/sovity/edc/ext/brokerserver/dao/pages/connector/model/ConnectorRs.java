@@ -33,4 +33,7 @@ public class ConnectorRs {
     private OffsetDateTime lastRefreshAttemptAt;
     ConnectorOnlineStatus onlineStatus;
     Integer numDataOffers;
+    long connectorCrawlingTimeMin;
+    long connectorCrawlingTimeMax;
+    long connectorCrawlingTimeAvg;
 }
