@@ -14,24 +14,12 @@
 
 package de.sovity.edc.ext.brokerserver.services.api;
 
-import de.sovity.edc.ext.brokerserver.api.model.ConnectorDetailPageQuery;
-import de.sovity.edc.ext.brokerserver.api.model.ConnectorDetailPageResult;
-import de.sovity.edc.ext.brokerserver.api.model.ConnectorEndpoint;
-import de.sovity.edc.ext.brokerserver.api.model.ConnectorListEntry;
-import de.sovity.edc.ext.brokerserver.api.model.ConnectorPageQuery;
-import de.sovity.edc.ext.brokerserver.api.model.ConnectorPageResult;
-import de.sovity.edc.ext.brokerserver.api.model.ConnectorPageSortingItem;
-import de.sovity.edc.ext.brokerserver.api.model.ConnectorPageSortingType;
-import de.sovity.edc.ext.brokerserver.dao.pages.connector.ConnectorPageQueryService;
-import de.sovity.edc.ext.brokerserver.dao.pages.connector.model.ConnectorRs;
 import de.sovity.edc.ext.brokerserver.db.jooq.enums.ConnectorOnlineStatus;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 
+import java.net.URL;
 import java.time.OffsetDateTime;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Stream;
 
 import static de.sovity.edc.ext.brokerserver.db.jooq.Tables.CONNECTOR;
 
@@ -39,6 +27,15 @@ import static de.sovity.edc.ext.brokerserver.db.jooq.Tables.CONNECTOR;
 public class ConnectorService {
 
     public void addConnector(DSLContext dsl, String connectorEndpoint) {
+        // validate connector endpoint being valid URL
+        try {
+            var connectorEndpointUrl = new URL(connectorEndpoint);
+        } catch (Exception e) {
+            // API must be able to handle malformed URLs without panicking
+            return;
+        }
+
+        // validate connector doesn't yet exist
         var connectorDbRow = dsl.selectFrom(CONNECTOR)
                 .where(CONNECTOR.CONNECTOR_ID.eq(connectorEndpoint))
                 .fetchOne();
@@ -47,6 +44,7 @@ public class ConnectorService {
             return;
         }
 
+        // add connector
         dsl.insertInto(CONNECTOR)
                 .set(CONNECTOR.CONNECTOR_ID, connectorEndpoint)
                 .set(CONNECTOR.ENDPOINT, connectorEndpoint)
