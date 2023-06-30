@@ -63,7 +63,7 @@ class OfflineConnectorRemovalJobTest {
     }
 
     @Test
-    void test_offlineConnectorRemoval_should_remove() {
+    void test_offlineConnectorRemoval_should_be_dead() {
         TEST_DATABASE.testTransaction(dsl -> {
             // arrange
             when(brokerServerSettings.getDeleteOfflineConnectorsAfter()).thenReturn(Duration.ofDays(5));
@@ -73,12 +73,15 @@ class OfflineConnectorRemovalJobTest {
             offlineConnectorRemover.removeIfOfflineTooLong(dsl);
 
             // assert
-            assertThat(dsl.selectCount().from(CONNECTOR).fetchOne(0, Integer.class)).isZero();
+            dsl.select().from(CONNECTOR).fetch().forEach(record -> {
+                assertThat(record.get(CONNECTOR.CONNECTOR_ID)).isEqualTo("http://example.org");
+                assertThat(record.get(CONNECTOR.ONLINE_STATUS)).isEqualTo(ConnectorOnlineStatus.DEAD);
+            });
         });
     }
 
     @Test
-    void test_offlineConnectorRemoval_should_not_remove() {
+    void test_offlineConnectorRemoval_should_not_be_dead() {
         TEST_DATABASE.testTransaction(dsl -> {
             // arrange
             when(brokerServerSettings.getDeleteOfflineConnectorsAfter()).thenReturn(Duration.ofDays(5));
@@ -88,7 +91,10 @@ class OfflineConnectorRemovalJobTest {
             offlineConnectorRemover.removeIfOfflineTooLong(dsl);
 
             // assert
-            assertThat(dsl.selectCount().from(CONNECTOR).fetchOne(0, Integer.class)).isNotZero();
+            dsl.select().from(CONNECTOR).fetch().forEach(record -> {
+                assertThat(record.get(CONNECTOR.CONNECTOR_ID)).isEqualTo("http://example.org");
+                assertThat(record.get(CONNECTOR.ONLINE_STATUS)).isNotEqualTo(ConnectorOnlineStatus.DEAD);
+            });
         });
     }
 
