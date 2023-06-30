@@ -15,6 +15,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Broker Server API now generates into it's own Broker Server Client Typescript Library.
 
+```yaml
+    # Renamed and new configuration properties
+    old but renamed: EDC_BROKER_SERVER_CRON_ALIVE_CONNECTOR_REFRESH was before EDC_BROKER_SERVER_CRON_CONNECTOR_REFRESH
+    new: EDC_BROKER_SERVER_CRON_DEAD_CONNECTOR_REFRESH
+```
+
 #### Minor
 
 - Broker Server API is now part of this repository.
