@@ -48,7 +48,7 @@ public class DataOfferDetailApiService {
         result.setCreatedAt(dataOffer.getCreatedAt());
         result.setUpdatedAt(dataOffer.getUpdatedAt());
         result.setContractOffers(buildDataOfferDetailContractOffers(dataOffer.getContractOffers()));
-        result.setViewCount(viewCount);
+        result.setViewCount(viewCount.getViewCount());
         return result;
     }
 
