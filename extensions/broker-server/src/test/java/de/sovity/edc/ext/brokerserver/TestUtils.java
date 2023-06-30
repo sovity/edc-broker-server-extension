@@ -14,7 +14,7 @@
 
 package de.sovity.edc.ext.brokerserver;
 
-import de.sovity.edc.client.EdcClient;
+import de.sovity.edc.ext.brokerserver.client.BrokerServerClient;
 import de.sovity.edc.ext.brokerserver.db.PostgresFlywayExtension;
 import de.sovity.edc.ext.brokerserver.db.TestDatabase;
 import org.eclipse.edc.protocol.ids.api.configuration.IdsApiConfigurationExtension;
@@ -83,10 +83,10 @@ public class TestUtils {
         return config;
     }
 
-    public static EdcClient edcClient() {
-        return EdcClient.builder()
-                .managementApiUrl(TestUtils.MANAGEMENT_ENDPOINT)
-                .managementApiKey(TestUtils.MANAGEMENT_API_KEY)
-                .build();
+    public static BrokerServerClient edcClient() {
+        return BrokerServerClient.builder()
+            .managementApiUrl(TestUtils.MANAGEMENT_ENDPOINT)
+            .managementApiKey(TestUtils.MANAGEMENT_API_KEY)
+            .build();
     }
 }
