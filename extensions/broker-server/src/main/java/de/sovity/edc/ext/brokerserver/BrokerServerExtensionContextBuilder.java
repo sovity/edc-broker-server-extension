@@ -226,7 +226,7 @@ public class BrokerServerExtensionContextBuilder {
         return new CronJobRef<>(
             BrokerServerExtension.SCHEDULED_DELETE_OFFLINE_CONNECTORS,
             OfflineConnectorKillerJob.class,
-            () -> new OfflineConnectorKillerJob(dslContextFactory, offlineConnectorKiller)
+                () -> new OfflineConnectorKillerJob(dslContextFactory, offlineConnectorKiller)
         );
     }
 
@@ -235,7 +235,7 @@ public class BrokerServerExtensionContextBuilder {
         return new CronJobRef<>(
             BrokerServerExtension.CRON_DEAD_CONNECTOR_REFRESH,
             DeadConnectorRefreshJob.class,
-            () -> new DeadConnectorRefreshJob(dslContextFactory, connectorQueueFiller)
+                () -> new DeadConnectorRefreshJob(dslContextFactory, connectorQueueFiller)
         );
     }
 
@@ -244,7 +244,7 @@ public class BrokerServerExtensionContextBuilder {
         return new CronJobRef<>(
             BrokerServerExtension.CRON_ALIVE_CONNECTOR_REFRESH,
             AliveConnectorRefreshJob.class,
-            () -> new AliveConnectorRefreshJob(dslContextFactory, connectorQueueFiller)
+                () -> new AliveConnectorRefreshJob(dslContextFactory, connectorQueueFiller)
         );
     }
 }
