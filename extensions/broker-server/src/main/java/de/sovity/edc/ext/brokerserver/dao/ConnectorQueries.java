@@ -16,6 +16,7 @@ package de.sovity.edc.ext.brokerserver.dao;
 
 import de.sovity.edc.ext.brokerserver.dao.utils.PostgresqlUtils;
 import de.sovity.edc.ext.brokerserver.db.jooq.Tables;
+import de.sovity.edc.ext.brokerserver.db.jooq.enums.ConnectorOnlineStatus;
 import de.sovity.edc.ext.brokerserver.db.jooq.tables.records.ConnectorRecord;
 import org.jooq.DSLContext;
 
@@ -34,7 +35,7 @@ public class ConnectorQueries {
 
     public Set<String> findConnectorsForScheduledRefresh(DSLContext dsl) {
         var c = Tables.CONNECTOR;
-        return dsl.select(c.ENDPOINT).from(c).fetchSet(c.ENDPOINT);
+        return dsl.select(c.ENDPOINT).from(c).where(c.ONLINE_STATUS.notEqual(ConnectorOnlineStatus.DEAD)).fetchSet(c.ENDPOINT);
     }
 
     public Set<String> findExistingConnectors(DSLContext dsl, Collection<String> connectorEndpoints) {
