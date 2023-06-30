@@ -102,7 +102,7 @@ public class BrokerEventLogger {
         logEntry.insert();
     }
 
-    public void addDeletedDueToOfflineTooLongMessages(DSLContext dsl, List<String> deletedConnectorEndpoints) {
+    public void addKilledDueToOfflineTooLongMessages(DSLContext dsl, List<String> deletedConnectorEndpoints) {
         var logEntries = deletedConnectorEndpoints.stream().map(endpoint -> {
             var logEntry = dsl.newRecord(Tables.BROKER_EVENT_LOG);
             logEntry.setEvent(BrokerEventType.CONNECTOR_DELETED_DUE_TO_OFFLINE_FOR_TOO_LONG);

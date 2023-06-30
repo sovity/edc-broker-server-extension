@@ -30,7 +30,7 @@ import de.sovity.edc.ext.brokerserver.db.DslContextFactory;
 import de.sovity.edc.ext.brokerserver.services.BrokerServerInitializer;
 import de.sovity.edc.ext.brokerserver.services.ConnectorCreator;
 import de.sovity.edc.ext.brokerserver.services.KnownConnectorsInitializer;
-import de.sovity.edc.ext.brokerserver.services.OfflineConnectorRemover;
+import de.sovity.edc.ext.brokerserver.services.OfflineConnectorKiller;
 import de.sovity.edc.ext.brokerserver.services.api.AssetPropertyParser;
 import de.sovity.edc.ext.brokerserver.services.api.CatalogApiService;
 import de.sovity.edc.ext.brokerserver.services.api.ConnectorApiService;
@@ -58,8 +58,9 @@ import de.sovity.edc.ext.brokerserver.services.refreshing.offers.DataOfferPatchA
 import de.sovity.edc.ext.brokerserver.services.refreshing.offers.DataOfferPatchBuilder;
 import de.sovity.edc.ext.brokerserver.services.refreshing.offers.DataOfferRecordUpdater;
 import de.sovity.edc.ext.brokerserver.services.refreshing.offers.DataOfferWriter;
-import de.sovity.edc.ext.brokerserver.services.schedules.ConnectorRefreshJob;
-import de.sovity.edc.ext.brokerserver.services.schedules.OfflineConnectorRemovalJob;
+import de.sovity.edc.ext.brokerserver.services.schedules.AliveConnectorRefreshJob;
+import de.sovity.edc.ext.brokerserver.services.schedules.DeadConnectorRefreshJob;
+import de.sovity.edc.ext.brokerserver.services.schedules.OfflineConnectorKillerJob;
 import de.sovity.edc.ext.brokerserver.services.schedules.QuartzScheduleInitializer;
 import de.sovity.edc.ext.brokerserver.services.schedules.utils.CronJobRef;
 import lombok.NoArgsConstructor;
@@ -166,19 +167,27 @@ public class BrokerServerExtensionContextBuilder {
         var catalogFilterAttributeDefinitionService = new CatalogFilterAttributeDefinitionService();
         var catalogFilterService = new CatalogFilterService(catalogFilterAttributeDefinitionService);
 
-        var offlineConnectorRemover = new OfflineConnectorRemover(brokerServerSettings, connectorQueries, brokerEventLogger);
+        var offlineConnectorRemover = new OfflineConnectorKiller(brokerServerSettings, connectorQueries, brokerEventLogger);
 
         // Schedules
         List<CronJobRef<?>> jobs = List.of(
+                // Refresh alive connectors
                 new CronJobRef<>(
-                        BrokerServerExtension.CRON_CONNECTOR_REFRESH,
-                        ConnectorRefreshJob.class,
-                        () -> new ConnectorRefreshJob(dslContextFactory, connectorQueueFiller)
+                        BrokerServerExtension.CRON_ALIVE_CONNECTOR_REFRESH,
+                        AliveConnectorRefreshJob.class,
+                        () -> new AliveConnectorRefreshJob(dslContextFactory, connectorQueueFiller)
                 ),
+                // Refresh dead connectors
+                new CronJobRef<>(
+                        BrokerServerExtension.CRON_DEAD_CONNECTOR_REFRESH,
+                        DeadConnectorRefreshJob.class,
+                        () -> new DeadConnectorRefreshJob(dslContextFactory, connectorQueueFiller)
+                ),
+                // Kill offline connectors if offline too long
                 new CronJobRef<>(
                         BrokerServerExtension.SCHEDULED_DELETE_OFFLINE_CONNECTORS,
-                        OfflineConnectorRemovalJob.class,
-                        () -> new OfflineConnectorRemovalJob(dslContextFactory, offlineConnectorRemover)
+                        OfflineConnectorKillerJob.class,
+                        () -> new OfflineConnectorKillerJob(dslContextFactory, offlineConnectorRemover)
                 )
         );
 

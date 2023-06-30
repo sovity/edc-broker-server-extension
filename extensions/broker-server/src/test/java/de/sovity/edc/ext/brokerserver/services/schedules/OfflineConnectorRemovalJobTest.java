@@ -22,7 +22,7 @@ import de.sovity.edc.ext.brokerserver.db.TestDatabaseFactory;
 import de.sovity.edc.ext.brokerserver.db.jooq.enums.ConnectorContractOffersExceeded;
 import de.sovity.edc.ext.brokerserver.db.jooq.enums.ConnectorDataOffersExceeded;
 import de.sovity.edc.ext.brokerserver.db.jooq.enums.ConnectorOnlineStatus;
-import de.sovity.edc.ext.brokerserver.services.OfflineConnectorRemover;
+import de.sovity.edc.ext.brokerserver.services.OfflineConnectorKiller;
 import de.sovity.edc.ext.brokerserver.services.config.BrokerServerSettings;
 import de.sovity.edc.ext.brokerserver.services.logging.BrokerEventLogger;
 import org.jooq.DSLContext;
@@ -45,7 +45,7 @@ class OfflineConnectorRemovalJobTest {
     private static final TestDatabase TEST_DATABASE = TestDatabaseFactory.getTestDatabase();
 
     BrokerServerSettings brokerServerSettings;
-    OfflineConnectorRemover offlineConnectorRemover;
+    OfflineConnectorKiller offlineConnectorRemover;
 
     @BeforeAll
     static void beforeAll() {
@@ -55,7 +55,7 @@ class OfflineConnectorRemovalJobTest {
     @BeforeEach
     void beforeEach() {
         brokerServerSettings = mock(BrokerServerSettings.class);
-        offlineConnectorRemover = new OfflineConnectorRemover(
+        offlineConnectorRemover = new OfflineConnectorKiller(
             brokerServerSettings,
                 new ConnectorQueries(),
                 new BrokerEventLogger()
@@ -70,7 +70,7 @@ class OfflineConnectorRemovalJobTest {
             createConnector(dsl, 6);
 
             // act
-            offlineConnectorRemover.removeIfOfflineTooLong(dsl);
+            offlineConnectorRemover.killIfOfflineTooLong(dsl);
 
             // assert
             dsl.select().from(CONNECTOR).fetch().forEach(record -> {
@@ -88,7 +88,7 @@ class OfflineConnectorRemovalJobTest {
             createConnector(dsl, 2);
 
             // act
-            offlineConnectorRemover.removeIfOfflineTooLong(dsl);
+            offlineConnectorRemover.killIfOfflineTooLong(dsl);
 
             // assert
             dsl.select().from(CONNECTOR).fetch().forEach(record -> {

@@ -25,23 +25,23 @@ import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 
 @RequiredArgsConstructor
-public class OfflineConnectorRemover {
+public class OfflineConnectorKiller {
     private final BrokerServerSettings brokerServerSettings;
     private final ConnectorQueries connectorQueries;
     private final BrokerEventLogger brokerEventLogger;
 
-    public void removeIfOfflineTooLong(DSLContext dsl) {
-        var deleteOfflineConnectorsAfter = brokerServerSettings.getDeleteOfflineConnectorsAfter();
-        var toDelete = connectorQueries.findAllConnectorsForDeletion(dsl, deleteOfflineConnectorsAfter);
+    public void killIfOfflineTooLong(DSLContext dsl) {
+        var killOfflineConnectorsAfter = brokerServerSettings.getDeleteOfflineConnectorsAfter();
+        var toKill = connectorQueries.findAllConnectorsForDeletion(dsl, killOfflineConnectorsAfter);
 
         // delete data offers in batches, child entities first.
-        dsl.deleteFrom(Tables.DATA_OFFER_CONTRACT_OFFER).where(PostgresqlUtils.in(Tables.DATA_OFFER_CONTRACT_OFFER.CONNECTOR_ENDPOINT, toDelete)).execute();
-        dsl.deleteFrom(Tables.DATA_OFFER).where(PostgresqlUtils.in(Tables.DATA_OFFER.CONNECTOR_ENDPOINT, toDelete)).execute();
+        dsl.deleteFrom(Tables.DATA_OFFER_CONTRACT_OFFER).where(PostgresqlUtils.in(Tables.DATA_OFFER_CONTRACT_OFFER.CONNECTOR_ENDPOINT, toKill)).execute();
+        dsl.deleteFrom(Tables.DATA_OFFER).where(PostgresqlUtils.in(Tables.DATA_OFFER.CONNECTOR_ENDPOINT, toKill)).execute();
 
         // set connector to status dead
-        dsl.update(Tables.CONNECTOR).set(Tables.CONNECTOR.ONLINE_STATUS, ConnectorOnlineStatus.DEAD).where(PostgresqlUtils.in(Tables.CONNECTOR.ENDPOINT, toDelete)).execute();
+        dsl.update(Tables.CONNECTOR).set(Tables.CONNECTOR.ONLINE_STATUS, ConnectorOnlineStatus.DEAD).where(PostgresqlUtils.in(Tables.CONNECTOR.ENDPOINT, toKill)).execute();
 
         // add log messages
-        brokerEventLogger.addDeletedDueToOfflineTooLongMessages(dsl, toDelete);
+        brokerEventLogger.addKilledDueToOfflineTooLongMessages(dsl, toKill);
     }
 }

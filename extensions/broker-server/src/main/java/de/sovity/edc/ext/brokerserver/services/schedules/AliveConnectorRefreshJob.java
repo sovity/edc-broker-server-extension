@@ -21,12 +21,12 @@ import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 
 @RequiredArgsConstructor
-public class ConnectorRefreshJob implements Job {
+public class AliveConnectorRefreshJob implements Job {
     private final DslContextFactory dslContextFactory;
     private final ConnectorQueueFiller connectorQueueFiller;
 
     @Override
     public void execute(JobExecutionContext context) {
-        dslContextFactory.transaction(connectorQueueFiller::enqueueAllConnectors);
+        dslContextFactory.transaction(connectorQueueFiller::enqueueAliveConnectors);
     }
 }

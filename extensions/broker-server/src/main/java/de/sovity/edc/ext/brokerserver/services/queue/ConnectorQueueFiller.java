@@ -23,8 +23,13 @@ public class ConnectorQueueFiller {
     private final ConnectorQueue connectorQueue;
     private final ConnectorQueries connectorQueries;
 
-    public void enqueueAllConnectors(DSLContext dsl) {
-        var endpoints = connectorQueries.findConnectorsForScheduledRefresh(dsl);
+    public void enqueueAliveConnectors(DSLContext dsl) {
+        var endpoints = connectorQueries.findAliveConnectorsForScheduledRefresh(dsl);
+        connectorQueue.addAll(endpoints, ConnectorRefreshPriority.SCHEDULED_REFRESH);
+    }
+
+    public void enqueueDeadConnectors(DSLContext dsl) {
+        var endpoints = connectorQueries.findDeadConnectorsForScheduledRefresh(dsl);
         connectorQueue.addAll(endpoints, ConnectorRefreshPriority.SCHEDULED_REFRESH);
     }
 }

@@ -33,7 +33,10 @@ public class BrokerServerExtension implements ServiceExtension {
     public static final String KNOWN_CONNECTORS = toEdcProp("EDC_BROKER_SERVER_KNOWN_CONNECTORS");
 
     @Setting
-    public static final String CRON_CONNECTOR_REFRESH = toEdcProp("EDC_BROKER_SERVER_CRON_CONNECTOR_REFRESH");
+    public static final String CRON_ALIVE_CONNECTOR_REFRESH = toEdcProp("EDC_BROKER_SERVER_CRON_ALIVE_CONNECTOR_REFRESH");
+
+    @Setting
+    public static final String CRON_DEAD_CONNECTOR_REFRESH = toEdcProp("EDC_BROKER_SERVER_CRON_DEAD_CONNECTOR_REFRESH");
 
     @Setting
     public static final String NUM_THREADS = toEdcProp("EDC_BROKER_SERVER_NUM_THREADS");
