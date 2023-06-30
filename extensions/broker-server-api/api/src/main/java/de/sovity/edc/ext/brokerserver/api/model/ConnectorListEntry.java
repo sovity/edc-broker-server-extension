@@ -50,5 +50,14 @@ public class ConnectorListEntry {
 
     @Schema(description = "Number of known data offerings")
     private Integer numContractOffers;
+
+    @Schema(description = "Minimum duration of crawling process in milliseconds")
+    private long connectorCrawlingTimeMin;
+
+    @Schema(description = "Maximum duration of crawling process in milliseconds")
+    private long connectorCrawlingTimeMax;
+
+    @Schema(description = "Average duration of crawling process in milliseconds")
+    private long connectorCrawlingTimeAvg;
 }
 
