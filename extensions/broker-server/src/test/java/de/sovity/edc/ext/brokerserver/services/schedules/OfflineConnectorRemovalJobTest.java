@@ -45,7 +45,7 @@ class OfflineConnectorRemovalJobTest {
     private static final TestDatabase TEST_DATABASE = TestDatabaseFactory.getTestDatabase();
 
     BrokerServerSettings brokerServerSettings;
-    OfflineConnectorKiller offlineConnectorRemover;
+    OfflineConnectorKiller offlineConnectorKiller;
 
     @BeforeAll
     static void beforeAll() {
@@ -55,7 +55,7 @@ class OfflineConnectorRemovalJobTest {
     @BeforeEach
     void beforeEach() {
         brokerServerSettings = mock(BrokerServerSettings.class);
-        offlineConnectorRemover = new OfflineConnectorKiller(
+        offlineConnectorKiller = new OfflineConnectorKiller(
             brokerServerSettings,
                 new ConnectorQueries(),
                 new BrokerEventLogger()
@@ -63,14 +63,14 @@ class OfflineConnectorRemovalJobTest {
     }
 
     @Test
-    void test_offlineConnectorRemoval_should_be_dead() {
+    void test_offlineConnectorKiller_should_be_dead() {
         TEST_DATABASE.testTransaction(dsl -> {
             // arrange
             when(brokerServerSettings.getDeleteOfflineConnectorsAfter()).thenReturn(Duration.ofDays(5));
             createConnector(dsl, 6);
 
             // act
-            offlineConnectorRemover.killIfOfflineTooLong(dsl);
+            offlineConnectorKiller.killIfOfflineTooLong(dsl);
 
             // assert
             dsl.select().from(CONNECTOR).fetch().forEach(record -> {
@@ -81,14 +81,14 @@ class OfflineConnectorRemovalJobTest {
     }
 
     @Test
-    void test_offlineConnectorRemoval_should_not_be_dead() {
+    void test_offlineConnectorKiller_should_not_be_dead() {
         TEST_DATABASE.testTransaction(dsl -> {
             // arrange
             when(brokerServerSettings.getDeleteOfflineConnectorsAfter()).thenReturn(Duration.ofDays(5));
             createConnector(dsl, 2);
 
             // act
-            offlineConnectorRemover.killIfOfflineTooLong(dsl);
+            offlineConnectorKiller.killIfOfflineTooLong(dsl);
 
             // assert
             dsl.select().from(CONNECTOR).fetch().forEach(record -> {

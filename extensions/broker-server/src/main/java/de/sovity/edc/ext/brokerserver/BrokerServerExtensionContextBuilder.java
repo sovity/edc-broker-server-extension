@@ -69,6 +69,7 @@ import org.eclipse.edc.runtime.metamodel.annotation.Inject;
 import org.eclipse.edc.spi.monitor.Monitor;
 import org.eclipse.edc.spi.system.configuration.Config;
 import org.eclipse.edc.spi.types.TypeManager;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -167,28 +168,13 @@ public class BrokerServerExtensionContextBuilder {
         var catalogFilterAttributeDefinitionService = new CatalogFilterAttributeDefinitionService();
         var catalogFilterService = new CatalogFilterService(catalogFilterAttributeDefinitionService);
 
-        var offlineConnectorRemover = new OfflineConnectorKiller(brokerServerSettings, connectorQueries, brokerEventLogger);
+        var offlineConnectorKiller = new OfflineConnectorKiller(brokerServerSettings, connectorQueries, brokerEventLogger);
 
         // Schedules
         List<CronJobRef<?>> jobs = List.of(
-                // Refresh alive connectors
-                new CronJobRef<>(
-                        BrokerServerExtension.CRON_ALIVE_CONNECTOR_REFRESH,
-                        AliveConnectorRefreshJob.class,
-                        () -> new AliveConnectorRefreshJob(dslContextFactory, connectorQueueFiller)
-                ),
-                // Refresh dead connectors
-                new CronJobRef<>(
-                        BrokerServerExtension.CRON_DEAD_CONNECTOR_REFRESH,
-                        DeadConnectorRefreshJob.class,
-                        () -> new DeadConnectorRefreshJob(dslContextFactory, connectorQueueFiller)
-                ),
-                // Kill offline connectors if offline too long
-                new CronJobRef<>(
-                        BrokerServerExtension.SCHEDULED_DELETE_OFFLINE_CONNECTORS,
-                        OfflineConnectorKillerJob.class,
-                        () -> new OfflineConnectorKillerJob(dslContextFactory, offlineConnectorRemover)
-                )
+                getAliveConnectorRefreshJobCronJobRef(dslContextFactory, connectorQueueFiller),
+                getDeadConnectorRefreshJobCronJobRef(dslContextFactory, connectorQueueFiller),
+                getOfflineConnectorKillerJobCronJobRef(dslContextFactory, offlineConnectorKiller)
         );
 
         // Startup
@@ -232,6 +218,33 @@ public class BrokerServerExtensionContextBuilder {
                 brokerServerInitializer,
                 connectorUpdater,
                 connectorCreator
+        );
+    }
+
+    @NotNull
+    private static CronJobRef<OfflineConnectorKillerJob> getOfflineConnectorKillerJobCronJobRef(DslContextFactory dslContextFactory, OfflineConnectorKiller offlineConnectorKiller) {
+        return new CronJobRef<>(
+            BrokerServerExtension.SCHEDULED_DELETE_OFFLINE_CONNECTORS,
+            OfflineConnectorKillerJob.class,
+            () -> new OfflineConnectorKillerJob(dslContextFactory, offlineConnectorKiller)
+        );
+    }
+
+    @NotNull
+    private static CronJobRef<DeadConnectorRefreshJob> getDeadConnectorRefreshJobCronJobRef(DslContextFactory dslContextFactory, ConnectorQueueFiller connectorQueueFiller) {
+        return new CronJobRef<>(
+            BrokerServerExtension.CRON_DEAD_CONNECTOR_REFRESH,
+            DeadConnectorRefreshJob.class,
+            () -> new DeadConnectorRefreshJob(dslContextFactory, connectorQueueFiller)
+        );
+    }
+
+    @NotNull
+    private static CronJobRef<AliveConnectorRefreshJob> getAliveConnectorRefreshJobCronJobRef(DslContextFactory dslContextFactory, ConnectorQueueFiller connectorQueueFiller) {
+        return new CronJobRef<>(
+            BrokerServerExtension.CRON_ALIVE_CONNECTOR_REFRESH,
+            AliveConnectorRefreshJob.class,
+            () -> new AliveConnectorRefreshJob(dslContextFactory, connectorQueueFiller)
         );
     }
 }
