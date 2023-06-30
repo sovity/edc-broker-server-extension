@@ -46,11 +46,16 @@ public class ConnectorPageQueryService {
 
     public ConnectorRs queryConnectorDetailPage(DSLContext dsl, String connectorEndpoint) {
         var c = Tables.CONNECTOR;
+        var betm = Tables.BROKER_EXECUTION_TIME_MEASUREMENT;
         var filterBySearchQuery = SearchUtils.simpleSearch(connectorEndpoint, List.of(c.ENDPOINT, c.CONNECTOR_ID));
 
         return dsl.select(c.asterisk(), dataOfferCount(c.ENDPOINT).as("numDataOffers"))
-                .from(c)
+                .select(DSL.min(Tables.BROKER_EXECUTION_TIME_MEASUREMENT.DURATION_IN_MS).as("connectorCrawlingTimeMin"),
+                        DSL.max(Tables.BROKER_EXECUTION_TIME_MEASUREMENT.DURATION_IN_MS).as("connectorCrawlingTimeMax"),
+                        DSL.avg(Tables.BROKER_EXECUTION_TIME_MEASUREMENT.DURATION_IN_MS).as("connectorCrawlingTimeAvg"))
+                .from(c).leftJoin(betm).on(betm.CONNECTOR_ENDPOINT.eq(c.ENDPOINT))
                 .where(filterBySearchQuery)
+                .groupBy(c.ENDPOINT)
                 .fetchOneInto(ConnectorRs.class);
     }
 
