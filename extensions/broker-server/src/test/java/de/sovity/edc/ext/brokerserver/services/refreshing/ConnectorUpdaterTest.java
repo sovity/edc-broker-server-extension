@@ -56,9 +56,9 @@ class ConnectorUpdaterTest {
 
     @Test
     void testConnectorUpdate(
-            AssetService assetService,
-            PolicyDefinitionStore policyDefinitionStore,
-            ContractDefinitionStore contractDefinitionStore
+        AssetService assetService,
+        PolicyDefinitionStore policyDefinitionStore,
+        ContractDefinitionStore contractDefinitionStore
     ) {
         TEST_DATABASE.testTransaction(dsl -> {
             // arrange
@@ -93,39 +93,39 @@ class ConnectorUpdaterTest {
 
     private void createAlwaysTruePolicyDefinition(PolicyDefinitionStore policyDefinitionStore) {
         var policyDefinition = PolicyDefinition.Builder.newInstance()
-                .id("always-true")
-                .policy(Policy.Builder.newInstance().build())
-                .build();
+            .id("always-true")
+            .policy(Policy.Builder.newInstance().build())
+            .build();
         policyDefinitionStore.save(policyDefinition);
     }
 
     public void createAlwaysTrueContractDefinition(ContractDefinitionStore contractDefinitionStore) {
         var contractDefinition = ContractDefinition.Builder.newInstance()
-                .id("always-true-cd")
-                .contractPolicyId("always-true")
-                .accessPolicyId("always-true")
-                .selectorExpression(AssetSelectorExpression.SELECT_ALL)
-                .validity(1000) //else throws "validity must be strictly positive"
-                .build();
+            .id("always-true-cd")
+            .contractPolicyId("always-true")
+            .accessPolicyId("always-true")
+            .selectorExpression(AssetSelectorExpression.SELECT_ALL)
+            .validity(1000) //else throws "validity must be strictly positive"
+            .build();
         contractDefinitionStore.save(contractDefinition);
     }
 
     private void createAsset(
-            AssetService assetService,
-            String assetId,
-            String assetName
+        AssetService assetService,
+        String assetId,
+        String assetName
     ) {
         var asset = Asset.Builder.newInstance()
-                .id(assetId)
-                .property(AssetProperty.ASSET_ID, assetId)
-                .property(AssetProperty.ASSET_NAME, assetName)
-                .build();
+            .id(assetId)
+            .property(AssetProperty.ASSET_ID, assetId)
+            .property(AssetProperty.ASSET_NAME, assetName)
+            .build();
         var dataAddress = DataAddress.Builder.newInstance()
-                .properties(Map.of(
-                        "type", "HttpData",
-                        "baseUrl", "https://jsonplaceholder.typicode.com/todos/1"
-                ))
-                .build();
+            .properties(Map.of(
+                "type", "HttpData",
+                "baseUrl", "https://jsonplaceholder.typicode.com/todos/1"
+            ))
+            .build();
         assetService.create(asset, dataAddress);
     }
 }
