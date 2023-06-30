@@ -14,6 +14,7 @@
 
 package de.sovity.edc.ext.brokerserver.services.api;
 
+import de.sovity.edc.ext.brokerserver.api.model.ConnectorEndpoint;
 import de.sovity.edc.ext.brokerserver.dao.pages.connector.ConnectorPageQueryService;
 import de.sovity.edc.ext.brokerserver.dao.pages.connector.model.ConnectorRs;
 import de.sovity.edc.ext.brokerserver.api.model.ConnectorDetailPageQuery;
@@ -34,6 +35,7 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 public class ConnectorApiService {
     private final ConnectorPageQueryService connectorPageQueryService;
+    private final ConnectorService connectorService;
     private final PaginationMetadataUtils paginationMetadataUtils;
 
     public ConnectorPageResult connectorPage(DSLContext dsl, ConnectorPageQuery query) {
@@ -94,5 +96,10 @@ public class ConnectorApiService {
                 ConnectorPageSortingType.MOST_RECENT,
                 ConnectorPageSortingType.TITLE
         ).map(it -> new ConnectorPageSortingItem(it, it.getTitle())).toList();
+    }
+
+    public void addConnectors(DSLContext dsl, List<ConnectorEndpoint> connectorEndpoints) {
+        Objects.requireNonNull(connectorEndpoints, "connectorEndpoints must not be null");
+        connectorEndpoints.forEach(connectorEndpoint -> connectorService.addConnector(dsl, connectorEndpoint.getConnectorEndpoint()));
     }
 }

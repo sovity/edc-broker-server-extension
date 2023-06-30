@@ -34,6 +34,7 @@ import de.sovity.edc.ext.brokerserver.services.OfflineConnectorRemover;
 import de.sovity.edc.ext.brokerserver.services.api.AssetPropertyParser;
 import de.sovity.edc.ext.brokerserver.services.api.CatalogApiService;
 import de.sovity.edc.ext.brokerserver.services.api.ConnectorApiService;
+import de.sovity.edc.ext.brokerserver.services.api.ConnectorService;
 import de.sovity.edc.ext.brokerserver.services.api.DataOfferDetailApiService;
 import de.sovity.edc.ext.brokerserver.services.api.PaginationMetadataUtils;
 import de.sovity.edc.ext.brokerserver.services.api.PolicyDtoBuilder;
@@ -112,6 +113,7 @@ public class BrokerServerExtensionContextBuilder {
                 brokerServerSettings
         );
         var connectorPageQueryService = new ConnectorPageQueryService();
+        var connectorService = new ConnectorService();
         var dataOfferDetailPageQueryService = new DataOfferDetailPageQueryService(catalogQueryContractOfferFetcher, brokerServerSettings);
 
 
@@ -199,6 +201,7 @@ public class BrokerServerExtensionContextBuilder {
         );
         var connectorApiService = new ConnectorApiService(
                 connectorPageQueryService,
+                connectorService,
                 paginationMetadataUtils
         );
 
