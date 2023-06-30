@@ -125,7 +125,7 @@ class ConnectorUpdaterTest {
                 "type", "HttpData",
                 "baseUrl", "https://jsonplaceholder.typicode.com/todos/1"
                 ))
-            .build();
+                .build();
         assetService.create(asset, dataAddress);
     }
 }
