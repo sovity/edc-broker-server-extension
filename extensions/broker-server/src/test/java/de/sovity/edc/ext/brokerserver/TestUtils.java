@@ -41,8 +41,8 @@ public class TestUtils {
 
     @NotNull
     public static Map<String, String> createConfiguration(
-        TestDatabase testDatabase,
-        Map<String, String> additionalConfigProperties
+            TestDatabase testDatabase,
+            Map<String, String> additionalConfigProperties
     ) {
         Map<String, String> config = new HashMap<>();
         config.put("web.http.port", String.valueOf(getFreePort()));
@@ -69,11 +69,11 @@ public class TestUtils {
     private static Map<String, String> getCoreEdcJdbcConfig(TestDatabase testDatabase) {
         Map<String, String> config = new HashMap<>();
         List.of("asset",
-            "contractdefinition",
-            "contractnegotiation",
-            "policy",
-            "transferprocess",
-            "dataplaneinstance"
+                "contractdefinition",
+                "contractnegotiation",
+                "policy",
+                "transferprocess",
+                "dataplaneinstance"
         ).forEach(it -> {
             config.put("edc.datasource.%s.name".formatted(it), it);
             config.put("edc.datasource.%s.url".formatted(it), testDatabase.getJdbcUrl());

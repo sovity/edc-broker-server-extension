@@ -68,7 +68,7 @@ class DataOfferWriterTest {
 
             var changedCoExisting = Do.forName("contractOffer");
             var changedCoFetched = changedCoExisting.withContractOffers(List.of(
-                changedCoExisting.getContractOffers().get(0).withPolicyValue("changed")
+                    changedCoExisting.getContractOffers().get(0).withPolicyValue("changed")
             ));
             testData.existing(changedCoExisting);
             testData.fetched(changedCoFetched);
@@ -86,10 +86,10 @@ class DataOfferWriterTest {
             // act
             dsl.transaction(it -> testData.initialize(it.dsl()));
             dsl.transaction(it -> dataOfferWriter.updateDataOffers(
-                it.dsl(),
-                testData.connectorEndpoint,
-                testData.fetchedDataOffers,
-                changes
+                    it.dsl(),
+                    testData.connectorEndpoint,
+                    testData.fetchedDataOffers,
+                    changes
             ));
             var actual = dsl.transactionResult(it -> new DataOfferWriterTestResultHelper(it.dsl()));
 
@@ -145,10 +145,10 @@ class DataOfferWriterTest {
     }
 
     private void assertPolicyEquals(
-        DataOfferWriterTestResultHelper actual,
-        DataOfferWriterTestDataHelper scenario,
-        Do expectedDo,
-        Co expectedCo
+            DataOfferWriterTestResultHelper actual,
+            DataOfferWriterTestDataHelper scenario,
+            Do expectedDo,
+            Co expectedCo
     ) {
         var actualContractOffer = actual.getContractOffer(expectedDo.getAssetId(), expectedCo.getId());
         var actualPolicy = actualContractOffer.getPolicy().data();

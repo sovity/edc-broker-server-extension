@@ -31,10 +31,10 @@ class DataOfferWriterTestDydi {
     ContractOfferRecordUpdater contractOfferRecordUpdater = new ContractOfferRecordUpdater();
     DataOfferRecordUpdater dataOfferRecordUpdater = new DataOfferRecordUpdater();
     DataOfferPatchBuilder dataOfferPatchBuilder = new DataOfferPatchBuilder(
-        dataOfferContractOfferQueries,
-        dataOfferQueries,
-        dataOfferRecordUpdater,
-        contractOfferRecordUpdater
+            dataOfferContractOfferQueries,
+            dataOfferQueries,
+            dataOfferRecordUpdater,
+            contractOfferRecordUpdater
     );
     DataOfferPatchApplier dataOfferPatchApplier = new DataOfferPatchApplier();
     DataOfferWriter dataOfferWriter = new DataOfferWriter(dataOfferPatchBuilder, dataOfferPatchApplier);
