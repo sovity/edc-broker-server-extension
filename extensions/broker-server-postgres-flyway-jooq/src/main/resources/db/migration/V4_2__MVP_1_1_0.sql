@@ -1,5 +1,7 @@
 create table data_offer_view_count (
     connector_endpoint text                     not null,
     asset_id           text                     not null,
-    date               timestamp with time zone not null
+    date               timestamp with time zone not null,
+    PRIMARY KEY (connector_endpoint, asset_id),
+    FOREIGN KEY (connector_endpoint) REFERENCES connector (endpoint)
 );

@@ -22,8 +22,6 @@ import de.sovity.edc.ext.brokerserver.services.config.BrokerServerSettings;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 
-import static org.jooq.impl.DSL.count;
-
 @RequiredArgsConstructor
 public class DataOfferDetailPageQueryService {
     private final CatalogQueryContractOfferFetcher catalogQueryContractOfferFetcher;
@@ -40,7 +38,6 @@ public class DataOfferDetailPageQueryService {
 
         var d = fields.getDataOfferTable();
         var c = fields.getConnectorTable();
-        var v = fields.getDataOfferViewCountTable();
 
         return dsl.select(
                         d.ASSET_ID,
@@ -51,10 +48,11 @@ public class DataOfferDetailPageQueryService {
                         fields.getOfflineSinceOrLastUpdatedAt().as("connectorOfflineSinceOrLastUpdatedAt"),
                         c.ENDPOINT.as("connectorEndpoint"),
                         c.ONLINE_STATUS.as("connectorOnlineStatus"),
-                        dsl.select(count(v.DATE))
-                            .from(v)
-                            .where(v.ASSET_ID.eq(assetId).and(v.CONNECTOR_ENDPOINT.eq(endpoint)))
-                            .groupBy(v.ASSET_ID, v.CONNECTOR_ENDPOINT).asField().as("viewCount"))
+                        dsl.select(fields.getViewCount().as("viewCount"))
+                                .from(fields.getDataOfferViewCountTable())
+                                .where(fields.getDataOfferViewCountTable().ASSET_ID.eq(d.ASSET_ID))
+                                .and(fields.getDataOfferViewCountTable().CONNECTOR_ENDPOINT.eq(c.ENDPOINT))
+                                .asField("viewCount"))
                 .from(d).leftJoin(c).on(c.ENDPOINT.eq(d.CONNECTOR_ENDPOINT))
                 .where(d.ASSET_ID.eq(assetId).or(d.CONNECTOR_ENDPOINT.eq(endpoint)))
                 .fetchOneInto(DataOfferDetailRs.class);
