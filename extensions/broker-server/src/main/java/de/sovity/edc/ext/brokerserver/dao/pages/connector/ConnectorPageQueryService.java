@@ -15,7 +15,8 @@
 package de.sovity.edc.ext.brokerserver.dao.pages.connector;
 
 import de.sovity.edc.ext.brokerserver.api.model.ConnectorPageSortingType;
-import de.sovity.edc.ext.brokerserver.dao.pages.connector.model.ConnectorRs;
+import de.sovity.edc.ext.brokerserver.dao.pages.connector.model.ConnectorDetailsRs;
+import de.sovity.edc.ext.brokerserver.dao.pages.connector.model.ConnectorListEntryRs;
 import de.sovity.edc.ext.brokerserver.dao.utils.SearchUtils;
 import de.sovity.edc.ext.brokerserver.db.jooq.Tables;
 import de.sovity.edc.ext.brokerserver.db.jooq.enums.MeasurementErrorStatus;
@@ -29,7 +30,7 @@ import org.jooq.impl.DSL;
 import java.util.List;
 
 public class ConnectorPageQueryService {
-    public List<ConnectorRs> queryConnectorPage(DSLContext dsl, String searchQuery, ConnectorPageSortingType sorting) {
+    public List<ConnectorListEntryRs> queryConnectorPage(DSLContext dsl, String searchQuery, ConnectorPageSortingType sorting) {
         var c = Tables.CONNECTOR;
         var filterBySearchQuery = SearchUtils.simpleSearch(searchQuery, List.of(c.ENDPOINT, c.CONNECTOR_ID));
 
@@ -38,10 +39,10 @@ public class ConnectorPageQueryService {
                 .where(filterBySearchQuery)
                 .groupBy(c.ENDPOINT)
                 .orderBy(sortConnectorPage(c, sorting))
-                .fetchInto(ConnectorRs.class);
+                .fetchInto(ConnectorListEntryRs.class);
     }
 
-    public ConnectorRs queryConnectorDetailPage(DSLContext dsl, String connectorEndpoint) {
+    public ConnectorDetailsRs queryConnectorDetailPage(DSLContext dsl, String connectorEndpoint) {
         var c = Tables.CONNECTOR;
         var betm = Tables.BROKER_EXECUTION_TIME_MEASUREMENT;
         var filterBySearchQuery = SearchUtils.simpleSearch(connectorEndpoint, List.of(c.ENDPOINT, c.CONNECTOR_ID));
@@ -54,7 +55,7 @@ public class ConnectorPageQueryService {
                 .from(c).leftJoin(betm).on(betm.CONNECTOR_ENDPOINT.eq(c.ENDPOINT))
                 .where(filterBySearchQuery)
                 .groupBy(c.ENDPOINT)
-                .fetchOneInto(ConnectorRs.class);
+                .fetchOneInto(ConnectorDetailsRs.class);
     }
 
     @NotNull

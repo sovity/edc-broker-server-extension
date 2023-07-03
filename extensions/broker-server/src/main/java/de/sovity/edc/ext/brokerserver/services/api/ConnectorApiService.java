@@ -15,7 +15,8 @@
 package de.sovity.edc.ext.brokerserver.services.api;
 
 import de.sovity.edc.ext.brokerserver.dao.pages.connector.ConnectorPageQueryService;
-import de.sovity.edc.ext.brokerserver.dao.pages.connector.model.ConnectorRs;
+import de.sovity.edc.ext.brokerserver.dao.pages.connector.model.ConnectorDetailsRs;
+import de.sovity.edc.ext.brokerserver.dao.pages.connector.model.ConnectorListEntryRs;
 import de.sovity.edc.ext.brokerserver.api.model.ConnectorDetailPageQuery;
 import de.sovity.edc.ext.brokerserver.api.model.ConnectorDetailPageResult;
 import de.sovity.edc.ext.brokerserver.api.model.ConnectorListEntry;
@@ -65,11 +66,23 @@ public class ConnectorApiService {
         return result;
     }
 
-    private List<ConnectorListEntry> buildConnectorListEntries(List<ConnectorRs> connectors) {
+    private List<ConnectorListEntry> buildConnectorListEntries(List<ConnectorListEntryRs> connectors) {
         return connectors.stream().map(this::buildConnectorListEntry).toList();
     }
 
-    private ConnectorListEntry buildConnectorListEntry(ConnectorRs connector) {
+    private ConnectorListEntry buildConnectorListEntry(ConnectorListEntryRs connector) {
+        var dto = new ConnectorListEntry();
+        dto.setId(connector.getConnectorId());
+        dto.setEndpoint(connector.getEndpoint());
+        dto.setCreatedAt(connector.getCreatedAt());
+        dto.setLastRefreshAttemptAt(connector.getLastRefreshAttemptAt());
+        dto.setLastSuccessfulRefreshAt(connector.getLastSuccessfulRefreshAt());
+        dto.setOnlineStatus(getOnlineStatus(connector));
+        dto.setNumContractOffers(connector.getNumDataOffers());
+        return dto;
+    }
+
+    private ConnectorListEntry buildConnectorDetailPageEntry(ConnectorDetailsRs connector) {
         var dto = new ConnectorListEntry();
         dto.setId(connector.getConnectorId());
         dto.setEndpoint(connector.getEndpoint());
@@ -82,7 +95,7 @@ public class ConnectorApiService {
         return dto;
     }
 
-    private ConnectorOnlineStatus getOnlineStatus(ConnectorRs connector) {
+    private ConnectorOnlineStatus getOnlineStatus(ConnectorListEntryRs connector) {
         return switch (connector.getOnlineStatus()) {
             case ONLINE -> ConnectorOnlineStatus.ONLINE;
             case OFFLINE -> ConnectorOnlineStatus.OFFLINE;
