@@ -17,7 +17,9 @@ package de.sovity.edc.ext.brokerserver.utils;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
+import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URL;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UrlUtils {
@@ -46,9 +48,9 @@ public class UrlUtils {
 
     public static boolean isValidUrl(String url) {
         try {
-            URI.create(url);
+            new URL(url);
             return true;
-        } catch (IllegalArgumentException e) {
+        } catch (MalformedURLException e) {
             return false;
         }
     }
