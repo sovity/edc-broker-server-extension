@@ -24,6 +24,9 @@ import de.sovity.edc.ext.brokerserver.db.jooq.Tables;
 import de.sovity.edc.ext.brokerserver.db.jooq.enums.ConnectorContractOffersExceeded;
 import de.sovity.edc.ext.brokerserver.db.jooq.enums.ConnectorDataOffersExceeded;
 import de.sovity.edc.ext.brokerserver.db.jooq.enums.ConnectorOnlineStatus;
+import de.sovity.edc.ext.brokerserver.db.jooq.enums.MeasurementErrorStatus;
+import de.sovity.edc.ext.brokerserver.db.jooq.enums.MeasurementType;
+import de.sovity.edc.ext.brokerserver.db.jooq.tables.records.ConnectorRecord;
 import lombok.SneakyThrows;
 import org.eclipse.edc.junit.annotations.ApiTest;
 import org.eclipse.edc.junit.extensions.EdcExtension;
@@ -86,6 +89,7 @@ class ConnectorApiTest {
             var today = OffsetDateTime.now().withNano(0);
 
             createConnector(dsl, today, "http://my-connector/ids/data");
+            createConnector(dsl, today, "http://my-connector2/ids/data");
             createDataOffer(dsl, today, Map.of(
                 AssetProperty.ASSET_ID, "urn:artifact:my-asset-1",
                 AssetProperty.DATA_CATEGORY, "my-category",
@@ -98,7 +102,7 @@ class ConnectorApiTest {
             assertThat(connector.getCreatedAt()).isEqualTo(today.minusDays(1));
             assertThat(connector.getLastRefreshAttemptAt()).isEqualTo(today);
             assertThat(connector.getLastSuccessfulRefreshAt()).isEqualTo(today);
-            assertThat(connector.getConnectorCrawlingTimeAvg()).isNull();
+            assertThat(connector.getConnectorCrawlingTimeAvg()).isEqualTo(150L);
         });
     }
 
@@ -113,6 +117,19 @@ class ConnectorApiTest {
         connector.setDataOffersExceeded(ConnectorDataOffersExceeded.OK);
         connector.setContractOffersExceeded(ConnectorContractOffersExceeded.OK);
         connector.insert();
+
+        addCrawlingTime(dsl, today, connector, 100L);
+        addCrawlingTime(dsl, today, connector, 200L);
+    }
+
+    private static void addCrawlingTime(DSLContext dsl, OffsetDateTime today, ConnectorRecord connector, Long duration) {
+        var crawlingTime = dsl.newRecord(Tables.BROKER_EXECUTION_TIME_MEASUREMENT);
+        crawlingTime.setConnectorEndpoint(connector.getEndpoint());
+        crawlingTime.setDurationInMs(duration);
+        crawlingTime.setCreatedAt(today);
+        crawlingTime.setType(MeasurementType.CONNECTOR_REFRESH);
+        crawlingTime.setErrorStatus(MeasurementErrorStatus.OK);
+        crawlingTime.insert();
     }
 
     private void createDataOffer(DSLContext dsl, OffsetDateTime today, Map<String, String> assetProperties, String connectorEndpoint) {

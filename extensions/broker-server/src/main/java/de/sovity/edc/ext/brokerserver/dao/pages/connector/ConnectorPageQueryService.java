@@ -48,7 +48,8 @@ public class ConnectorPageQueryService {
         var filterBySearchQuery = SearchUtils.simpleSearch(connectorEndpoint, List.of(c.ENDPOINT, c.CONNECTOR_ID));
         var avgSuccessfulCrawlTimeInMs = DSL.avg(DSL.select(Tables.BROKER_EXECUTION_TIME_MEASUREMENT.DURATION_IN_MS)
                 .from(betm)
-                .where(betm.CONNECTOR_ENDPOINT.eq(connectorEndpoint).and(betm.ERROR_STATUS.eq(MeasurementErrorStatus.OK))).asField());
+                .where(betm.CONNECTOR_ENDPOINT.eq(connectorEndpoint).and(betm.ERROR_STATUS.eq(MeasurementErrorStatus.OK)))
+                .groupBy(betm.CONNECTOR_ENDPOINT).asField());
 
         return dsl.select(c.asterisk(),
                     dataOfferCount(c.ENDPOINT).as("numDataOffers"),
