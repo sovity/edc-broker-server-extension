@@ -98,6 +98,7 @@ class ConnectorApiTest {
             assertThat(connector.getCreatedAt()).isEqualTo(today.minusDays(1));
             assertThat(connector.getLastRefreshAttemptAt()).isEqualTo(today);
             assertThat(connector.getLastSuccessfulRefreshAt()).isEqualTo(today);
+            assertThat(connector.getConnectorCrawlingTimeAvg()).isNull();
         });
     }
 
