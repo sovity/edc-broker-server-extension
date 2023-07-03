@@ -40,7 +40,6 @@ public class CatalogQueryFields {
     DataOffer dataOfferTable;
     DataOfferViewCount dataOfferViewCountTable;
 
-
     // Asset Properties from JSON to be used in sorting / filtering
     Field<String> assetId;
     Field<String> assetName;
@@ -103,10 +102,11 @@ public class CatalogQueryFields {
     }
 
     public Field<Integer> getViewCount() {
-        var subquery = DSL.select(dataOfferViewCountTable.ASSET_ID, getDataOfferViewCountTable().CONNECTOR_ENDPOINT, DSL.count())
+        var subquery = DSL.select(DSL.count())
                 .from(dataOfferViewCountTable)
+                .where(dataOfferViewCountTable.ASSET_ID.eq(dataOfferTable.ASSET_ID))
                 .groupBy(dataOfferViewCountTable.ASSET_ID, getDataOfferViewCountTable().CONNECTOR_ENDPOINT);
 
-        return DSL.coalesce(DSL.select(DSL.field("count")).from(subquery).execute());
+        return subquery.asField();
     }
 }
