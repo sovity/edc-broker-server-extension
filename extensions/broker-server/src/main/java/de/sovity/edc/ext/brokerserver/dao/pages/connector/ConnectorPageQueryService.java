@@ -18,6 +18,7 @@ import de.sovity.edc.ext.brokerserver.api.model.ConnectorPageSortingType;
 import de.sovity.edc.ext.brokerserver.dao.pages.connector.model.ConnectorRs;
 import de.sovity.edc.ext.brokerserver.dao.utils.SearchUtils;
 import de.sovity.edc.ext.brokerserver.db.jooq.Tables;
+import de.sovity.edc.ext.brokerserver.db.jooq.enums.MeasurementErrorStatus;
 import de.sovity.edc.ext.brokerserver.db.jooq.tables.Connector;
 import org.jetbrains.annotations.NotNull;
 import org.jooq.DSLContext;
@@ -30,14 +31,10 @@ import java.util.List;
 public class ConnectorPageQueryService {
     public List<ConnectorRs> queryConnectorPage(DSLContext dsl, String searchQuery, ConnectorPageSortingType sorting) {
         var c = Tables.CONNECTOR;
-        var betm = Tables.BROKER_EXECUTION_TIME_MEASUREMENT;
         var filterBySearchQuery = SearchUtils.simpleSearch(searchQuery, List.of(c.ENDPOINT, c.CONNECTOR_ID));
 
         return dsl.select(c.asterisk(), dataOfferCount(c.ENDPOINT).as("numDataOffers"))
-            .select(DSL.min(betm.DURATION_IN_MS).as("connectorCrawlingTimeMin"),
-                    DSL.max(betm.DURATION_IN_MS).as("connectorCrawlingTimeMax"),
-                    DSL.avg(betm.DURATION_IN_MS).as("connectorCrawlingTimeAvg"))
-                .from(c).leftJoin(betm).on(betm.CONNECTOR_ENDPOINT.eq(c.ENDPOINT))
+                .from(c)
                 .where(filterBySearchQuery)
                 .groupBy(c.ENDPOINT)
                 .orderBy(sortConnectorPage(c, sorting))
@@ -50,9 +47,7 @@ public class ConnectorPageQueryService {
         var filterBySearchQuery = SearchUtils.simpleSearch(connectorEndpoint, List.of(c.ENDPOINT, c.CONNECTOR_ID));
 
         return dsl.select(c.asterisk(), dataOfferCount(c.ENDPOINT).as("numDataOffers"))
-                .select(DSL.min(Tables.BROKER_EXECUTION_TIME_MEASUREMENT.DURATION_IN_MS).as("connectorCrawlingTimeMin"),
-                        DSL.max(Tables.BROKER_EXECUTION_TIME_MEASUREMENT.DURATION_IN_MS).as("connectorCrawlingTimeMax"),
-                        DSL.avg(Tables.BROKER_EXECUTION_TIME_MEASUREMENT.DURATION_IN_MS).as("connectorCrawlingTimeAvg"))
+                .select(DSL.avg(DSL.select(Tables.BROKER_EXECUTION_TIME_MEASUREMENT.DURATION_IN_MS).from(betm).where(betm.CONNECTOR_ENDPOINT.eq(connectorEndpoint).and(betm.ERROR_STATUS.eq(MeasurementErrorStatus.OK))).asField()).as("connectorCrawlingTimeAvg"))
                 .from(c).leftJoin(betm).on(betm.CONNECTOR_ENDPOINT.eq(c.ENDPOINT))
                 .where(filterBySearchQuery)
                 .groupBy(c.ENDPOINT)

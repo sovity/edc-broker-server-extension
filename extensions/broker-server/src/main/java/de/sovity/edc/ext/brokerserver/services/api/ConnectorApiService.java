@@ -78,8 +78,6 @@ public class ConnectorApiService {
         dto.setLastSuccessfulRefreshAt(connector.getLastSuccessfulRefreshAt());
         dto.setOnlineStatus(getOnlineStatus(connector));
         dto.setNumContractOffers(connector.getNumDataOffers());
-        dto.setConnectorCrawlingTimeMin(connector.getConnectorCrawlingTimeMin());
-        dto.setConnectorCrawlingTimeMax(connector.getConnectorCrawlingTimeMax());
         dto.setConnectorCrawlingTimeAvg(connector.getConnectorCrawlingTimeAvg());
         return dto;
     }
