@@ -14,39 +14,27 @@
 
 package de.sovity.edc.ext.brokerserver.services.api;
 
-import de.sovity.edc.ext.brokerserver.db.jooq.enums.ConnectorContractOffersExceeded;
-import de.sovity.edc.ext.brokerserver.db.jooq.enums.ConnectorDataOffersExceeded;
-import de.sovity.edc.ext.brokerserver.db.jooq.enums.ConnectorOnlineStatus;
+import de.sovity.edc.ext.brokerserver.services.ConnectorCreator;
+import de.sovity.edc.ext.brokerserver.services.queue.ConnectorQueue;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 
-import java.time.OffsetDateTime;
+import java.util.Collection;
+import java.util.Set;
 
 import static de.sovity.edc.ext.brokerserver.db.jooq.Tables.CONNECTOR;
 
 @RequiredArgsConstructor
 public class ConnectorService {
+    private final ConnectorCreator connectorCreator;
+    private final ConnectorQueue connectorQueue;
 
-    public void addConnector(DSLContext dsl, String connectorEndpoint) {
-        // validate connector doesn't yet exist
-        var c = CONNECTOR;
-        var trimmedConnectorEndpoint = connectorEndpoint.trim();
-        var connectorDbRow = dsl.selectFrom(c)
-                .where(c.ENDPOINT.eq(trimmedConnectorEndpoint))
-                .fetchOne();
+    public void addConnectors(DSLContext dsl, Collection<String> connectorEndpoints, int priority) {
+        connectorCreator.addConnectors(dsl, connectorEndpoints.stream().toList());
+        connectorQueue.addAll(connectorEndpoints, priority);
+    }
 
-        if (connectorDbRow != null) {
-            return;
-        }
-
-        // add connector
-        dsl.insertInto(CONNECTOR)
-                .set(CONNECTOR.CONNECTOR_ID, trimmedConnectorEndpoint)
-                .set(CONNECTOR.ENDPOINT, trimmedConnectorEndpoint)
-                .set(CONNECTOR.ONLINE_STATUS, ConnectorOnlineStatus.OFFLINE)
-                .set(CONNECTOR.CREATED_AT, OffsetDateTime.now())
-                .set(CONNECTOR.DATA_OFFERS_EXCEEDED, ConnectorDataOffersExceeded.OK)
-                .set(CONNECTOR.CONTRACT_OFFERS_EXCEEDED, ConnectorContractOffersExceeded.OK)
-                .execute();
+    public Set<String> getConnectorEndpoints(DSLContext dsl) {
+        return dsl.select(CONNECTOR.ENDPOINT).from(CONNECTOR).fetchSet(CONNECTOR.ENDPOINT);
     }
 }

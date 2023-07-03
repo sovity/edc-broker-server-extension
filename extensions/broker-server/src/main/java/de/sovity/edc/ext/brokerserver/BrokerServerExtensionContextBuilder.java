@@ -28,7 +28,9 @@ import de.sovity.edc.ext.brokerserver.dao.pages.dataoffer.DataOfferDetailPageQue
 import de.sovity.edc.ext.brokerserver.db.DataSourceFactory;
 import de.sovity.edc.ext.brokerserver.db.DslContextFactory;
 import de.sovity.edc.ext.brokerserver.services.BrokerServerInitializer;
+import de.sovity.edc.ext.brokerserver.services.ConnectorClearer;
 import de.sovity.edc.ext.brokerserver.services.ConnectorCreator;
+import de.sovity.edc.ext.brokerserver.services.ConnectorKiller;
 import de.sovity.edc.ext.brokerserver.services.KnownConnectorsInitializer;
 import de.sovity.edc.ext.brokerserver.services.OfflineConnectorKiller;
 import de.sovity.edc.ext.brokerserver.services.api.AssetPropertyParser;
@@ -115,7 +117,6 @@ public class BrokerServerExtensionContextBuilder {
                 brokerServerSettings
         );
         var connectorPageQueryService = new ConnectorPageQueryService();
-        var connectorService = new ConnectorService();
         var dataOfferDetailPageQueryService = new DataOfferDetailPageQueryService(catalogQueryContractOfferFetcher, brokerServerSettings);
 
 
@@ -167,8 +168,16 @@ public class BrokerServerExtensionContextBuilder {
         );
         var catalogFilterAttributeDefinitionService = new CatalogFilterAttributeDefinitionService();
         var catalogFilterService = new CatalogFilterService(catalogFilterAttributeDefinitionService);
-
-        var offlineConnectorKiller = new OfflineConnectorKiller(brokerServerSettings, connectorQueries, brokerEventLogger);
+        var connectorService = new ConnectorService(connectorCreator, connectorQueue);
+        var connectorKiller = new ConnectorKiller();
+        var connectorClearer = new ConnectorClearer();
+        var offlineConnectorKiller = new OfflineConnectorKiller(
+                brokerServerSettings,
+                connectorQueries,
+                brokerEventLogger,
+                connectorKiller,
+                connectorClearer
+        );
 
         // Schedules
         List<CronJobRef<?>> jobs = List.of(

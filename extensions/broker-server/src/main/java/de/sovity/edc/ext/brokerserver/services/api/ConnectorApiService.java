@@ -28,9 +28,12 @@ import de.sovity.edc.ext.brokerserver.utils.UrlUtils;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
+
+import static de.sovity.edc.ext.brokerserver.services.queue.ConnectorRefreshPriority.ADDED_ON_API_CALL;
 
 @RequiredArgsConstructor
 public class ConnectorApiService {
@@ -99,7 +102,9 @@ public class ConnectorApiService {
     }
 
     public void addConnectors(DSLContext dsl, List<String> connectorEndpoints) {
-        connectorEndpoints.removeIf(connectorEndpoint -> !UrlUtils.isValidUrl(connectorEndpoint));
-        connectorEndpoints.forEach(connectorEndpoint -> connectorService.addConnector(dsl, connectorEndpoint));
+        var endpoints = new HashSet<>(connectorEndpoints);
+        endpoints.removeIf(connectorEndpoint -> !UrlUtils.isValidUrl(connectorEndpoint.trim()));
+        endpoints.removeIf(connectorEndpoint -> connectorService.getConnectorEndpoints(dsl).contains(connectorEndpoint));
+        connectorService.addConnectors(dsl, endpoints, ADDED_ON_API_CALL);
     }
 }

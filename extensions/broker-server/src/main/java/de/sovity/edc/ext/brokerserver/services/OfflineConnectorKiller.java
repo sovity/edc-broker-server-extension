@@ -18,8 +18,6 @@ package de.sovity.edc.ext.brokerserver.services;
 import de.sovity.edc.ext.brokerserver.dao.ConnectorQueries;
 import de.sovity.edc.ext.brokerserver.services.config.BrokerServerSettings;
 import de.sovity.edc.ext.brokerserver.services.logging.BrokerEventLogger;
-import de.sovity.edc.ext.brokerserver.services.schedules.utils.ConnectorClearer;
-import de.sovity.edc.ext.brokerserver.services.schedules.utils.ConnectorKiller;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 
@@ -28,16 +26,18 @@ public class OfflineConnectorKiller {
     private final BrokerServerSettings brokerServerSettings;
     private final ConnectorQueries connectorQueries;
     private final BrokerEventLogger brokerEventLogger;
+    private final ConnectorKiller connectorKiller;
+    private final ConnectorClearer connectorClearer;
 
     public void killIfOfflineTooLong(DSLContext dsl) {
         var killOfflineConnectorsAfter = brokerServerSettings.getKillOfflineConnectorsAfter();
         var toKill = connectorQueries.findAllConnectorsForDeletion(dsl, killOfflineConnectorsAfter);
 
         // delete data offers in batches, child entities first.
-        ConnectorClearer.removeData(dsl, toKill);
+        connectorClearer.removeData(dsl, toKill);
 
         // set connector to status dead
-        ConnectorKiller.killConnectors(dsl, toKill);
+        connectorKiller.killConnectors(dsl, toKill);
 
         // add log messages
         brokerEventLogger.addKilledDueToOfflineTooLongMessages(dsl, toKill);

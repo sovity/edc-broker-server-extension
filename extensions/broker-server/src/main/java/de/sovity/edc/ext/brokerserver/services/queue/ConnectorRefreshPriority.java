@@ -20,5 +20,6 @@ import lombok.NoArgsConstructor;
 public class ConnectorRefreshPriority {
     public static final int ADMIN_REQUESTED = 1;
     public static final int ADDED_ON_STARTUP = 10;
+    public static final int ADDED_ON_API_CALL = 50;
     public static final int SCHEDULED_REFRESH = 100;
 }
