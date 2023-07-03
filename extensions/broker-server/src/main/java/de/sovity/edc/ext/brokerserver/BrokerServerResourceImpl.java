@@ -30,8 +30,6 @@ import de.sovity.edc.ext.brokerserver.services.api.ConnectorApiService;
 import de.sovity.edc.ext.brokerserver.services.api.DataOfferDetailApiService;
 import lombok.RequiredArgsConstructor;
 
-import java.util.List;
-
 
 /**
  * Implementation of {@link BrokerServerResource}
