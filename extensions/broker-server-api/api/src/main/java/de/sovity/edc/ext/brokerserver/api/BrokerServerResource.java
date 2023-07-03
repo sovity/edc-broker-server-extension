@@ -66,7 +66,7 @@ public interface BrokerServerResource {
     ConnectorDetailPageResult connectorDetailPage(ConnectorDetailPageQuery query);
 
     @PUT
-    @Path("add-connectors")
+    @Path("connectors")
     @Operation(description = "Add unknown Connectors to the Broker Server")
     void addConnectors(List<String> endpoints);
 }
