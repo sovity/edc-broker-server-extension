@@ -19,7 +19,7 @@ import de.sovity.edc.ext.brokerserver.api.model.CatalogPageQuery;
 import de.sovity.edc.ext.brokerserver.api.model.CatalogPageResult;
 import de.sovity.edc.ext.brokerserver.api.model.ConnectorDetailPageQuery;
 import de.sovity.edc.ext.brokerserver.api.model.ConnectorDetailPageResult;
-import de.sovity.edc.ext.brokerserver.api.model.ConnectorEndpoint;
+import de.sovity.edc.ext.brokerserver.api.model.ConnectorEndpoints;
 import de.sovity.edc.ext.brokerserver.api.model.ConnectorPageQuery;
 import de.sovity.edc.ext.brokerserver.api.model.ConnectorPageResult;
 import de.sovity.edc.ext.brokerserver.api.model.DataOfferDetailPageQuery;
@@ -64,8 +64,8 @@ public class BrokerServerResourceImpl implements BrokerServerResource {
     }
 
     @Override
-    public void addConnectors(List<ConnectorEndpoint> connectorEndpoints) {
-        dslContextFactory.transaction(dsl -> connectorApiService.addConnectors(dsl, connectorEndpoints));
+    public void addConnectors(ConnectorEndpoints connectorEndpoints) {
+        dslContextFactory.transaction(dsl -> connectorApiService.addConnectors(dsl, connectorEndpoints.getConnectorEndpoints()));
     }
 
 }

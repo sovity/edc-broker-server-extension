@@ -21,14 +21,16 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.util.List;
+
 @Getter
 @Setter
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Schema(description = "Connector Endpoint to be added to the Broker Server")
-public class ConnectorEndpoint {
-    @Schema(description = "Connector Endpoint")
-    private String connectorEndpoint;
+public class ConnectorEndpoints {
+    @Schema(description = "Connector Endpoints")
+    private List<String> connectorEndpoints;
 }
 
