@@ -53,7 +53,7 @@ public class ConnectorApiService {
         Objects.requireNonNull(query, "query must not be null");
 
         var connectorDbRow = connectorPageQueryService.queryConnectorDetailPage(dsl, query.getConnectorEndpoint());
-        var connector = buildConnectorListEntry(connectorDbRow);
+        var connector = buildConnectorDetailPageEntry(connectorDbRow);
 
         var result = new ConnectorDetailPageResult();
         result.setCreatedAt(connector.getCreatedAt());
