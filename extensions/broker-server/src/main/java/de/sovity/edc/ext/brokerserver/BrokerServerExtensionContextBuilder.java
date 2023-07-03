@@ -28,7 +28,7 @@ import de.sovity.edc.ext.brokerserver.dao.pages.dataoffer.DataOfferDetailPageQue
 import de.sovity.edc.ext.brokerserver.db.DataSourceFactory;
 import de.sovity.edc.ext.brokerserver.db.DslContextFactory;
 import de.sovity.edc.ext.brokerserver.services.BrokerServerInitializer;
-import de.sovity.edc.ext.brokerserver.services.ConnectorClearer;
+import de.sovity.edc.ext.brokerserver.services.ConnectorCleaner;
 import de.sovity.edc.ext.brokerserver.services.ConnectorCreator;
 import de.sovity.edc.ext.brokerserver.services.ConnectorKiller;
 import de.sovity.edc.ext.brokerserver.services.KnownConnectorsInitializer;
@@ -170,7 +170,7 @@ public class BrokerServerExtensionContextBuilder {
         var catalogFilterService = new CatalogFilterService(catalogFilterAttributeDefinitionService);
         var connectorService = new ConnectorService(connectorCreator, connectorQueue);
         var connectorKiller = new ConnectorKiller();
-        var connectorClearer = new ConnectorClearer();
+        var connectorClearer = new ConnectorCleaner();
         var offlineConnectorKiller = new OfflineConnectorKiller(
                 brokerServerSettings,
                 connectorQueries,

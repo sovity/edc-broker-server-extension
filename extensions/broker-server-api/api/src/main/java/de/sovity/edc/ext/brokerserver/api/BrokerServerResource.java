@@ -67,6 +67,7 @@ public interface BrokerServerResource {
 
     @PUT
     @Path("connectors")
+    @Consumes
     @Operation(description = "Add unknown Connectors to the Broker Server")
     void addConnectors(List<String> endpoints);
 }

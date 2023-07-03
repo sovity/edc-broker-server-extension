@@ -30,7 +30,7 @@ public class ConnectorService {
     private final ConnectorQueue connectorQueue;
 
     public void addConnectors(DSLContext dsl, Collection<String> connectorEndpoints, int priority) {
-        connectorCreator.addConnectors(dsl, connectorEndpoints.stream().toList());
+        connectorCreator.addConnectors(dsl, connectorEndpoints);
         connectorQueue.addAll(connectorEndpoints, priority);
     }
 

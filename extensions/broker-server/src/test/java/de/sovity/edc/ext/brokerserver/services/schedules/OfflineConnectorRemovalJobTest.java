@@ -22,7 +22,7 @@ import de.sovity.edc.ext.brokerserver.db.TestDatabaseFactory;
 import de.sovity.edc.ext.brokerserver.db.jooq.enums.ConnectorContractOffersExceeded;
 import de.sovity.edc.ext.brokerserver.db.jooq.enums.ConnectorDataOffersExceeded;
 import de.sovity.edc.ext.brokerserver.db.jooq.enums.ConnectorOnlineStatus;
-import de.sovity.edc.ext.brokerserver.services.ConnectorClearer;
+import de.sovity.edc.ext.brokerserver.services.ConnectorCleaner;
 import de.sovity.edc.ext.brokerserver.services.ConnectorKiller;
 import de.sovity.edc.ext.brokerserver.services.OfflineConnectorKiller;
 import de.sovity.edc.ext.brokerserver.services.config.BrokerServerSettings;
@@ -62,7 +62,7 @@ class OfflineConnectorRemovalJobTest {
                 new ConnectorQueries(),
                 new BrokerEventLogger(),
                 new ConnectorKiller(),
-                new ConnectorClearer()
+                new ConnectorCleaner()
         );
     }
 

@@ -6,8 +6,8 @@ import org.jooq.DSLContext;
 
 import java.util.Collection;
 
-public class ConnectorClearer {
-    public void removeData(DSLContext dsl, Collection<String> endpoints) {
+public class ConnectorCleaner {
+    public void removeDataForDeadConnectors(DSLContext dsl, Collection<String> endpoints) {
         var doco = Tables.DATA_OFFER_CONTRACT_OFFER;
         var dof = Tables.DATA_OFFER;
         dsl.deleteFrom(doco).where(PostgresqlUtils.in(doco.CONNECTOR_ENDPOINT, endpoints)).execute();

@@ -50,7 +50,7 @@ public class ConnectorQueries {
                 .fetchSet(c.ENDPOINT);
     }
 
-    public List<String> findAllConnectorsForDeletion(DSLContext dsl, Duration deleteOfflineConnectorsAfter) {
+    public List<String> findAllConnectorsForKilling(DSLContext dsl, Duration deleteOfflineConnectorsAfter) {
         var c = Tables.CONNECTOR;
         return dsl.select(c.ENDPOINT).from(c)
                 .where(c.LAST_SUCCESSFUL_REFRESH_AT.lt(OffsetDateTime.now().minus(deleteOfflineConnectorsAfter)))
