@@ -104,6 +104,14 @@ public class ConnectorApiService {
         };
     }
 
+    private ConnectorOnlineStatus getOnlineStatus(ConnectorDetailsRs connector) {
+        return switch (connector.getOnlineStatus()) {
+            case ONLINE -> ConnectorOnlineStatus.ONLINE;
+            case OFFLINE -> ConnectorOnlineStatus.OFFLINE;
+            default -> throw new IllegalStateException("Unknown ConnectorOnlineStatus from DAO for API: " + connector.getOnlineStatus());
+        };
+    }
+
     private List<ConnectorPageSortingItem> buildAvailableSortings() {
         return Stream.of(
                 ConnectorPageSortingType.MOST_RECENT,
