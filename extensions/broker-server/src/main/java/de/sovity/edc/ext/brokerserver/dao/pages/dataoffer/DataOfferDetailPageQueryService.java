@@ -17,13 +17,10 @@ package de.sovity.edc.ext.brokerserver.dao.pages.dataoffer;
 import de.sovity.edc.ext.brokerserver.dao.pages.catalog.CatalogQueryContractOfferFetcher;
 import de.sovity.edc.ext.brokerserver.dao.pages.catalog.CatalogQueryFields;
 import de.sovity.edc.ext.brokerserver.dao.pages.dataoffer.model.DataOfferDetailRs;
-import de.sovity.edc.ext.brokerserver.dao.pages.dataoffer.model.ViewCountDetailRs;
 import de.sovity.edc.ext.brokerserver.db.jooq.Tables;
 import de.sovity.edc.ext.brokerserver.services.config.BrokerServerSettings;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
-
-import java.time.OffsetDateTime;
 
 import static org.jooq.impl.DSL.count;
 
@@ -43,8 +40,7 @@ public class DataOfferDetailPageQueryService {
 
         var d = fields.getDataOfferTable();
         var c = fields.getConnectorTable();
-
-        increaseDataOfferViewCount(dsl, fields, assetId, endpoint);
+        var v = fields.getDataOfferViewCountTable();
 
         return dsl.select(
                         d.ASSET_ID,
@@ -54,27 +50,13 @@ public class DataOfferDetailPageQueryService {
                         catalogQueryContractOfferFetcher.getContractOffers(fields).as("contractOffers"),
                         fields.getOfflineSinceOrLastUpdatedAt().as("connectorOfflineSinceOrLastUpdatedAt"),
                         c.ENDPOINT.as("connectorEndpoint"),
-                        c.ONLINE_STATUS.as("connectorOnlineStatus"))
+                        c.ONLINE_STATUS.as("connectorOnlineStatus"),
+                        dsl.select(count(v.DATE))
+                            .from(v)
+                            .where(v.ASSET_ID.eq(assetId).and(v.CONNECTOR_ENDPOINT.eq(endpoint)))
+                            .groupBy(v.ASSET_ID, v.CONNECTOR_ENDPOINT).asField().as("viewCount"))
                 .from(d).leftJoin(c).on(c.ENDPOINT.eq(d.CONNECTOR_ENDPOINT))
                 .where(d.ASSET_ID.eq(assetId).or(d.CONNECTOR_ENDPOINT.eq(endpoint)))
                 .fetchOneInto(DataOfferDetailRs.class);
-    }
-
-    private void increaseDataOfferViewCount(DSLContext dsl, CatalogQueryFields fields, String assetId, String endpoint) {
-        var v = fields.getDataOfferViewCountTable();
-
-        dsl.insertInto(v, v.ASSET_ID, v.CONNECTOR_ENDPOINT, v.DATE)
-                .values(assetId, endpoint, OffsetDateTime.now())
-                .execute();
-    }
-
-    public ViewCountDetailRs queryDataOfferDetailsViewCount(DSLContext dsl, String assetId, String connectorEndpoint) {
-        var v = Tables.DATA_OFFER_VIEW_COUNT;
-
-        return dsl.select(count(v.ASSET_ID))
-                .from(v)
-                .where(v.ASSET_ID.eq(assetId).and(v.CONNECTOR_ENDPOINT.eq(connectorEndpoint)))
-                .groupBy(v.ASSET_ID, v.CONNECTOR_ENDPOINT)
-                .fetchOneInto(ViewCountDetailRs.class);
     }
 }
