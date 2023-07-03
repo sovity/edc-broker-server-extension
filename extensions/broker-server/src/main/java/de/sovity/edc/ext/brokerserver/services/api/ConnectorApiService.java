@@ -63,6 +63,7 @@ public class ConnectorApiService {
         result.setLastSuccessfulRefreshAt(connector.getLastSuccessfulRefreshAt());
         result.setNumContractOffers(connector.getNumContractOffers());
         result.setOnlineStatus(connector.getOnlineStatus());
+        result.setConnectorCrawlingTimeAvg(connector.getConnectorCrawlingTimeAvg());
         return result;
     }
 
