@@ -19,7 +19,6 @@ import de.sovity.edc.ext.brokerserver.api.model.CatalogPageQuery;
 import de.sovity.edc.ext.brokerserver.api.model.CatalogPageResult;
 import de.sovity.edc.ext.brokerserver.api.model.ConnectorDetailPageQuery;
 import de.sovity.edc.ext.brokerserver.api.model.ConnectorDetailPageResult;
-import de.sovity.edc.ext.brokerserver.api.model.ConnectorEndpoints;
 import de.sovity.edc.ext.brokerserver.api.model.ConnectorPageQuery;
 import de.sovity.edc.ext.brokerserver.api.model.ConnectorPageResult;
 import de.sovity.edc.ext.brokerserver.api.model.DataOfferDetailPageQuery;
@@ -29,6 +28,8 @@ import de.sovity.edc.ext.brokerserver.services.api.CatalogApiService;
 import de.sovity.edc.ext.brokerserver.services.api.ConnectorApiService;
 import de.sovity.edc.ext.brokerserver.services.api.DataOfferDetailApiService;
 import lombok.RequiredArgsConstructor;
+
+import java.util.List;
 
 
 /**
@@ -62,8 +63,8 @@ public class BrokerServerResourceImpl implements BrokerServerResource {
     }
 
     @Override
-    public void addConnectors(ConnectorEndpoints connectorEndpoints) {
-        dslContextFactory.transaction(dsl -> connectorApiService.addConnectors(dsl, connectorEndpoints.getConnectorEndpoints()));
+    public void addConnectors(List<String> endpoints) {
+        dslContextFactory.transaction(dsl -> connectorApiService.addConnectors(dsl, endpoints));
     }
 
 }

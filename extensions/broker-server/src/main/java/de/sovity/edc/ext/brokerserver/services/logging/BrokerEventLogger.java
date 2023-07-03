@@ -108,7 +108,7 @@ public class BrokerEventLogger {
             logEntry.setEvent(BrokerEventType.CONNECTOR_KILLED_DUE_TO_OFFLINE_FOR_TOO_LONG);
             logEntry.setEventStatus(BrokerEventStatus.OK);
             logEntry.setCreatedAt(OffsetDateTime.now());
-            logEntry.setUserMessage("Connector was moved to status Dead for being offline too long.");
+            logEntry.setUserMessage("Connector was marked as dead for being offline too long.");
             logEntry.setConnectorEndpoint(endpoint);
             return logEntry;
         }).collect(Collectors.toList());

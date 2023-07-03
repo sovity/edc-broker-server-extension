@@ -172,9 +172,9 @@ public class BrokerServerExtensionContextBuilder {
 
         // Schedules
         List<CronJobRef<?>> jobs = List.of(
-                getAliveConnectorRefreshJobCronJobRef(dslContextFactory, connectorQueueFiller),
-                getDeadConnectorRefreshJobCronJobRef(dslContextFactory, connectorQueueFiller),
-                getOfflineConnectorKillerJobCronJobRef(dslContextFactory, offlineConnectorKiller)
+                getAliveConnectorRefreshCronJob(dslContextFactory, connectorQueueFiller),
+                getDeadConnectorRefreshCronJob(dslContextFactory, connectorQueueFiller),
+                getOfflineConnectorKillerCronJob(dslContextFactory, offlineConnectorKiller)
         );
 
         // Startup
@@ -222,7 +222,7 @@ public class BrokerServerExtensionContextBuilder {
     }
 
     @NotNull
-    private static CronJobRef<OfflineConnectorKillerJob> getOfflineConnectorKillerJobCronJobRef(DslContextFactory dslContextFactory, OfflineConnectorKiller offlineConnectorKiller) {
+    private static CronJobRef<OfflineConnectorKillerJob> getOfflineConnectorKillerCronJob(DslContextFactory dslContextFactory, OfflineConnectorKiller offlineConnectorKiller) {
         return new CronJobRef<>(
             BrokerServerExtension.SCHEDULED_DELETE_OFFLINE_CONNECTORS,
             OfflineConnectorKillerJob.class,
@@ -231,7 +231,7 @@ public class BrokerServerExtensionContextBuilder {
     }
 
     @NotNull
-    private static CronJobRef<DeadConnectorRefreshJob> getDeadConnectorRefreshJobCronJobRef(DslContextFactory dslContextFactory, ConnectorQueueFiller connectorQueueFiller) {
+    private static CronJobRef<DeadConnectorRefreshJob> getDeadConnectorRefreshCronJob(DslContextFactory dslContextFactory, ConnectorQueueFiller connectorQueueFiller) {
         return new CronJobRef<>(
             BrokerServerExtension.CRON_DEAD_CONNECTOR_REFRESH,
             DeadConnectorRefreshJob.class,
@@ -240,7 +240,7 @@ public class BrokerServerExtensionContextBuilder {
     }
 
     @NotNull
-    private static CronJobRef<AliveConnectorRefreshJob> getAliveConnectorRefreshJobCronJobRef(DslContextFactory dslContextFactory, ConnectorQueueFiller connectorQueueFiller) {
+    private static CronJobRef<AliveConnectorRefreshJob> getAliveConnectorRefreshCronJob(DslContextFactory dslContextFactory, ConnectorQueueFiller connectorQueueFiller) {
         return new CronJobRef<>(
             BrokerServerExtension.CRON_ALIVE_CONNECTOR_REFRESH,
             AliveConnectorRefreshJob.class,

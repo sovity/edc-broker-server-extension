@@ -42,7 +42,7 @@ public class BrokerServerSettingsFactory {
                 .catalogPagePageSize(catalogPagePageSize)
                 .dataSpaceConfig(dataSpaceConfig)
                 .numThreads(numThreads)
-                .deleteOfflineConnectorsAfter(deleteOfflineConnectorsAfter)
+                .killOfflineConnectorsAfter(deleteOfflineConnectorsAfter)
                 .build();
     }
 

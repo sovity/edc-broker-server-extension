@@ -14,9 +14,6 @@
 
 package de.sovity.edc.ext.brokerserver.services.api;
 
-import de.sovity.edc.ext.brokerserver.api.model.ConnectorEndpoints;
-import de.sovity.edc.ext.brokerserver.dao.pages.connector.ConnectorPageQueryService;
-import de.sovity.edc.ext.brokerserver.dao.pages.connector.model.ConnectorRs;
 import de.sovity.edc.ext.brokerserver.api.model.ConnectorDetailPageQuery;
 import de.sovity.edc.ext.brokerserver.api.model.ConnectorDetailPageResult;
 import de.sovity.edc.ext.brokerserver.api.model.ConnectorListEntry;
@@ -25,6 +22,9 @@ import de.sovity.edc.ext.brokerserver.api.model.ConnectorPageQuery;
 import de.sovity.edc.ext.brokerserver.api.model.ConnectorPageResult;
 import de.sovity.edc.ext.brokerserver.api.model.ConnectorPageSortingItem;
 import de.sovity.edc.ext.brokerserver.api.model.ConnectorPageSortingType;
+import de.sovity.edc.ext.brokerserver.dao.pages.connector.ConnectorPageQueryService;
+import de.sovity.edc.ext.brokerserver.dao.pages.connector.model.ConnectorRs;
+import de.sovity.edc.ext.brokerserver.utils.UrlUtils;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 
@@ -99,6 +99,7 @@ public class ConnectorApiService {
     }
 
     public void addConnectors(DSLContext dsl, List<String> connectorEndpoints) {
+        connectorEndpoints.removeIf(connectorEndpoint -> !UrlUtils.isValidUrl(connectorEndpoint));
         connectorEndpoints.forEach(connectorEndpoint -> connectorService.addConnector(dsl, connectorEndpoint));
     }
 }

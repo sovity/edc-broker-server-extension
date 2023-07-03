@@ -66,7 +66,7 @@ class OfflineConnectorRemovalJobTest {
     void test_offlineConnectorKiller_should_be_dead() {
         TEST_DATABASE.testTransaction(dsl -> {
             // arrange
-            when(brokerServerSettings.getDeleteOfflineConnectorsAfter()).thenReturn(Duration.ofDays(5));
+            when(brokerServerSettings.getKillOfflineConnectorsAfter()).thenReturn(Duration.ofDays(5));
             createConnector(dsl, 6);
 
             // act
@@ -84,7 +84,7 @@ class OfflineConnectorRemovalJobTest {
     void test_offlineConnectorKiller_should_not_be_dead() {
         TEST_DATABASE.testTransaction(dsl -> {
             // arrange
-            when(brokerServerSettings.getDeleteOfflineConnectorsAfter()).thenReturn(Duration.ofDays(5));
+            when(brokerServerSettings.getKillOfflineConnectorsAfter()).thenReturn(Duration.ofDays(5));
             createConnector(dsl, 2);
 
             // act

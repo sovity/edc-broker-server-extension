@@ -43,4 +43,13 @@ public class UrlUtils {
         }
         return everythingBeforePath;
     }
+
+    public static boolean isValidUrl(String url) {
+        try {
+            URI.create(url);
+            return true;
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
+    }
 }

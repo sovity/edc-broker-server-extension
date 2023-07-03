@@ -14,11 +14,11 @@
 
 package de.sovity.edc.ext.brokerserver.services.api;
 
+import de.sovity.edc.ext.brokerserver.db.jooq.Tables;
 import de.sovity.edc.ext.brokerserver.db.jooq.enums.ConnectorOnlineStatus;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 
-import java.net.URL;
 import java.time.OffsetDateTime;
 
 import static de.sovity.edc.ext.brokerserver.db.jooq.Tables.CONNECTOR;
@@ -27,17 +27,10 @@ import static de.sovity.edc.ext.brokerserver.db.jooq.Tables.CONNECTOR;
 public class ConnectorService {
 
     public void addConnector(DSLContext dsl, String connectorEndpoint) {
-        // validate connector endpoint being valid URL
-        try {
-            var connectorEndpointUrl = new URL(connectorEndpoint);
-        } catch (Exception e) {
-            // API must be able to handle malformed URLs without panicking
-            return;
-        }
-
         // validate connector doesn't yet exist
-        var connectorDbRow = dsl.selectFrom(CONNECTOR)
-                .where(CONNECTOR.CONNECTOR_ID.eq(connectorEndpoint))
+        var c = CONNECTOR;
+        var connectorDbRow = dsl.selectFrom(c)
+                .where(c.ENDPOINT.eq(connectorEndpoint))
                 .fetchOne();
 
         if (connectorDbRow != null) {

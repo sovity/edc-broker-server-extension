@@ -16,11 +16,10 @@
 package de.sovity.edc.ext.brokerserver.services;
 
 import de.sovity.edc.ext.brokerserver.dao.ConnectorQueries;
-import de.sovity.edc.ext.brokerserver.dao.utils.PostgresqlUtils;
-import de.sovity.edc.ext.brokerserver.db.jooq.Tables;
-import de.sovity.edc.ext.brokerserver.db.jooq.enums.ConnectorOnlineStatus;
 import de.sovity.edc.ext.brokerserver.services.config.BrokerServerSettings;
 import de.sovity.edc.ext.brokerserver.services.logging.BrokerEventLogger;
+import de.sovity.edc.ext.brokerserver.services.schedules.utils.ConnectorClearer;
+import de.sovity.edc.ext.brokerserver.services.schedules.utils.ConnectorKiller;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 
@@ -31,15 +30,14 @@ public class OfflineConnectorKiller {
     private final BrokerEventLogger brokerEventLogger;
 
     public void killIfOfflineTooLong(DSLContext dsl) {
-        var killOfflineConnectorsAfter = brokerServerSettings.getDeleteOfflineConnectorsAfter();
+        var killOfflineConnectorsAfter = brokerServerSettings.getKillOfflineConnectorsAfter();
         var toKill = connectorQueries.findAllConnectorsForDeletion(dsl, killOfflineConnectorsAfter);
 
         // delete data offers in batches, child entities first.
-        dsl.deleteFrom(Tables.DATA_OFFER_CONTRACT_OFFER).where(PostgresqlUtils.in(Tables.DATA_OFFER_CONTRACT_OFFER.CONNECTOR_ENDPOINT, toKill)).execute();
-        dsl.deleteFrom(Tables.DATA_OFFER).where(PostgresqlUtils.in(Tables.DATA_OFFER.CONNECTOR_ENDPOINT, toKill)).execute();
+        ConnectorClearer.removeData(dsl, toKill);
 
         // set connector to status dead
-        dsl.update(Tables.CONNECTOR).set(Tables.CONNECTOR.ONLINE_STATUS, ConnectorOnlineStatus.DEAD).where(PostgresqlUtils.in(Tables.CONNECTOR.ENDPOINT, toKill)).execute();
+        ConnectorKiller.killConnectors(dsl, toKill);
 
         // add log messages
         brokerEventLogger.addKilledDueToOfflineTooLongMessages(dsl, toKill);

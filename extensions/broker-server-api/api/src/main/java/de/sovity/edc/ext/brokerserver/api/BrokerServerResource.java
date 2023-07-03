@@ -18,7 +18,6 @@ import de.sovity.edc.ext.brokerserver.api.model.CatalogPageQuery;
 import de.sovity.edc.ext.brokerserver.api.model.CatalogPageResult;
 import de.sovity.edc.ext.brokerserver.api.model.ConnectorDetailPageQuery;
 import de.sovity.edc.ext.brokerserver.api.model.ConnectorDetailPageResult;
-import de.sovity.edc.ext.brokerserver.api.model.ConnectorEndpoints;
 import de.sovity.edc.ext.brokerserver.api.model.ConnectorPageQuery;
 import de.sovity.edc.ext.brokerserver.api.model.ConnectorPageResult;
 import de.sovity.edc.ext.brokerserver.api.model.DataOfferDetailPageQuery;
@@ -27,9 +26,12 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
+
+import java.util.List;
 
 @Path("wrapper/broker")
 @Tag(name = "Broker Server", description = "Broker Server API Endpoints. Requires the Broker Server Extension")
@@ -63,8 +65,8 @@ public interface BrokerServerResource {
     @Operation(description = "Query a Known Connector's Detail Page")
     ConnectorDetailPageResult connectorDetailPage(ConnectorDetailPageQuery query);
 
-    @POST
+    @PUT
     @Path("add-connectors")
-    @Operation(description = "Add Connectors to the Broker Server")
-    void addConnectors(ConnectorEndpoints connectorEndpoints);
+    @Operation(description = "Add unknown Connectors to the Broker Server")
+    void addConnectors(List<String> endpoints);
 }
