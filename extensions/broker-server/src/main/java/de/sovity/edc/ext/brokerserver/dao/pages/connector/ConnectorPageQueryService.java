@@ -25,7 +25,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.OrderField;
-import org.jooq.Record1;
 import org.jooq.impl.DSL;
 
 import java.util.List;
