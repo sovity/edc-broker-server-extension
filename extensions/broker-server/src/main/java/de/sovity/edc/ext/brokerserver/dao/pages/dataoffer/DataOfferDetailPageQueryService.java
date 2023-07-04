@@ -48,12 +48,7 @@ public class DataOfferDetailPageQueryService {
                         fields.getOfflineSinceOrLastUpdatedAt().as("connectorOfflineSinceOrLastUpdatedAt"),
                         c.ENDPOINT.as("connectorEndpoint"),
                         c.ONLINE_STATUS.as("connectorOnlineStatus"),
-                        dsl.select(fields.getViewCount().as("viewCount"))
-                                .from(fields.getDataOfferViewCountTable())
-                                .where(fields.getDataOfferViewCountTable().ASSET_ID.eq(d.ASSET_ID))
-                                .and(fields.getDataOfferViewCountTable().CONNECTOR_ENDPOINT.eq(c.ENDPOINT))
-                                .groupBy(fields.getDataOfferViewCountTable().ASSET_ID, fields.getDataOfferViewCountTable().CONNECTOR_ENDPOINT)
-                                .asField("viewCount"))
+                        fields.getViewCount().as("viewCount"))
                 .from(d).leftJoin(c).on(c.ENDPOINT.eq(d.CONNECTOR_ENDPOINT))
                 .where(d.ASSET_ID.eq(assetId).or(d.CONNECTOR_ENDPOINT.eq(endpoint)))
                 .fetchOneInto(DataOfferDetailRs.class);
