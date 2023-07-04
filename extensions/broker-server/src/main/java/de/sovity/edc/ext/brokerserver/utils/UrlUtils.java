@@ -19,6 +19,7 @@ import lombok.NoArgsConstructor;
 
 import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -48,9 +49,9 @@ public class UrlUtils {
 
     public static boolean isValidUrl(String url) {
         try {
-            new URL(url);
+            new URL(url).toURI();
             return true;
-        } catch (MalformedURLException e) {
+        } catch (MalformedURLException | URISyntaxException e) {
             return false;
         }
     }
