@@ -83,8 +83,8 @@ public class ConnectorApiService {
         return dto;
     }
 
-    private ConnectorListEntry buildConnectorDetailPageEntry(ConnectorDetailsRs connector) {
-        var dto = new ConnectorListEntry();
+    private ConnectorDetailPageResult buildConnectorDetailPageEntry(ConnectorDetailsRs connector) {
+        var dto = new ConnectorDetailPageResult();
         dto.setId(connector.getConnectorId());
         dto.setEndpoint(connector.getEndpoint());
         dto.setCreatedAt(connector.getCreatedAt());
