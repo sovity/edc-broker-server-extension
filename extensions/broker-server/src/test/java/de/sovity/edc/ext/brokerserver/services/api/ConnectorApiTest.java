@@ -75,7 +75,7 @@ class ConnectorApiTest {
             assertThat(result.getConnectors()).hasSize(1);
 
             var connector = result.getConnectors().get(0);
-            assertThat(connector.getId()).isEqualTo("http://my-connector");
+            assertThat(connector.getId()).isEqualTo("http://my-connector/ids/data");
             assertThat(connector.getEndpoint()).isEqualTo("http://my-connector/ids/data");
             assertThat(connector.getCreatedAt()).isEqualTo(today.minusDays(1));
             assertThat(connector.getLastRefreshAttemptAt()).isEqualTo(today);
@@ -97,7 +97,7 @@ class ConnectorApiTest {
             ), "http://my-connector/ids/data");
 
             var connector = edcClient().brokerServerApi().connectorDetailPage(new ConnectorDetailPageQuery("http://my-connector/ids/data"));
-            assertThat(connector.getId()).isEqualTo("http://my-connector");
+            assertThat(connector.getId()).isEqualTo("http://my-connector/ids/data");
             assertThat(connector.getEndpoint()).isEqualTo("http://my-connector/ids/data");
             assertThat(connector.getCreatedAt()).isEqualTo(today.minusDays(1));
             assertThat(connector.getLastRefreshAttemptAt()).isEqualTo(today);
@@ -108,7 +108,7 @@ class ConnectorApiTest {
 
     private void createConnector(DSLContext dsl, OffsetDateTime today, String connectorEndpoint) {
         var connector = dsl.newRecord(Tables.CONNECTOR);
-        connector.setConnectorId("http://my-connector");
+        connector.setConnectorId(connectorEndpoint);
         connector.setEndpoint(connectorEndpoint);
         connector.setOnlineStatus(ConnectorOnlineStatus.ONLINE);
         connector.setCreatedAt(today.minusDays(1));
@@ -119,7 +119,7 @@ class ConnectorApiTest {
         connector.insert();
 
         addCrawlingTime(dsl, today, connector, 100L);
-        addCrawlingTime(dsl, today, connector, 200L);
+        addCrawlingTime(dsl, today.plusHours(5), connector, 200L);
     }
 
     private static void addCrawlingTime(DSLContext dsl, OffsetDateTime today, ConnectorRecord connector, Long duration) {

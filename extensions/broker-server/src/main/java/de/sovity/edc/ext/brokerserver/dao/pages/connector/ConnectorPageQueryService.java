@@ -25,6 +25,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.OrderField;
+import org.jooq.Record1;
 import org.jooq.impl.DSL;
 
 import java.util.List;
@@ -45,15 +46,18 @@ public class ConnectorPageQueryService {
     public ConnectorDetailsRs queryConnectorDetailPage(DSLContext dsl, String connectorEndpoint) {
         var c = Tables.CONNECTOR;
         var betm = Tables.BROKER_EXECUTION_TIME_MEASUREMENT;
+
         var filterBySearchQuery = SearchUtils.simpleSearch(connectorEndpoint, List.of(c.ENDPOINT, c.CONNECTOR_ID));
-        var avgSuccessfulCrawlTimeInMs = DSL.avg(DSL.select(Tables.BROKER_EXECUTION_TIME_MEASUREMENT.DURATION_IN_MS)
-                .from(betm)
-                .where(betm.CONNECTOR_ENDPOINT.eq(connectorEndpoint).and(betm.ERROR_STATUS.eq(MeasurementErrorStatus.OK)))
-                .groupBy(betm.CONNECTOR_ENDPOINT).asField());
+
+        var avgSuccessfulCrawlTimeInMs = dsl.select(betm.DURATION_IN_MS)
+            .from(betm)
+            .where(betm.CONNECTOR_ENDPOINT.eq(connectorEndpoint).and(betm.ERROR_STATUS.eq(MeasurementErrorStatus.OK)))
+            .groupBy(betm.DURATION_IN_MS, betm.CONNECTOR_ENDPOINT)
+            .fetch().stream().mapToLong(Record1::value1).average().orElse(0);
 
         return dsl.select(c.asterisk(),
                     dataOfferCount(c.ENDPOINT).as("numDataOffers"),
-                    avgSuccessfulCrawlTimeInMs.as("connectorCrawlingTimeAvg"))
+                    DSL.val(avgSuccessfulCrawlTimeInMs).as("connectorCrawlingTimeAvg"))
                 .from(c)
                 .where(filterBySearchQuery)
                 .groupBy(c.ENDPOINT)
