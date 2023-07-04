@@ -15,23 +15,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Broker Server API now generates into it's own Broker Server Client Typescript Library.
 
-### Deployment Migration Notes
-
-1. There are new **required** changed configuration properties:
-
-Before:
-```yaml
-    # Renamed and new configuration properties
-    EDC_BROKER_SERVER_CRON_CONNECTOR_REFRESH
-```
-
-Now:
-```yaml
-    # Renamed and new configuration properties
-    EDC_BROKER_SERVER_CRON_ALIVE_CONNECTOR_REFRESH
-    EDC_BROKER_SERVER_CRON_DEAD_CONNECTOR_REFRESH
-```
-
 #### Minor
 
 - Broker Server API is now part of this repository.
@@ -41,11 +24,23 @@ Now:
 
 ### Deployment Migration Notes
 
-1. There are new **optional** configuration properties:
+1. Following configuration properties were removed:
+    ```yaml
+    EDC_BROKER_SERVER_CRON_CONNECTOR_REFRESH
+    ```
+
+2. There are new **optional** configuration properties:
     ```yaml
     # Deletion of Connectors after they have been offline for a certain amount of time
     EDC_BROKER_SERVER_DELETE_OFFLINE_CONNECTORS_AFTER=P5D
     EDC_BROKER_SERVER_SCHEDULED_DELETE_OFFLINE_CONNECTORS=0 0 12 ? * *
+
+    # Cron interval within which Connectors marked as ALIVE are to be crawled
+    EDC_BROKER_SERVER_CRON_ALIVE_CONNECTOR_REFRESH=0 */5 * ? * *
+    
+    # Cron interval within which Connectors marked as DEAD are to be crawled
+    EDC_BROKER_SERVER_CRON_DEAD_CONNECTOR_REFRESH=0 */60 */24 ? * *
+    ```
 
 ## [v0.1.0] Broker MvP Release - 2023-06-23
 
