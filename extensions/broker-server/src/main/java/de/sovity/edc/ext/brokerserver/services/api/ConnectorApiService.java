@@ -90,6 +90,7 @@ public class ConnectorApiService {
         return switch (connector.getOnlineStatus()) {
             case ONLINE -> ConnectorOnlineStatus.ONLINE;
             case OFFLINE -> ConnectorOnlineStatus.OFFLINE;
+            case DEAD -> ConnectorOnlineStatus.DEAD;
             default -> throw new IllegalStateException("Unknown ConnectorOnlineStatus from DAO for API: " + connector.getOnlineStatus());
         };
     }
