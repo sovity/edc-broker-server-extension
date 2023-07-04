@@ -97,6 +97,8 @@ class DataOfferDetailApiTest {
             //assertEqualJson(contractOffer.getContractPolicy().getLegacyPolicy(), policyToJson(dummyPolicy()));
             assertThat(contractOffer.getCreatedAt()).isEqualTo(today.minusDays(5));
             assertThat(contractOffer.getUpdatedAt()).isEqualTo(today);
+
+            assertThat(actual.getViewCount()).isEqualTo(2);
         });
     }
 
@@ -131,6 +133,18 @@ class DataOfferDetailApiTest {
         contractOffer.setUpdatedAt(today);
         contractOffer.setPolicy(JSONB.jsonb(policyToJson(dummyPolicy())));
         contractOffer.insert();
+
+        // log view to create a view log entry
+        createDataOfferView(dsl, today, assetProperties, connectorEndpoint);
+        createDataOfferView(dsl, today.minusDays(1), assetProperties, connectorEndpoint);
+    }
+
+    private static void createDataOfferView(DSLContext dsl, OffsetDateTime date, Map<String, String> assetProperties, String connectorEndpoint) {
+        var view = dsl.newRecord(Tables.DATA_OFFER_VIEW_COUNT);
+        view.setAssetId(assetProperties.get(AssetProperty.ASSET_ID));
+        view.setConnectorEndpoint(connectorEndpoint);
+        view.setDate(date);
+        view.insert();
     }
 
     private Policy dummyPolicy() {

@@ -52,6 +52,7 @@ public class DataOfferDetailPageQueryService {
                                 .from(fields.getDataOfferViewCountTable())
                                 .where(fields.getDataOfferViewCountTable().ASSET_ID.eq(d.ASSET_ID))
                                 .and(fields.getDataOfferViewCountTable().CONNECTOR_ENDPOINT.eq(c.ENDPOINT))
+                                .groupBy(fields.getDataOfferViewCountTable().ASSET_ID, fields.getDataOfferViewCountTable().CONNECTOR_ENDPOINT)
                                 .asField("viewCount"))
                 .from(d).leftJoin(c).on(c.ENDPOINT.eq(d.CONNECTOR_ENDPOINT))
                 .where(d.ASSET_ID.eq(assetId).or(d.CONNECTOR_ENDPOINT.eq(endpoint)))
