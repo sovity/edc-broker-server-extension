@@ -76,9 +76,19 @@ class DataOfferDetailApiTest {
                 AssetProperty.ASSET_NAME, "My Asset 1"
             ), "http://my-connector/ids/data");
 
+            //create view for dataoffer
+            createDataOfferView(dsl, today, Map.of(
+                AssetProperty.ASSET_ID, "urn:artifact:my-asset-1",
+                AssetProperty.DATA_CATEGORY, "my-category",
+                AssetProperty.ASSET_NAME, "My Asset 1"
+            ), "http://my-connector/ids/data");
+            createDataOfferView(dsl, today, Map.of(
+                AssetProperty.ASSET_ID, "urn:artifact:my-asset-1",
+                AssetProperty.DATA_CATEGORY, "my-category",
+                AssetProperty.ASSET_NAME, "My Asset 1"
+            ), "http://my-connector/ids/data");
 
             var actual = edcClient().brokerServerApi().dataOfferDetailPage(new DataOfferDetailPageQuery("http://my-connector/ids/data", "urn:artifact:my-asset-1"));
-
             assertThat(actual.getAssetId()).isEqualTo("urn:artifact:my-asset-1");
             assertThat(actual.getConnectorEndpoint()).isEqualTo("http://my-connector/ids/data");
             assertThat(actual.getConnectorOfflineSinceOrLastUpdatedAt()).isEqualTo(today);
@@ -90,14 +100,12 @@ class DataOfferDetailApiTest {
                 AssetProperty.ASSET_NAME, "My Asset 1"
             ));
             assertThat(actual.getUpdatedAt()).isEqualTo(today);
-
             assertThat(actual.getContractOffers()).hasSize(1);
             var contractOffer = actual.getContractOffers().get(0);
             assertThat(contractOffer.getContractOfferId()).isEqualTo("my-contract-offer-1");
             //assertEqualJson(contractOffer.getContractPolicy().getLegacyPolicy(), policyToJson(dummyPolicy()));
             assertThat(contractOffer.getCreatedAt()).isEqualTo(today.minusDays(5));
             assertThat(contractOffer.getUpdatedAt()).isEqualTo(today);
-
             assertThat(actual.getViewCount()).isEqualTo(2);
         });
     }
@@ -133,10 +141,6 @@ class DataOfferDetailApiTest {
         contractOffer.setUpdatedAt(today);
         contractOffer.setPolicy(JSONB.jsonb(policyToJson(dummyPolicy())));
         contractOffer.insert();
-
-        // log view to create a view log entry
-        createDataOfferView(dsl, today, assetProperties, connectorEndpoint);
-        createDataOfferView(dsl, today.minusDays(1), assetProperties, connectorEndpoint);
     }
 
     private static void createDataOfferView(DSLContext dsl, OffsetDateTime date, Map<String, String> assetProperties, String connectorEndpoint) {
