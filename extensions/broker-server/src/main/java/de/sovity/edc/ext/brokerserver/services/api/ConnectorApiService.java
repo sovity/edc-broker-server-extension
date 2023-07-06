@@ -14,16 +14,9 @@
 
 package de.sovity.edc.ext.brokerserver.services.api;
 
+import de.sovity.edc.ext.brokerserver.api.model.*;
 import de.sovity.edc.ext.brokerserver.dao.pages.connector.ConnectorPageQueryService;
 import de.sovity.edc.ext.brokerserver.dao.pages.connector.model.ConnectorRs;
-import de.sovity.edc.ext.brokerserver.api.model.ConnectorDetailPageQuery;
-import de.sovity.edc.ext.brokerserver.api.model.ConnectorDetailPageResult;
-import de.sovity.edc.ext.brokerserver.api.model.ConnectorListEntry;
-import de.sovity.edc.ext.brokerserver.api.model.ConnectorOnlineStatus;
-import de.sovity.edc.ext.brokerserver.api.model.ConnectorPageQuery;
-import de.sovity.edc.ext.brokerserver.api.model.ConnectorPageResult;
-import de.sovity.edc.ext.brokerserver.api.model.ConnectorPageSortingItem;
-import de.sovity.edc.ext.brokerserver.api.model.ConnectorPageSortingType;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 
@@ -64,6 +57,7 @@ public class ConnectorApiService {
         result.setOnlineStatus(connector.getOnlineStatus());
         return result;
     }
+
 
     private List<ConnectorListEntry> buildConnectorListEntries(List<ConnectorRs> connectors) {
         return connectors.stream().map(this::buildConnectorListEntry).toList();
