@@ -50,7 +50,8 @@ public class PostgresFlywayExtension implements ServiceExtension {
         var config = context.getConfig();
         var monitor = context.getMonitor();
 
-        var dataSourceFactory = new DataSourceFactory(config);
+        var hikariCpDataSource = new HikariCPDataSource(config);
+        var dataSourceFactory = new DataSourceFactory(hikariCpDataSource);
         var dataSource = dataSourceFactory.newDataSource();
 
         var flywayFactory = new FlywayFactory(config);
@@ -58,5 +59,4 @@ public class PostgresFlywayExtension implements ServiceExtension {
         var flywayMigrator = new FlywayMigrator(flyway, config, monitor);
         flywayMigrator.migrateAndRepair();
     }
-
 }
