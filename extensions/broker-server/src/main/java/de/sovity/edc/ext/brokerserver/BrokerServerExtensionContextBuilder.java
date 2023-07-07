@@ -25,18 +25,14 @@ import de.sovity.edc.ext.brokerserver.dao.pages.catalog.CatalogQueryService;
 import de.sovity.edc.ext.brokerserver.dao.pages.catalog.CatalogQuerySortingService;
 import de.sovity.edc.ext.brokerserver.dao.pages.connector.ConnectorPageQueryService;
 import de.sovity.edc.ext.brokerserver.dao.pages.dataoffer.DataOfferDetailPageQueryService;
+import de.sovity.edc.ext.brokerserver.dao.pages.log.LogPageQueryService;
 import de.sovity.edc.ext.brokerserver.db.DataSourceFactory;
 import de.sovity.edc.ext.brokerserver.db.DslContextFactory;
 import de.sovity.edc.ext.brokerserver.services.BrokerServerInitializer;
 import de.sovity.edc.ext.brokerserver.services.ConnectorCreator;
 import de.sovity.edc.ext.brokerserver.services.KnownConnectorsInitializer;
 import de.sovity.edc.ext.brokerserver.services.OfflineConnectorRemover;
-import de.sovity.edc.ext.brokerserver.services.api.AssetPropertyParser;
-import de.sovity.edc.ext.brokerserver.services.api.CatalogApiService;
-import de.sovity.edc.ext.brokerserver.services.api.ConnectorApiService;
-import de.sovity.edc.ext.brokerserver.services.api.DataOfferDetailApiService;
-import de.sovity.edc.ext.brokerserver.services.api.PaginationMetadataUtils;
-import de.sovity.edc.ext.brokerserver.services.api.PolicyDtoBuilder;
+import de.sovity.edc.ext.brokerserver.services.api.*;
 import de.sovity.edc.ext.brokerserver.services.api.filtering.CatalogFilterAttributeDefinitionService;
 import de.sovity.edc.ext.brokerserver.services.api.filtering.CatalogFilterService;
 import de.sovity.edc.ext.brokerserver.services.config.BrokerServerSettingsFactory;
@@ -112,6 +108,7 @@ public class BrokerServerExtensionContextBuilder {
                 brokerServerSettings
         );
         var connectorPageQueryService = new ConnectorPageQueryService();
+        var logPageQueryService = new LogPageQueryService();
         var dataOfferDetailPageQueryService = new DataOfferDetailPageQueryService(catalogQueryContractOfferFetcher, brokerServerSettings);
 
 
@@ -202,6 +199,10 @@ public class BrokerServerExtensionContextBuilder {
                 paginationMetadataUtils
         );
 
+        var logApiService = new LogApiService(
+            logPageQueryService
+        );
+
         var dataOfferDetailApiService = new DataOfferDetailApiService(
                 dataOfferDetailPageQueryService,
                 policyDtoBuilder,
@@ -212,7 +213,8 @@ public class BrokerServerExtensionContextBuilder {
                 dslContextFactory,
                 connectorApiService,
                 catalogApiService,
-                dataOfferDetailApiService
+                dataOfferDetailApiService,
+                logApiService
         );
 
         return new BrokerServerExtensionContext(

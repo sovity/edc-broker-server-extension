@@ -14,14 +14,7 @@
 
 package de.sovity.edc.ext.brokerserver.api;
 
-import de.sovity.edc.ext.brokerserver.api.model.CatalogPageQuery;
-import de.sovity.edc.ext.brokerserver.api.model.CatalogPageResult;
-import de.sovity.edc.ext.brokerserver.api.model.ConnectorDetailPageQuery;
-import de.sovity.edc.ext.brokerserver.api.model.ConnectorDetailPageResult;
-import de.sovity.edc.ext.brokerserver.api.model.ConnectorPageQuery;
-import de.sovity.edc.ext.brokerserver.api.model.ConnectorPageResult;
-import de.sovity.edc.ext.brokerserver.api.model.DataOfferDetailPageQuery;
-import de.sovity.edc.ext.brokerserver.api.model.DataOfferDetailPageResult;
+import de.sovity.edc.ext.brokerserver.api.model.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.ws.rs.Consumes;
@@ -61,4 +54,11 @@ public interface BrokerServerResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(description = "Query a Known Connector's Detail Page")
     ConnectorDetailPageResult connectorDetailPage(ConnectorDetailPageQuery query);
+
+    @POST
+    @Path("connector-log-page")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Operation(description = "Query a Known Connector's Log Page")
+    ConnectorEventLogPageResult connectorEventPage(ConnectorEventLogPageQuery query);
 }

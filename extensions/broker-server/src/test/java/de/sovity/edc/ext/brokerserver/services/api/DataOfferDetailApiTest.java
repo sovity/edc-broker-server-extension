@@ -21,9 +21,7 @@ import de.sovity.edc.ext.brokerserver.dao.AssetProperty;
 import de.sovity.edc.ext.brokerserver.db.TestDatabase;
 import de.sovity.edc.ext.brokerserver.db.TestDatabaseFactory;
 import de.sovity.edc.ext.brokerserver.db.jooq.Tables;
-import de.sovity.edc.ext.brokerserver.db.jooq.enums.ConnectorContractOffersExceeded;
-import de.sovity.edc.ext.brokerserver.db.jooq.enums.ConnectorDataOffersExceeded;
-import de.sovity.edc.ext.brokerserver.db.jooq.enums.ConnectorOnlineStatus;
+import de.sovity.edc.ext.brokerserver.db.jooq.enums.*;
 import lombok.SneakyThrows;
 import org.eclipse.edc.junit.annotations.ApiTest;
 import org.eclipse.edc.junit.extensions.EdcExtension;
@@ -38,7 +36,6 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 import java.time.OffsetDateTime;
 import java.util.Map;
 
-import static de.sovity.edc.ext.brokerserver.AssertionUtils.assertEqualJson;
 import static de.sovity.edc.ext.brokerserver.TestUtils.createConfiguration;
 import static de.sovity.edc.ext.brokerserver.TestUtils.edcClient;
 import static groovy.json.JsonOutput.toJson;
@@ -63,6 +60,7 @@ class DataOfferDetailApiTest {
             var today = OffsetDateTime.now().withNano(0);
 
             createConnector(dsl, today, "http://my-connector2/ids/data");
+            createEventLog(dsl, today,  "http://my-connector/ids/data" );
             createDataOffer(dsl, today, Map.of(
                 AssetProperty.ASSET_ID, "urn:artifact:my-asset-2",
                 AssetProperty.DATA_CATEGORY, "my-category2",
@@ -70,6 +68,7 @@ class DataOfferDetailApiTest {
             ), "http://my-connector2/ids/data");
 
             createConnector(dsl, today, "http://my-connector/ids/data");
+            createEventLog(dsl, today, "http://my-connector/ids/data" );
             createDataOffer(dsl, today, Map.of(
                 AssetProperty.ASSET_ID, "urn:artifact:my-asset-1",
                 AssetProperty.DATA_CATEGORY, "my-category",
@@ -111,6 +110,19 @@ class DataOfferDetailApiTest {
         connector.setDataOffersExceeded(ConnectorDataOffersExceeded.OK);
         connector.setContractOffersExceeded(ConnectorContractOffersExceeded.OK);
         connector.insert();
+    }
+
+    private void createEventLog(DSLContext dsl, OffsetDateTime today, String connectorEndpoint) {
+        var eventLog = dsl.newRecord(Tables.BROKER_EVENT_LOG);
+        eventLog.setId(Integer.valueOf("05"));
+        eventLog.setUserMessage("Sample user message");
+        eventLog.setEvent(BrokerEventType.valueOf("CONNECTOR_UPDATED"));
+        eventLog.setEventStatus(BrokerEventStatus.valueOf("OK"));
+        eventLog.setConnectorEndpoint(connectorEndpoint);
+        eventLog.setAssetId("Sample asset ID");
+        eventLog.setErrorStack("Sample error stack");
+        eventLog.setCreatedAt(today);
+        eventLog.insert();
     }
 
     private void createDataOffer(DSLContext dsl, OffsetDateTime today, Map<String, String> assetProperties, String connectorEndpoint) {

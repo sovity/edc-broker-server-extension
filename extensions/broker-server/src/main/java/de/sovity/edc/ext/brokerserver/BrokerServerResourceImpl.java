@@ -15,18 +15,12 @@
 package de.sovity.edc.ext.brokerserver;
 
 import de.sovity.edc.ext.brokerserver.api.BrokerServerResource;
-import de.sovity.edc.ext.brokerserver.api.model.CatalogPageQuery;
-import de.sovity.edc.ext.brokerserver.api.model.CatalogPageResult;
-import de.sovity.edc.ext.brokerserver.api.model.ConnectorDetailPageQuery;
-import de.sovity.edc.ext.brokerserver.api.model.ConnectorDetailPageResult;
-import de.sovity.edc.ext.brokerserver.api.model.ConnectorPageQuery;
-import de.sovity.edc.ext.brokerserver.api.model.ConnectorPageResult;
-import de.sovity.edc.ext.brokerserver.api.model.DataOfferDetailPageQuery;
-import de.sovity.edc.ext.brokerserver.api.model.DataOfferDetailPageResult;
+import de.sovity.edc.ext.brokerserver.api.model.*;
 import de.sovity.edc.ext.brokerserver.db.DslContextFactory;
 import de.sovity.edc.ext.brokerserver.services.api.CatalogApiService;
 import de.sovity.edc.ext.brokerserver.services.api.ConnectorApiService;
 import de.sovity.edc.ext.brokerserver.services.api.DataOfferDetailApiService;
+import de.sovity.edc.ext.brokerserver.services.api.LogApiService;
 import lombok.RequiredArgsConstructor;
 
 
@@ -39,6 +33,7 @@ public class BrokerServerResourceImpl implements BrokerServerResource {
     private final ConnectorApiService connectorApiService;
     private final CatalogApiService catalogApiService;
     private final DataOfferDetailApiService dataOfferDetailApiService;
+    private final LogApiService logApiService;
 
     @Override
     public CatalogPageResult catalogPage(CatalogPageQuery query) {
@@ -58,5 +53,10 @@ public class BrokerServerResourceImpl implements BrokerServerResource {
     @Override
     public ConnectorDetailPageResult connectorDetailPage(ConnectorDetailPageQuery query) {
         return dslContextFactory.transactionResult(dsl -> connectorApiService.connectorDetailPage(dsl, query));
+    }
+
+    @Override
+    public ConnectorEventLogPageResult connectorEventPage(ConnectorEventLogPageQuery query) {
+        return dslContextFactory.transactionResult(dsl -> logApiService.connectorLogPage(dsl, query));
     }
 }

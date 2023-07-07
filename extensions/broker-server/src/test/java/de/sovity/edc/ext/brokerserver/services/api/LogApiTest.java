@@ -43,7 +43,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @ApiTest
 @ExtendWith(EdcExtension.class)
-class ConnectorApiTest {
+class LogApiTest {
 
     @RegisterExtension
     private static final TestDatabase TEST_DATABASE = TestDatabaseFactory.getTestDatabase();
@@ -60,7 +60,7 @@ class ConnectorApiTest {
             var today = OffsetDateTime.now().withNano(0);
 
             createConnector(dsl, today, "http://my-connector/ids/data");
-            createEventLog(dsl, today, "http://my-connector/ids/data" );
+            createEventLog(dsl, today, "http://my-connector/ids/data");
             createDataOffer(dsl, today, Map.of(
                 AssetProperty.ASSET_ID, "urn:artifact:my-asset-1",
                 AssetProperty.DATA_CATEGORY, "my-category",
@@ -85,7 +85,6 @@ class ConnectorApiTest {
             var today = OffsetDateTime.now().withNano(0);
 
             createConnector(dsl, today, "http://my-connector/ids/data");
-            createEventLog(dsl, today, "http://my-connector/ids/data" );
             createDataOffer(dsl, today, Map.of(
                 AssetProperty.ASSET_ID, "urn:artifact:my-asset-1",
                 AssetProperty.DATA_CATEGORY, "my-category",
