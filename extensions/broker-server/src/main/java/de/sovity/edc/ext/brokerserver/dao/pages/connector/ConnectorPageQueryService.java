@@ -38,7 +38,6 @@ public class ConnectorPageQueryService {
         return dsl.select(c.asterisk(), dataOfferCount(c.ENDPOINT).as("numDataOffers"))
                 .from(c)
                 .where(filterBySearchQuery)
-                .and(c.ONLINE_STATUS.notEqual(ConnectorOnlineStatus.DEAD))
                 .orderBy(sortConnectorPage(c, sorting))
                 .fetchInto(ConnectorListEntryRs.class);
     }
@@ -67,8 +66,15 @@ public class ConnectorPageQueryService {
     private List<OrderField<?>> sortConnectorPage(Connector c, ConnectorPageSortingType sorting) {
         var alphabetically = c.ENDPOINT.asc();
         var recentFirst = c.CREATED_AT.desc();
+        var onlineStatus = DSL.case_(c.ONLINE_STATUS)
+                .when(ConnectorOnlineStatus.ONLINE, 1)
+                .when(ConnectorOnlineStatus.OFFLINE, 2)
+                .else_(3)
+                .asc();
 
-        if (sorting == null || sorting == ConnectorPageSortingType.TITLE) {
+        if (sorting == null || sorting == ConnectorPageSortingType.ONLINE_STATUS) {
+            return  List.of(onlineStatus, alphabetically);
+        } else if (sorting == ConnectorPageSortingType.TITLE) {
             return List.of(alphabetically, recentFirst);
         } else if (sorting == ConnectorPageSortingType.MOST_RECENT) {
             return List.of(recentFirst, alphabetically);
