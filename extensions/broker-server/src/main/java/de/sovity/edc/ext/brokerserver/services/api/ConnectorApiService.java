@@ -57,7 +57,7 @@ public class ConnectorApiService {
         Objects.requireNonNull(query, "query must not be null");
 
         var connectorDbRow = connectorPageQueryService.queryConnectorDetailPage(dsl, query.getConnectorEndpoint());
-        var connector = buildConnectorListEntry(connectorDbRow);
+        var connector = buildConnectorDetailPageEntry(connectorDbRow);
 
         var result = new ConnectorDetailPageResult();
         result.setCreatedAt(connector.getCreatedAt());
@@ -67,14 +67,15 @@ public class ConnectorApiService {
         result.setLastSuccessfulRefreshAt(connector.getLastSuccessfulRefreshAt());
         result.setNumContractOffers(connector.getNumContractOffers());
         result.setOnlineStatus(connector.getOnlineStatus());
+        result.setConnectorCrawlingTimeAvg(connector.getConnectorCrawlingTimeAvg());
         return result;
     }
 
-    private List<ConnectorListEntry> buildConnectorListEntries(List<ConnectorRs> connectors) {
+    private List<ConnectorListEntry> buildConnectorListEntries(List<ConnectorListEntryRs> connectors) {
         return connectors.stream().map(this::buildConnectorListEntry).toList();
     }
 
-    private ConnectorListEntry buildConnectorListEntry(ConnectorRs connector) {
+    private ConnectorListEntry buildConnectorListEntry(ConnectorListEntryRs connector) {
         var dto = new ConnectorListEntry();
         dto.setId(connector.getConnectorId());
         dto.setEndpoint(connector.getEndpoint());
@@ -86,11 +87,32 @@ public class ConnectorApiService {
         return dto;
     }
 
-    private ConnectorOnlineStatus getOnlineStatus(ConnectorRs connector) {
+    private ConnectorDetailPageResult buildConnectorDetailPageEntry(ConnectorDetailsRs connector) {
+        var dto = new ConnectorDetailPageResult();
+        dto.setId(connector.getConnectorId());
+        dto.setEndpoint(connector.getEndpoint());
+        dto.setCreatedAt(connector.getCreatedAt());
+        dto.setLastRefreshAttemptAt(connector.getLastRefreshAttemptAt());
+        dto.setLastSuccessfulRefreshAt(connector.getLastSuccessfulRefreshAt());
+        dto.setOnlineStatus(getOnlineStatus(connector));
+        dto.setNumContractOffers(connector.getNumDataOffers());
+        dto.setConnectorCrawlingTimeAvg(connector.getConnectorCrawlingTimeAvg());
+        return dto;
+    }
+
+    private ConnectorOnlineStatus getOnlineStatus(ConnectorListEntryRs connector) {
         return switch (connector.getOnlineStatus()) {
             case ONLINE -> ConnectorOnlineStatus.ONLINE;
             case OFFLINE -> ConnectorOnlineStatus.OFFLINE;
             case DEAD -> ConnectorOnlineStatus.DEAD;
+            default -> throw new IllegalStateException("Unknown ConnectorOnlineStatus from DAO for API: " + connector.getOnlineStatus());
+        };
+    }
+
+    private ConnectorOnlineStatus getOnlineStatus(ConnectorDetailsRs connector) {
+        return switch (connector.getOnlineStatus()) {
+            case ONLINE -> ConnectorOnlineStatus.ONLINE;
+            case OFFLINE -> ConnectorOnlineStatus.OFFLINE;
             default -> throw new IllegalStateException("Unknown ConnectorOnlineStatus from DAO for API: " + connector.getOnlineStatus());
         };
     }
