@@ -105,8 +105,7 @@ public class CatalogQueryFields {
         var subquery = DSL.select(DSL.count())
                 .from(dataOfferViewCountTable)
                 .where(dataOfferViewCountTable.ASSET_ID.eq(dataOfferTable.ASSET_ID)
-                    .and(dataOfferViewCountTable.CONNECTOR_ENDPOINT.eq(connectorTable.ENDPOINT)))
-                .groupBy(dataOfferViewCountTable.ASSET_ID, getDataOfferViewCountTable().CONNECTOR_ENDPOINT);
+                    .and(dataOfferViewCountTable.CONNECTOR_ENDPOINT.eq(connectorTable.ENDPOINT)));
 
         return subquery.asField();
     }
