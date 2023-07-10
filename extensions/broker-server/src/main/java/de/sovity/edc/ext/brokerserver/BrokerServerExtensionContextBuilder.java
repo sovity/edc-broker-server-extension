@@ -27,7 +27,6 @@ import de.sovity.edc.ext.brokerserver.dao.pages.connector.ConnectorPageQueryServ
 import de.sovity.edc.ext.brokerserver.dao.pages.dataoffer.DataOfferDetailPageQueryService;
 import de.sovity.edc.ext.brokerserver.db.DataSourceFactory;
 import de.sovity.edc.ext.brokerserver.db.DslContextFactory;
-import de.sovity.edc.ext.brokerserver.db.HikariCPDataSource;
 import de.sovity.edc.ext.brokerserver.services.BrokerServerInitializer;
 import de.sovity.edc.ext.brokerserver.services.ConnectorCreator;
 import de.sovity.edc.ext.brokerserver.services.KnownConnectorsInitializer;
@@ -93,12 +92,9 @@ public class BrokerServerExtensionContextBuilder {
         var brokerServerSettingsFactory = new BrokerServerSettingsFactory(config, monitor);
         var brokerServerSettings = brokerServerSettingsFactory.buildBrokerServerSettings();
 
-        // Database
-        var hikariCpDataSource = new HikariCPDataSource(config);
-
         // Dao
         var dataOfferQueries = new DataOfferQueries();
-        var dataSourceFactory = new DataSourceFactory(hikariCpDataSource);
+        var dataSourceFactory = new DataSourceFactory(config);
         var dataSource = dataSourceFactory.newDataSource();
         var dslContextFactory = new DslContextFactory(dataSource);
         var connectorQueries = new ConnectorQueries();

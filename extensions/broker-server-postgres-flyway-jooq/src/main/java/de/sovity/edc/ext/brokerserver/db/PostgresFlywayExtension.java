@@ -50,8 +50,7 @@ public class PostgresFlywayExtension implements ServiceExtension {
         var config = context.getConfig();
         var monitor = context.getMonitor();
 
-        var hikariCpDataSource = new HikariCPDataSource(config);
-        var dataSourceFactory = new DataSourceFactory(hikariCpDataSource);
+        var dataSourceFactory = new DataSourceFactory(config);
         var dataSource = dataSourceFactory.newDataSource();
 
         var flywayFactory = new FlywayFactory(config);

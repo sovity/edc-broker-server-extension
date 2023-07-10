@@ -14,21 +14,46 @@
 
 package de.sovity.edc.ext.brokerserver.db;
 
-import lombok.RequiredArgsConstructor;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
+import de.sovity.edc.ext.brokerserver.db.utils.JdbcCredentials;
+import org.eclipse.edc.spi.EdcException;
+import org.eclipse.edc.spi.system.configuration.Config;
 import org.eclipse.edc.sql.datasource.ConnectionFactoryDataSource;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
+import java.sql.SQLException;
 
-@RequiredArgsConstructor
 public class DataSourceFactory {
-    private final HikariCPDataSource hikariCpDataSource;
+    private HikariConfig hikariConfig = new HikariConfig();
+    private HikariDataSource hikariDataSource;
+
+    public DataSourceFactory(Config config) {
+        var jdbcCredentials = JdbcCredentials.fromConfig(config);
+
+        hikariConfig.setJdbcUrl(jdbcCredentials.jdbcUrl());
+        hikariConfig.setUsername(jdbcCredentials.jdbcUser());
+        hikariConfig.setPassword(jdbcCredentials.jdbcPassword());
+        hikariConfig.setMinimumIdle(1);
+        hikariConfig.setMaximumPoolSize(20);
+        hikariConfig.setIdleTimeout(30000);
+        hikariConfig.setPoolName("edc-broker-server");
+        hikariConfig.setMaxLifetime(50000);
+        hikariConfig.setConnectionTimeout(30000);
+
+        hikariDataSource = new HikariDataSource(hikariConfig);
+    }
 
     public DataSource newDataSource() {
         return new ConnectionFactoryDataSource(this::newConnection);
     }
 
     private Connection newConnection() {
-        return hikariCpDataSource.getConnection();
+        try {
+            return hikariDataSource.getConnection();
+        } catch (SQLException e) {
+            throw new EdcException("Could not create db connection", e);
+        }
     }
 }

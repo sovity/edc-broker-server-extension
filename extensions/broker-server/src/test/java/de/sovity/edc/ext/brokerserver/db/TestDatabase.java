@@ -52,7 +52,7 @@ public interface TestDatabase extends BeforeAllCallback, AfterAllCallback {
         when(config.getString(PostgresFlywayExtension.JDBC_URL, "")).thenReturn(getJdbcUrl());
         when(config.getString(PostgresFlywayExtension.JDBC_USER , "")).thenReturn(getJdbcUser());
         when(config.getString(PostgresFlywayExtension.JDBC_PASSWORD, "")).thenReturn(getJdbcPassword());
-        var dataSourceFactory = new DataSourceFactory(new HikariCPDataSource(config));
+        var dataSourceFactory = new DataSourceFactory(config);
         return dataSourceFactory.newDataSource();
     }
 
