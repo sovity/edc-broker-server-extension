@@ -61,10 +61,10 @@ import de.sovity.edc.ext.brokerserver.services.refreshing.offers.DataOfferPatchA
 import de.sovity.edc.ext.brokerserver.services.refreshing.offers.DataOfferPatchBuilder;
 import de.sovity.edc.ext.brokerserver.services.refreshing.offers.DataOfferRecordUpdater;
 import de.sovity.edc.ext.brokerserver.services.refreshing.offers.DataOfferWriter;
-import de.sovity.edc.ext.brokerserver.services.schedules.OfflineConnectorRefreshJob;
-import de.sovity.edc.ext.brokerserver.services.schedules.OnlineConnectorRefreshJob;
 import de.sovity.edc.ext.brokerserver.services.schedules.DeadConnectorRefreshJob;
 import de.sovity.edc.ext.brokerserver.services.schedules.OfflineConnectorKillerJob;
+import de.sovity.edc.ext.brokerserver.services.schedules.OfflineConnectorRefreshJob;
+import de.sovity.edc.ext.brokerserver.services.schedules.OnlineConnectorRefreshJob;
 import de.sovity.edc.ext.brokerserver.services.schedules.QuartzScheduleInitializer;
 import de.sovity.edc.ext.brokerserver.services.schedules.utils.CronJobRef;
 import lombok.NoArgsConstructor;
