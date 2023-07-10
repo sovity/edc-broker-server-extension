@@ -23,7 +23,8 @@ import de.sovity.edc.ext.brokerserver.api.model.ConnectorPageResult;
 import de.sovity.edc.ext.brokerserver.api.model.ConnectorPageSortingItem;
 import de.sovity.edc.ext.brokerserver.api.model.ConnectorPageSortingType;
 import de.sovity.edc.ext.brokerserver.dao.pages.connector.ConnectorPageQueryService;
-import de.sovity.edc.ext.brokerserver.dao.pages.connector.model.ConnectorRs;
+import de.sovity.edc.ext.brokerserver.dao.pages.connector.model.ConnectorDetailsRs;
+import de.sovity.edc.ext.brokerserver.dao.pages.connector.model.ConnectorListEntryRs;
 import de.sovity.edc.ext.brokerserver.utils.UrlUtils;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
@@ -127,11 +128,11 @@ public class ConnectorApiService {
     public void addConnectors(DSLContext dsl, List<String> connectorEndpoints) {
         var existingEndpoints = connectorService.getConnectorEndpoints(dsl);
         var endpoints = connectorEndpoints.stream()
-            .filter(Objects::nonNull)
-            .map(String::trim)
-            .filter(UrlUtils::isValidUrl)
-            .filter(endpoint -> !existingEndpoints.contains(endpoint))
-            .collect(toSet());
+                .filter(Objects::nonNull)
+                .map(String::trim)
+                .filter(UrlUtils::isValidUrl)
+                .filter(endpoint -> !existingEndpoints.contains(endpoint))
+                .collect(toSet());
         connectorService.addConnectors(dsl, endpoints, ADDED_ON_API_CALL);
     }
 }

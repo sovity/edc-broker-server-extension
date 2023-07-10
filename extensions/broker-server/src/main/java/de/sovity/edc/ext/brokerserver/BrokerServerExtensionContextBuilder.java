@@ -61,7 +61,8 @@ import de.sovity.edc.ext.brokerserver.services.refreshing.offers.DataOfferPatchA
 import de.sovity.edc.ext.brokerserver.services.refreshing.offers.DataOfferPatchBuilder;
 import de.sovity.edc.ext.brokerserver.services.refreshing.offers.DataOfferRecordUpdater;
 import de.sovity.edc.ext.brokerserver.services.refreshing.offers.DataOfferWriter;
-import de.sovity.edc.ext.brokerserver.services.schedules.AliveConnectorRefreshJob;
+import de.sovity.edc.ext.brokerserver.services.schedules.OfflineConnectorRefreshJob;
+import de.sovity.edc.ext.brokerserver.services.schedules.OnlineConnectorRefreshJob;
 import de.sovity.edc.ext.brokerserver.services.schedules.DeadConnectorRefreshJob;
 import de.sovity.edc.ext.brokerserver.services.schedules.OfflineConnectorKillerJob;
 import de.sovity.edc.ext.brokerserver.services.schedules.QuartzScheduleInitializer;
@@ -183,7 +184,8 @@ public class BrokerServerExtensionContextBuilder {
 
         // Schedules
         List<CronJobRef<?>> jobs = List.of(
-                getAliveConnectorRefreshCronJob(dslContextFactory, connectorQueueFiller),
+                getOnlineConnectorRefreshCronJob(dslContextFactory, connectorQueueFiller),
+                getOfflineConnectorRefreshCronJob(dslContextFactory, connectorQueueFiller),
                 getDeadConnectorRefreshCronJob(dslContextFactory, connectorQueueFiller),
                 getOfflineConnectorKillerCronJob(dslContextFactory, offlineConnectorKiller)
         );
@@ -235,9 +237,27 @@ public class BrokerServerExtensionContextBuilder {
     @NotNull
     private static CronJobRef<OfflineConnectorKillerJob> getOfflineConnectorKillerCronJob(DslContextFactory dslContextFactory, OfflineConnectorKiller offlineConnectorKiller) {
         return new CronJobRef<>(
-            BrokerServerExtension.SCHEDULED_DELETE_OFFLINE_CONNECTORS,
+            BrokerServerExtension.SCHEDULED_KILL_OFFLINE_CONNECTORS,
             OfflineConnectorKillerJob.class,
                 () -> new OfflineConnectorKillerJob(dslContextFactory, offlineConnectorKiller)
+        );
+    }
+
+    @NotNull
+    private static CronJobRef<OnlineConnectorRefreshJob> getOnlineConnectorRefreshCronJob(DslContextFactory dslContextFactory, ConnectorQueueFiller connectorQueueFiller) {
+        return new CronJobRef<>(
+                BrokerServerExtension.CRON_ONLINE_CONNECTOR_REFRESH,
+                OnlineConnectorRefreshJob.class,
+                () -> new OnlineConnectorRefreshJob(dslContextFactory, connectorQueueFiller)
+        );
+    }
+
+    @NotNull
+    private static CronJobRef<OfflineConnectorRefreshJob> getOfflineConnectorRefreshCronJob(DslContextFactory dslContextFactory, ConnectorQueueFiller connectorQueueFiller) {
+        return new CronJobRef<>(
+                BrokerServerExtension.CRON_OFFLINE_CONNECTOR_REFRESH,
+                OfflineConnectorRefreshJob.class,
+                () -> new OfflineConnectorRefreshJob(dslContextFactory, connectorQueueFiller)
         );
     }
 
@@ -247,15 +267,6 @@ public class BrokerServerExtensionContextBuilder {
             BrokerServerExtension.CRON_DEAD_CONNECTOR_REFRESH,
             DeadConnectorRefreshJob.class,
                 () -> new DeadConnectorRefreshJob(dslContextFactory, connectorQueueFiller)
-        );
-    }
-
-    @NotNull
-    private static CronJobRef<AliveConnectorRefreshJob> getAliveConnectorRefreshCronJob(DslContextFactory dslContextFactory, ConnectorQueueFiller connectorQueueFiller) {
-        return new CronJobRef<>(
-            BrokerServerExtension.CRON_ALIVE_CONNECTOR_REFRESH,
-            AliveConnectorRefreshJob.class,
-                () -> new AliveConnectorRefreshJob(dslContextFactory, connectorQueueFiller)
         );
     }
 }

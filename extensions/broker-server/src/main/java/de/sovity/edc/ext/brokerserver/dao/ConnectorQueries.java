@@ -33,14 +33,9 @@ public class ConnectorQueries {
         return dsl.selectFrom(c).where(c.ENDPOINT.eq(endpoint)).fetchOne();
     }
 
-    public Set<String> findAliveConnectorsForScheduledRefresh(DSLContext dsl) {
+    public Set<String> findConnectorsForScheduledRefresh(DSLContext dsl, ConnectorOnlineStatus onlineStatus) {
         var c = Tables.CONNECTOR;
-        return dsl.select(c.ENDPOINT).from(c).where(c.ONLINE_STATUS.notEqual(ConnectorOnlineStatus.DEAD)).fetchSet(c.ENDPOINT);
-    }
-
-    public Set<String> findDeadConnectorsForScheduledRefresh(DSLContext dsl) {
-        var c = Tables.CONNECTOR;
-        return dsl.select(c.ENDPOINT).from(c).where(c.ONLINE_STATUS.eq(ConnectorOnlineStatus.DEAD)).fetchSet(c.ENDPOINT);
+        return dsl.select(c.ENDPOINT).from(c).where(c.ONLINE_STATUS.eq(onlineStatus)).fetchSet(c.ENDPOINT);
     }
 
     public Set<String> findExistingConnectors(DSLContext dsl, Collection<String> connectorEndpoints) {

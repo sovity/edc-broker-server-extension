@@ -23,13 +23,13 @@ import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 
 @RequiredArgsConstructor
-public class DeadConnectorRefreshJob implements Job {
+public class OnlineConnectorRefreshJob implements Job {
     private final DslContextFactory dslContextFactory;
     private final ConnectorQueueFiller connectorQueueFiller;
 
     @Override
     public void execute(JobExecutionContext context) {
         dslContextFactory.transaction(dsl -> connectorQueueFiller.enqueueConnectors(dsl,
-                ConnectorOnlineStatus.DEAD, ConnectorRefreshPriority.SCHEDULED_DEAD_REFRESH));
+                ConnectorOnlineStatus.ONLINE, ConnectorRefreshPriority.SCHEDULED_ONLINE_REFRESH));
     }
 }
