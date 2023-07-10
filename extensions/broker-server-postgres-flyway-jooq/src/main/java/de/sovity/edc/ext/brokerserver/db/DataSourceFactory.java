@@ -26,6 +26,12 @@ import javax.sql.DataSource;
 public class DataSourceFactory {
     private final Config config;
 
+
+    /**
+     * Create a new {@link DataSource} from EDC Config.
+     *
+     * @return {@link DataSource}.
+     */
     public DataSource newDataSource() {
         var jdbcCredentials = JdbcCredentials.fromConfig(config);
         int maxPoolSize = config.getInteger(PostgresFlywayExtension.DB_CONNECTION_POOL_SIZE);
@@ -33,6 +39,16 @@ public class DataSourceFactory {
         return newDataSource(jdbcCredentials, maxPoolSize, connectionTimeoutInMs);
     }
 
+    /**
+     * Create a new {@link DataSource}.
+     * <br>
+     * This method is static, so we can use from test code.
+     *
+     * @param jdbcCredentials       jdbc credentials
+     * @param maxPoolSize           max pool size
+     * @param connectionTimeoutInMs connection timeout in ms
+     * @return {@link DataSource}.
+     */
     public static DataSource newDataSource(
             JdbcCredentials jdbcCredentials,
             int maxPoolSize,
