@@ -240,8 +240,8 @@ public class BrokerServerExtensionContextBuilder {
     @NotNull
     private static CronJobRef<OfflineConnectorKillerJob> getOfflineConnectorKillerCronJob(DslContextFactory dslContextFactory, OfflineConnectorKiller offlineConnectorKiller) {
         return new CronJobRef<>(
-            BrokerServerExtension.SCHEDULED_KILL_OFFLINE_CONNECTORS,
-            OfflineConnectorKillerJob.class,
+                BrokerServerExtension.SCHEDULED_KILL_OFFLINE_CONNECTORS,
+                OfflineConnectorKillerJob.class,
                 () -> new OfflineConnectorKillerJob(dslContextFactory, offlineConnectorKiller)
         );
     }
@@ -267,8 +267,8 @@ public class BrokerServerExtensionContextBuilder {
     @NotNull
     private static CronJobRef<DeadConnectorRefreshJob> getDeadConnectorRefreshCronJob(DslContextFactory dslContextFactory, ConnectorQueueFiller connectorQueueFiller) {
         return new CronJobRef<>(
-            BrokerServerExtension.CRON_DEAD_CONNECTOR_REFRESH,
-            DeadConnectorRefreshJob.class,
+                BrokerServerExtension.CRON_DEAD_CONNECTOR_REFRESH,
+                DeadConnectorRefreshJob.class,
                 () -> new DeadConnectorRefreshJob(dslContextFactory, connectorQueueFiller)
         );
     }

@@ -14,11 +14,6 @@
 
 package de.sovity.edc.ext.brokerserver.services.api;
 
-import de.sovity.edc.ext.brokerserver.dao.pages.catalog.CatalogQueryService;
-import de.sovity.edc.ext.brokerserver.dao.pages.catalog.models.DataOfferListEntryRs;
-import de.sovity.edc.ext.brokerserver.dao.pages.dataoffer.model.ContractOfferRs;
-import de.sovity.edc.ext.brokerserver.services.api.filtering.CatalogFilterService;
-import de.sovity.edc.ext.brokerserver.services.config.BrokerServerSettings;
 import de.sovity.edc.ext.brokerserver.api.model.CatalogContractOffer;
 import de.sovity.edc.ext.brokerserver.api.model.CatalogDataOffer;
 import de.sovity.edc.ext.brokerserver.api.model.CatalogPageQuery;
@@ -26,6 +21,11 @@ import de.sovity.edc.ext.brokerserver.api.model.CatalogPageResult;
 import de.sovity.edc.ext.brokerserver.api.model.CatalogPageSortingItem;
 import de.sovity.edc.ext.brokerserver.api.model.CatalogPageSortingType;
 import de.sovity.edc.ext.brokerserver.api.model.ConnectorOnlineStatus;
+import de.sovity.edc.ext.brokerserver.dao.pages.catalog.CatalogQueryService;
+import de.sovity.edc.ext.brokerserver.dao.pages.catalog.models.DataOfferListEntryRs;
+import de.sovity.edc.ext.brokerserver.dao.pages.dataoffer.model.ContractOfferRs;
+import de.sovity.edc.ext.brokerserver.services.api.filtering.CatalogFilterService;
+import de.sovity.edc.ext.brokerserver.services.config.BrokerServerSettings;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 
