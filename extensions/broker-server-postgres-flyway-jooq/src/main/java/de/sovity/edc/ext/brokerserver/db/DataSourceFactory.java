@@ -17,43 +17,38 @@ package de.sovity.edc.ext.brokerserver.db;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import de.sovity.edc.ext.brokerserver.db.utils.JdbcCredentials;
-import org.eclipse.edc.spi.EdcException;
+import lombok.RequiredArgsConstructor;
 import org.eclipse.edc.spi.system.configuration.Config;
-import org.eclipse.edc.sql.datasource.ConnectionFactoryDataSource;
 
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.SQLException;
 
+@RequiredArgsConstructor
 public class DataSourceFactory {
-    private HikariConfig hikariConfig = new HikariConfig();
-    private HikariDataSource hikariDataSource;
+    private final Config config;
 
-    public DataSourceFactory(Config config) {
+    public DataSource newDataSource() {
         var jdbcCredentials = JdbcCredentials.fromConfig(config);
+        int maxPoolSize = config.getInteger(PostgresFlywayExtension.DB_CONNECTION_POOL_SIZE);
+        int connectionTimeoutInMs = config.getInteger(PostgresFlywayExtension.DB_CONNECTION_TIMEOUT_IN_MS);
+        return newDataSource(jdbcCredentials, maxPoolSize, connectionTimeoutInMs);
+    }
 
+    public static DataSource newDataSource(
+            JdbcCredentials jdbcCredentials,
+            int maxPoolSize,
+            int connectionTimeoutInMs
+    ) {
+        var hikariConfig = new HikariConfig();
         hikariConfig.setJdbcUrl(jdbcCredentials.jdbcUrl());
         hikariConfig.setUsername(jdbcCredentials.jdbcUser());
         hikariConfig.setPassword(jdbcCredentials.jdbcPassword());
         hikariConfig.setMinimumIdle(1);
-        hikariConfig.setMaximumPoolSize(20);
+        hikariConfig.setMaximumPoolSize(maxPoolSize);
         hikariConfig.setIdleTimeout(30000);
         hikariConfig.setPoolName("edc-broker-server");
         hikariConfig.setMaxLifetime(50000);
-        hikariConfig.setConnectionTimeout(30000);
+        hikariConfig.setConnectionTimeout(connectionTimeoutInMs);
 
-        hikariDataSource = new HikariDataSource(hikariConfig);
-    }
-
-    public DataSource newDataSource() {
-        return new ConnectionFactoryDataSource(this::newConnection);
-    }
-
-    private Connection newConnection() {
-        try {
-            return hikariDataSource.getConnection();
-        } catch (SQLException e) {
-            throw new EdcException("Could not create db connection", e);
-        }
+        return new HikariDataSource(hikariConfig);
     }
 }

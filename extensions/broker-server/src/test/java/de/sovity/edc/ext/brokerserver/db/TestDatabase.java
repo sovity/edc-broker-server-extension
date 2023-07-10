@@ -14,16 +14,13 @@
 
 package de.sovity.edc.ext.brokerserver.db;
 
-import org.eclipse.edc.spi.system.configuration.Config;
+import de.sovity.edc.ext.brokerserver.db.utils.JdbcCredentials;
 import org.jooq.DSLContext;
 import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 
 import javax.sql.DataSource;
 import java.util.function.Consumer;
-
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public interface TestDatabase extends BeforeAllCallback, AfterAllCallback {
     String getJdbcUrl();
@@ -48,12 +45,8 @@ public interface TestDatabase extends BeforeAllCallback, AfterAllCallback {
      * @return {@link DataSource}
      */
     default DataSource getDataSource() {
-        var config = mock(Config.class);
-        when(config.getString(PostgresFlywayExtension.JDBC_URL, "")).thenReturn(getJdbcUrl());
-        when(config.getString(PostgresFlywayExtension.JDBC_USER , "")).thenReturn(getJdbcUser());
-        when(config.getString(PostgresFlywayExtension.JDBC_PASSWORD, "")).thenReturn(getJdbcPassword());
-        var dataSourceFactory = new DataSourceFactory(config);
-        return dataSourceFactory.newDataSource();
+        var jdbcCredentials = new JdbcCredentials(getJdbcUrl(), getJdbcUser(), getJdbcPassword());
+        return DataSourceFactory.newDataSource(jdbcCredentials, 20, 30_000);
     }
 
     /**
