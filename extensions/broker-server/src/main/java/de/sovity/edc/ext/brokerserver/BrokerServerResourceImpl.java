@@ -27,6 +27,8 @@ import de.sovity.edc.ext.brokerserver.db.DslContextFactory;
 import de.sovity.edc.ext.brokerserver.services.api.CatalogApiService;
 import de.sovity.edc.ext.brokerserver.services.api.ConnectorApiService;
 import de.sovity.edc.ext.brokerserver.services.api.DataOfferDetailApiService;
+import de.sovity.edc.ext.brokerserver.services.queue.ConnectorQueueFiller;
+import de.sovity.edc.ext.brokerserver.services.schedules.OfflineConnectorRefreshJob;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -41,6 +43,7 @@ public class BrokerServerResourceImpl implements BrokerServerResource {
     private final ConnectorApiService connectorApiService;
     private final CatalogApiService catalogApiService;
     private final DataOfferDetailApiService dataOfferDetailApiService;
+    private final ConnectorQueueFiller connectorQueueFiller;
 
     @Override
     public CatalogPageResult catalogPage(CatalogPageQuery query) {
@@ -65,6 +68,13 @@ public class BrokerServerResourceImpl implements BrokerServerResource {
     @Override
     public void addConnectors(List<String> endpoints) {
         dslContextFactory.transaction(dsl -> connectorApiService.addConnectors(dsl, endpoints));
+
+        // new connectors are added as offline, so we need to refresh the offline connectors
+        refreshOfflineConnectors();
     }
 
+    private void refreshOfflineConnectors() {
+        var offlineConnectorRefreshJob = new OfflineConnectorRefreshJob(dslContextFactory, connectorQueueFiller);
+        offlineConnectorRefreshJob.execute();
+    }
 }

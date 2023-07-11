@@ -226,7 +226,8 @@ public class BrokerServerExtensionContextBuilder {
                 dslContextFactory,
                 connectorApiService,
                 catalogApiService,
-                dataOfferDetailApiService
+                dataOfferDetailApiService,
+                connectorQueueFiller
         );
 
         return new BrokerServerExtensionContext(

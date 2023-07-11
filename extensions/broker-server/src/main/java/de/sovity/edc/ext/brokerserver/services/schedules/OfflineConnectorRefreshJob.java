@@ -29,6 +29,10 @@ public class OfflineConnectorRefreshJob implements Job {
 
     @Override
     public void execute(JobExecutionContext context) {
+        execute();
+    }
+
+    public void execute() {
         dslContextFactory.transaction(dsl -> connectorQueueFiller.enqueueConnectors(dsl,
                 ConnectorOnlineStatus.OFFLINE, ConnectorRefreshPriority.SCHEDULED_OFFLINE_REFRESH));
     }
