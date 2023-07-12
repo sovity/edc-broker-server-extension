@@ -46,12 +46,13 @@ public class DatabaseSettingsInitializer {
                 .execute();
     }
 
-    public String readSettingFromDatabase(String name) {
+    public String readSettingFromDatabase(String name, String defaultValue) {
         var bss = Tables.BROKER_SERVER_SETTINGS;
+        var value = dslContext.select(bss.VALUE)
+            .from(bss)
+            .where(bss.NAME.eq(name))
+            .fetchOne(bss.VALUE);
 
-        return dslContext.select(bss.VALUE)
-                .from(bss)
-                .where(bss.NAME.eq(name))
-                .fetchOne(bss.VALUE);
+        return value.equals("") ? defaultValue : value;
     }
 }

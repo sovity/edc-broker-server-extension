@@ -26,8 +26,8 @@ public class BrokerServerInitializer {
     private final QuartzScheduleInitializer quartzScheduleInitializer;
 
     public void onStartup() {
-        dslContextFactory.transaction(knownConnectorsInitializer::addKnownConnectorsOnStartup);
         dslContextFactory.transaction(databaseSettingsInitializer::initializeSettingsInDatabase);
+        dslContextFactory.transaction(knownConnectorsInitializer::addKnownConnectorsOnStartup);
         quartzScheduleInitializer.startSchedules();
     }
 }
