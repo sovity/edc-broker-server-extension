@@ -19,7 +19,6 @@ import de.sovity.edc.ext.brokerserver.services.queue.ConnectorQueue;
 import de.sovity.edc.ext.brokerserver.services.queue.ConnectorRefreshPriority;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
-import org.eclipse.edc.spi.system.configuration.Config;
 import org.jooq.DSLContext;
 
 import java.util.Arrays;
@@ -27,9 +26,9 @@ import java.util.List;
 
 @RequiredArgsConstructor
 public class KnownConnectorsInitializer {
-    private final Config config;
     private final ConnectorQueue connectorQueue;
     private final ConnectorCreator connectorCreator;
+    private final DatabaseSettingsInitializer databaseSettingsInitializer;
 
     public void addKnownConnectorsOnStartup(DSLContext dsl) {
         var connectorEndpoints = getKnownConnectorsConfigValue();
@@ -38,7 +37,7 @@ public class KnownConnectorsInitializer {
     }
 
     private List<String> getKnownConnectorsConfigValue() {
-        var knownConnectorsString = config.getString(BrokerServerExtension.KNOWN_CONNECTORS, "");
+        var knownConnectorsString = (String)databaseSettingsInitializer.readSettingFromDatabase(BrokerServerExtension.KNOWN_CONNECTORS, "");
         return Arrays.stream(knownConnectorsString.split(",")).map(String::trim).filter(StringUtils::isNotBlank).distinct().toList();
     }
 }

@@ -100,6 +100,9 @@ public class BrokerServerExtensionContextBuilder {
         var brokerServerSettingsFactory = new BrokerServerSettingsFactory(config, monitor);
         var brokerServerSettings = brokerServerSettingsFactory.buildBrokerServerSettings();
 
+        // Database Settings Table
+        var databaseSettingsInitializer = new DatabaseSettingsInitializer(config);
+
         // Dao
         var dataOfferQueries = new DataOfferQueries();
         var dataSourceFactory = new DataSourceFactory(config);
@@ -167,9 +170,9 @@ public class BrokerServerExtensionContextBuilder {
         var connectorQueueFiller = new ConnectorQueueFiller(connectorQueue, connectorQueries);
         var connectorCreator = new ConnectorCreator(connectorQueries);
         var knownConnectorsInitializer = new KnownConnectorsInitializer(
-                config,
                 connectorQueue,
-                connectorCreator
+                connectorCreator,
+                databaseSettingsInitializer
         );
         var catalogFilterAttributeDefinitionService = new CatalogFilterAttributeDefinitionService();
         var catalogFilterService = new CatalogFilterService(catalogFilterAttributeDefinitionService);
@@ -195,11 +198,10 @@ public class BrokerServerExtensionContextBuilder {
 
         // Startup
         var quartzScheduleInitializer = new QuartzScheduleInitializer(config, monitor, jobs);
-        var databaseSettingsInitialize = new DatabaseSettingsInitializer(config);
         var brokerServerInitializer = new BrokerServerInitializer(
                 dslContextFactory,
                 knownConnectorsInitializer,
-                databaseSettingsInitialize,
+                databaseSettingsInitializer,
                 quartzScheduleInitializer
         );
 
