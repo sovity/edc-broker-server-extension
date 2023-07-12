@@ -32,6 +32,7 @@ import de.sovity.edc.ext.brokerserver.services.BrokerServerInitializer;
 import de.sovity.edc.ext.brokerserver.services.ConnectorCleaner;
 import de.sovity.edc.ext.brokerserver.services.ConnectorCreator;
 import de.sovity.edc.ext.brokerserver.services.ConnectorKiller;
+import de.sovity.edc.ext.brokerserver.services.DatabaseSettingsInitializer;
 import de.sovity.edc.ext.brokerserver.services.KnownConnectorsInitializer;
 import de.sovity.edc.ext.brokerserver.services.OfflineConnectorKiller;
 import de.sovity.edc.ext.brokerserver.services.api.AssetPropertyParser;
@@ -194,9 +195,11 @@ public class BrokerServerExtensionContextBuilder {
 
         // Startup
         var quartzScheduleInitializer = new QuartzScheduleInitializer(config, monitor, jobs);
+        var databaseSettingsInitialize = new DatabaseSettingsInitializer(config);
         var brokerServerInitializer = new BrokerServerInitializer(
                 dslContextFactory,
                 knownConnectorsInitializer,
+                databaseSettingsInitialize,
                 quartzScheduleInitializer
         );
 

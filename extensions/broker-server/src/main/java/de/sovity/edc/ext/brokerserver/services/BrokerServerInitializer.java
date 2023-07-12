@@ -22,10 +22,12 @@ import lombok.RequiredArgsConstructor;
 public class BrokerServerInitializer {
     private final DslContextFactory dslContextFactory;
     private final KnownConnectorsInitializer knownConnectorsInitializer;
+    private final DatabaseSettingsInitializer databaseSettingsInitializer;
     private final QuartzScheduleInitializer quartzScheduleInitializer;
 
     public void onStartup() {
         dslContextFactory.transaction(knownConnectorsInitializer::addKnownConnectorsOnStartup);
+        dslContextFactory.transaction(databaseSettingsInitializer::initializeSettingsInDatabase);
         quartzScheduleInitializer.startSchedules();
     }
 }
