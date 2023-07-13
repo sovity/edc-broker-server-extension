@@ -24,12 +24,13 @@ import org.jooq.DSLContext;
 public class DatabaseSettingsInitializer {
     private final Config config;
 
-    private DSLContext dslContext;
-
     public void initializeSettingsInDatabase(DSLContext dsl) {
-        this.dslContext = dsl;
+        if (!isDbEmpty(dsl)) {
+            return;
+        }
 
         dsl.insertInto(Tables.BROKER_SERVER_SETTINGS)
+                .values(BrokerServerExtension.ADMIN_API_KEY, config.getString(BrokerServerExtension.ADMIN_API_KEY, ""))
                 .values(BrokerServerExtension.KNOWN_CONNECTORS, config.getString(BrokerServerExtension.KNOWN_CONNECTORS, ""))
                 .values(BrokerServerExtension.CRON_ONLINE_CONNECTOR_REFRESH, config.getString(BrokerServerExtension.CRON_ONLINE_CONNECTOR_REFRESH, ""))
                 .values(BrokerServerExtension.CRON_OFFLINE_CONNECTOR_REFRESH, config.getString(BrokerServerExtension.CRON_OFFLINE_CONNECTOR_REFRESH, ""))
@@ -46,13 +47,12 @@ public class DatabaseSettingsInitializer {
                 .execute();
     }
 
-    public Object readSettingFromDatabase(String name, Object defaultValue) {
+    private boolean isDbEmpty(DSLContext dsl) {
         var bss = Tables.BROKER_SERVER_SETTINGS;
-        var value = dslContext.select(bss.VALUE)
+        var dbCount = dsl.selectCount()
                 .from(bss)
-                .where(bss.NAME.eq(name))
-                .fetchOne(bss.VALUE);
+                .fetchOne(0, Integer.class);
 
-        return value.equals("") ? defaultValue : value;
+        return dbCount == null || dbCount == 0;
     }
 }

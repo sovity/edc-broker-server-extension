@@ -6,8 +6,3 @@ create table data_offer_view_count (
 );
 
 create index data_offer_view_count_speedup on data_offer_view_count (connector_endpoint, asset_id);
-
-create table broker_server_settings (
-    name    text    primary key,
-    value   text    not null
-);

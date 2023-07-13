@@ -22,13 +22,34 @@ import org.jooq.DSLContext;
 public class DatabaseSettingsProvider {
     private final DSLContext dslContext;
 
-    public Object getSetting(String name, Object defaultValue) {
-        var bss = Tables.BROKER_SERVER_SETTINGS;
-        var value = dslContext.select(bss.VALUE)
-                .from(bss)
-                .where(bss.NAME.eq(name))
-                .fetchOne(bss.VALUE);
+    public String getSettingString(String name, String defaultValue) {
+        var value = getDbValue(name);
+        return (value == null || value.equals("")) ? defaultValue : value;
+    }
 
-        return value.equals("") ? defaultValue : value;
+    public Integer getSettingInteger(String name, Integer defaultValue) {
+        var value = getDbValue(name);
+        return (value == null || value.equals("")) ? defaultValue : Integer.parseInt(value);
+    }
+
+    private String getDbValue(String name) {
+        var bss = Tables.BROKER_SERVER_SETTINGS;
+        validateTableExists(); //needed for tests
+
+        return dslContext.select(bss.VALUE)
+            .from(bss)
+            .where(bss.NAME.eq(name))
+            .fetchOne(bss.VALUE);
+    }
+
+    private void validateTableExists() {
+        var bss = Tables.BROKER_SERVER_SETTINGS;
+        var tableExists = dslContext.meta().getTables().contains(bss);
+        if (!tableExists) {
+            dslContext.createTable(bss)
+                    .column(bss.NAME)
+                    .column(bss.VALUE)
+                    .execute();
+        }
     }
 }

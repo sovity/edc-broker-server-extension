@@ -107,7 +107,7 @@ public class BrokerServerExtensionContextBuilder {
         var databaseSettingsInitializer = new DatabaseSettingsInitializer(config);
         var databaseSettingsProvider = new DatabaseSettingsProvider(dslContext);
 
-        var brokerServerSettingsFactory = new BrokerServerSettingsFactory(config, monitor);
+        var brokerServerSettingsFactory = new BrokerServerSettingsFactory(monitor, databaseSettingsProvider);
         var brokerServerSettings = brokerServerSettingsFactory.buildBrokerServerSettings();
         var adminApiKeyValidator = new AdminApiKeyValidator(brokerServerSettings);
 

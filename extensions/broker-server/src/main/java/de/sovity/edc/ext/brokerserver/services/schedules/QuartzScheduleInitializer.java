@@ -51,7 +51,7 @@ public class QuartzScheduleInitializer {
         var jobName = cronJobRef.configPropertyName();
 
         // Skip scheduling if property not provided to ensure tests have no schedules running
-        var cronTrigger = (String) databaseSettingsProvider.getSetting(jobName, "");
+        var cronTrigger = databaseSettingsProvider.getSettingString(jobName, "");
         if (StringUtils.isBlank(cronTrigger)) {
             monitor.info("No cron trigger configured for %s. Skipping.".formatted(jobName));
             return;

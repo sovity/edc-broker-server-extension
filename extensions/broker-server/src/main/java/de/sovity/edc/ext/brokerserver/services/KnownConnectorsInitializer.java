@@ -37,7 +37,7 @@ public class KnownConnectorsInitializer {
     }
 
     private List<String> getKnownConnectorsConfigValue() {
-        var knownConnectorsString = (String) databaseSettingsProvider.getSetting(BrokerServerExtension.KNOWN_CONNECTORS, "");
+        var knownConnectorsString = databaseSettingsProvider.getSettingString(BrokerServerExtension.KNOWN_CONNECTORS, "");
         return Arrays.stream(knownConnectorsString.split(",")).map(String::trim).filter(StringUtils::isNotBlank).distinct().toList();
     }
 }

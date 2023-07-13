@@ -15,12 +15,11 @@
 package de.sovity.edc.ext.brokerserver.services.config;
 
 import de.sovity.edc.ext.brokerserver.BrokerServerExtension;
+import de.sovity.edc.ext.brokerserver.services.DatabaseSettingsProvider;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.Validate;
 import org.eclipse.edc.spi.monitor.Monitor;
-import org.eclipse.edc.spi.system.configuration.Config;
 
 import java.time.Duration;
 import java.util.Arrays;
@@ -28,16 +27,15 @@ import java.util.List;
 
 @RequiredArgsConstructor
 public class BrokerServerSettingsFactory {
-    private final Config config;
     private final Monitor monitor;
+    private final DatabaseSettingsProvider databaseSettingsProvider;
 
     public BrokerServerSettings buildBrokerServerSettings() {
-        var adminApiKey = Validate.notBlank(config.getString(BrokerServerExtension.ADMIN_API_KEY),
-                "Need to configure %s.".formatted(BrokerServerExtension.ADMIN_API_KEY));
+        var adminApiKey = databaseSettingsProvider.getSettingString(BrokerServerExtension.ADMIN_API_KEY, "");
         var hideOfflineDataOffersAfter = getDuration(BrokerServerExtension.HIDE_OFFLINE_DATA_OFFERS_AFTER, null);
-        var catalogPagePageSize = config.getInteger(BrokerServerExtension.CATALOG_PAGE_PAGE_SIZE, 20);
-        var dataSpaceConfig = buildDataSpaceConfig(config);
-        var numThreads = config.getInteger(BrokerServerExtension.NUM_THREADS, 1);
+        var catalogPagePageSize = databaseSettingsProvider.getSettingInteger(BrokerServerExtension.CATALOG_PAGE_PAGE_SIZE, 20);
+        var dataSpaceConfig = buildDataSpaceConfig();
+        var numThreads = databaseSettingsProvider.getSettingInteger(BrokerServerExtension.NUM_THREADS, 1);
         var killOfflineConnectorsAfter = getDuration(BrokerServerExtension.KILL_OFFLINE_CONNECTORS_AFTER, Duration.ofDays(5));
 
         return BrokerServerSettings.builder()
@@ -50,8 +48,8 @@ public class BrokerServerSettingsFactory {
                 .build();
     }
 
-    private DataSpaceConfig buildDataSpaceConfig(Config config) {
-        var dataSpaceConfig = new DataSpaceConfig(getKnownDataSpaceEndpoints(config), getDefaultDataSpace(config));
+    private DataSpaceConfig buildDataSpaceConfig() {
+        var dataSpaceConfig = new DataSpaceConfig(getKnownDataSpaceEndpoints(), getDefaultDataSpace());
         monitor.info("Default Dataspace Name: %s".formatted(dataSpaceConfig.defaultDataSpace()));
         dataSpaceConfig.dataSpaceConnectors().forEach(dataSpaceConnector -> monitor.info("Using Dataspace Name %s for %s."
                 .formatted(dataSpaceConnector.dataSpaceName(), dataSpaceConnector.endpoint())));
@@ -61,9 +59,9 @@ public class BrokerServerSettingsFactory {
         return dataSpaceConfig;
     }
 
-    private List<DataSpaceConnector> getKnownDataSpaceEndpoints(Config config) {
+    private List<DataSpaceConnector> getKnownDataSpaceEndpoints() {
         // Example: "Example1=http://connector-endpoint1.org,Example2=http://connector-endpoint2.org"
-        var dataSpacesConfig = config.getString(BrokerServerExtension.KNOWN_DATASPACE_CONNECTORS, "");
+        var dataSpacesConfig = databaseSettingsProvider.getSettingString(BrokerServerExtension.KNOWN_DATASPACE_CONNECTORS, "");
 
         return Arrays.stream(dataSpacesConfig.split(","))
                 .map(String::trim)
@@ -78,12 +76,12 @@ public class BrokerServerSettingsFactory {
                 .toList();
     }
 
-    private String getDefaultDataSpace(Config config) {
-        return config.getString(BrokerServerExtension.DEFAULT_CONNECTOR_DATASPACE, "Default");
+    private String getDefaultDataSpace() {
+        return databaseSettingsProvider.getSettingString(BrokerServerExtension.DEFAULT_CONNECTOR_DATASPACE, "Default");
     }
 
     private Duration getDuration(@NonNull String configProperty, Duration defaultValue) {
-        var value = config.getString(configProperty, "");
+        var value = databaseSettingsProvider.getSettingString(configProperty, "");
 
         if (StringUtils.isBlank(value)) {
             return defaultValue;
