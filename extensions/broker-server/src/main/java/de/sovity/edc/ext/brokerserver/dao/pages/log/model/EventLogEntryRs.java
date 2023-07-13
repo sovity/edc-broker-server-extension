@@ -14,6 +14,8 @@
 
 package de.sovity.edc.ext.brokerserver.dao.pages.log.model;
 
+import de.sovity.edc.ext.brokerserver.api.model.EventLogEventStatus;
+import de.sovity.edc.ext.brokerserver.api.model.EventLogEventType;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -28,10 +30,12 @@ public class EventLogEntryRs {
     String eventLogId;
     OffsetDateTime createdAt;
     String userMessage;
-    String event;
-    String eventStatus;
+    EventLogEventType event;
+    EventLogEventStatus eventStatus;
     String connectorEndpoint;
     String assetId;
     String errorStack;
     Long durationInMs;
 }
+
+

@@ -36,11 +36,11 @@ public class EventLogEntry {
     @Schema(description = "User Message", example = "Successful refresh.", requiredMode = Schema.RequiredMode.REQUIRED)
     private String userMessage;
 
-    @Schema(description = "Event", example = "Refresh", requiredMode = Schema.RequiredMode.REQUIRED)
-    private String event;
+    @Schema(description = "Event Type", example = "Refresh", requiredMode = Schema.RequiredMode.REQUIRED)
+    private EventLogEventType event;
 
     @Schema(description = "Event Status", example = "SUCCESS", requiredMode = Schema.RequiredMode.REQUIRED)
-    private String eventStatus;
+    private EventLogEventStatus eventStatus;
 
     @Schema(description = "Connector Endpoint", example = "https://my-test.connector/control/ids/data", requiredMode = Schema.RequiredMode.REQUIRED)
     private String connectorEndpoint;
