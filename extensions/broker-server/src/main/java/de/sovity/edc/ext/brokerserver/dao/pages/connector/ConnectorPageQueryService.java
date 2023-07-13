@@ -42,26 +42,6 @@ public class ConnectorPageQueryService {
                 .fetchInto(ConnectorListEntryRs.class);
     }
 
-    public ConnectorDetailsRs queryConnectorDetailPage(DSLContext dsl, String connectorEndpoint) {
-        var c = Tables.CONNECTOR;
-        var betm = Tables.BROKER_EXECUTION_TIME_MEASUREMENT;
-
-        var filterBySearchQuery = SearchUtils.simpleSearch(connectorEndpoint, List.of(c.ENDPOINT, c.CONNECTOR_ID));
-
-        var avgSuccessfulCrawlTimeInMs = dsl.select(DSL.avg(betm.DURATION_IN_MS))
-                .from(betm)
-                .where(betm.CONNECTOR_ENDPOINT.eq(connectorEndpoint), betm.ERROR_STATUS.eq(MeasurementErrorStatus.OK))
-                .asField();
-
-        return dsl.select(c.asterisk(),
-                    dataOfferCount(c.ENDPOINT).as("numDataOffers"),
-                    avgSuccessfulCrawlTimeInMs.as("connectorCrawlingTimeAvg"))
-                .from(c)
-                .where(filterBySearchQuery)
-                .groupBy(c.ENDPOINT)
-                .fetchOneInto(ConnectorDetailsRs.class);
-    }
-
     @NotNull
     private List<OrderField<?>> sortConnectorPage(Connector c, ConnectorPageSortingType sorting) {
         var alphabetically = c.ENDPOINT.asc();
