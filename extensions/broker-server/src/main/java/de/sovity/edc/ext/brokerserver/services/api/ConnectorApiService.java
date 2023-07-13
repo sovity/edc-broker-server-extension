@@ -23,7 +23,7 @@ import de.sovity.edc.ext.brokerserver.api.model.ConnectorPageResult;
 import de.sovity.edc.ext.brokerserver.api.model.ConnectorPageSortingItem;
 import de.sovity.edc.ext.brokerserver.api.model.ConnectorPageSortingType;
 import de.sovity.edc.ext.brokerserver.dao.pages.connector.ConnectorDetailPageQueryService;
-import de.sovity.edc.ext.brokerserver.dao.pages.connector.ConnectorPageQueryService;
+import de.sovity.edc.ext.brokerserver.dao.pages.connector.ConnectorListPageQueryService;
 import de.sovity.edc.ext.brokerserver.dao.pages.connector.model.ConnectorDetailsRs;
 import de.sovity.edc.ext.brokerserver.dao.pages.connector.model.ConnectorListEntryRs;
 import de.sovity.edc.ext.brokerserver.utils.UrlUtils;
@@ -39,7 +39,7 @@ import static java.util.stream.Collectors.toSet;
 
 @RequiredArgsConstructor
 public class ConnectorApiService {
-    private final ConnectorPageQueryService connectorPageQueryService;
+    private final ConnectorListPageQueryService connectorListPageQueryService;
     private final ConnectorDetailPageQueryService connectorDetailPageQueryService;
     private final ConnectorService connectorService;
     private final PaginationMetadataUtils paginationMetadataUtils;
@@ -47,7 +47,7 @@ public class ConnectorApiService {
     public ConnectorPageResult connectorPage(DSLContext dsl, ConnectorPageQuery query) {
         Objects.requireNonNull(query, "query must not be null");
 
-        var connectorDbRows = connectorPageQueryService.queryConnectorPage(dsl, query.getSearchQuery(), query.getSorting());
+        var connectorDbRows = connectorListPageQueryService.queryConnectorPage(dsl, query.getSearchQuery(), query.getSorting());
 
         var result = new ConnectorPageResult();
         result.setAvailableSortings(buildAvailableSortings());

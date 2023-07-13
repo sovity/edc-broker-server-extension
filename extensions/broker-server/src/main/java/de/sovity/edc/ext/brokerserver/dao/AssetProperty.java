@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class AssetProperty {
-    public static final String ASSET_ID = "asset:prop:id";
+    public static final String ASSET_ID = "asset:prop:eventId";
     public static final String ASSET_NAME = "asset:prop:name";
     public static final String DESCRIPTION = "asset:prop:description";
     public static final String KEYWORDS = "asset:prop:keywords";

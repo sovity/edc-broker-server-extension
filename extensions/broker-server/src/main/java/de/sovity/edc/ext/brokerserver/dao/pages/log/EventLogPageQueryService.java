@@ -25,31 +25,22 @@ import org.jooq.Field;
 import java.util.List;
 
 public class EventLogPageQueryService {
-
-
     public Field<List<EventLogEntryRs>> queryEventLogEntries(DSLContext dsl, String eventLogId) {
         var e = Tables.BROKER_EVENT_LOG;
         var filterBySearchQuery = SearchUtils.simpleSearch(eventLogId,
             List.of(e.CONNECTOR_ENDPOINT, e.ASSET_ID, e.USER_MESSAGE));
-
-        var query = dsl.select(e.asterisk())
+        var query = dsl.select(e.ID, e.CREATED_AT, e.USER_MESSAGE, e.EVENT, e.EVENT_STATUS, e.CONNECTOR_ENDPOINT, e.ASSET_ID, e.ERROR_STACK)
             .from(e)
             .where(filterBySearchQuery)
             .limit(50);
-
-
         return MultisetUtils.multiset(query, EventLogEntryRs.class);
     }
-    public EventLogPageRs queryEventLogPage(
-        DSLContext dsl, String eventLogId
-    ) {
-
-        var eventLogs = queryEventLogEntries(dsl, eventLogId);
-
+    public EventLogPageRs queryEventLogPage(DSLContext dsl, String eventLogId) {
+        var eventLogEntries = queryEventLogEntries(dsl, eventLogId);
         return dsl.select(
-            eventLogs.as("eventLogs")
+            eventLogEntries.as("eventLogEntries")
         ).fetchOneInto(EventLogPageRs.class);
-    }
 
+    }
 }
 

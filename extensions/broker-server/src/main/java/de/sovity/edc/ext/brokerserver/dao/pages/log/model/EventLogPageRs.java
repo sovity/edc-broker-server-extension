@@ -25,5 +25,5 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class EventLogPageRs {
     List<EventLogEntryRs> eventLogs;
-    int numTotalEventLogs;
+    int numTotalEventLogEntries;
 }

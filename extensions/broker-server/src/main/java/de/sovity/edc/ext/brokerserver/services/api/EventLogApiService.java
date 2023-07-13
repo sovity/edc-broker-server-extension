@@ -31,9 +31,9 @@ public class EventLogApiService {
         Objects.requireNonNull(query, "query must not be null");
 
         var eventLogRs = eventLogPageQueryService.queryEventLogPage(
-            dsl, query.getEventLogId());
+            dsl, query.getSearchQuery());
         var result = new EventLogPageResult();
-        result.setEventLogs(buildEventLogs(eventLogRs.getEventLogs()));
+        result.setEventLogEntries(buildEventLogs(eventLogRs.getEventLogs()));
         return result;
     }
 
@@ -52,9 +52,7 @@ public class EventLogApiService {
         dto.setConnectorEndpoint(eventLog.getConnectorEndpoint());
         dto.setAssetId(eventLog.getAssetId());
         dto.setErrorStack(eventLog.getErrorStack());
-        dto.setDurationInMs(Math.toIntExact(eventLog.getDurationInMs()));
         dto.setCreatedAt(eventLog.getCreatedAt());
-
         return dto;
     }
 }

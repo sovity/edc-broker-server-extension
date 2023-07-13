@@ -10,6 +10,7 @@ plugins {
 }
 
 dependencies {
+    implementation(project(mapOf("path" to ":extensions:broker-server-postgres-flyway-jooq")))
     annotationProcessor("org.projectlombok:lombok:1.18.28")
     compileOnly("org.projectlombok:lombok:1.18.28")
 

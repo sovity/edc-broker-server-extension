@@ -58,7 +58,7 @@ public class DataOfferRecordUpdater {
     public boolean updateDataOffer(DataOfferRecord dataOffer, FetchedDataOffer fetchedDataOffer, boolean changed) {
         if (!Objects.equals(fetchedDataOffer.getAssetName(), dataOffer.getAssetName())) {
             Objects.requireNonNull(fetchedDataOffer.getAssetName(),
-                    "Fetched data offer's asset name should have been set as id if name isn't present");
+                    "Fetched data offer's asset name should have been set as eventId if name isn't present");
             dataOffer.setAssetName(fetchedDataOffer.getAssetName());
             changed = true;
         }

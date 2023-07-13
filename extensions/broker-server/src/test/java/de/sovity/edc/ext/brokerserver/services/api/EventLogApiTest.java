@@ -15,9 +15,7 @@
 package de.sovity.edc.ext.brokerserver.services.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import de.sovity.edc.ext.brokerserver.client.gen.model.ConnectorDetailPageQuery;
-import de.sovity.edc.ext.brokerserver.client.gen.model.ConnectorPageQuery;
-import de.sovity.edc.ext.brokerserver.dao.AssetProperty;
+import de.sovity.edc.ext.brokerserver.client.gen.model.EventLogPageQuery;
 import de.sovity.edc.ext.brokerserver.db.TestDatabase;
 import de.sovity.edc.ext.brokerserver.db.TestDatabaseFactory;
 import de.sovity.edc.ext.brokerserver.db.jooq.Tables;
@@ -27,7 +25,6 @@ import org.eclipse.edc.junit.annotations.ApiTest;
 import org.eclipse.edc.junit.extensions.EdcExtension;
 import org.eclipse.edc.policy.model.Policy;
 import org.jooq.DSLContext;
-import org.jooq.JSONB;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -43,100 +40,36 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ApiTest
 @ExtendWith(EdcExtension.class)
 class EventLogApiTest {
-
     @RegisterExtension
     private static final TestDatabase TEST_DATABASE = TestDatabaseFactory.getTestDatabase();
 
     @BeforeEach
     void setUp(EdcExtension extension) {
-        extension.setConfiguration(createConfiguration(TEST_DATABASE, Map.of(
-        )));
+        extension.setConfiguration(createConfiguration(TEST_DATABASE, Map.of()));
     }
 
     @Test
-    void testQueryConnectors() {
+    void testQueryEventLogs() {
         TEST_DATABASE.testTransaction(dsl -> {
             var today = OffsetDateTime.now().withNano(0);
 
-            createConnector(dsl, today, "http://my-connector/ids/data");
-            createDataOffer(dsl, today, Map.of(
-                AssetProperty.ASSET_ID, "urn:artifact:my-asset-1",
-                AssetProperty.DATA_CATEGORY, "my-category",
-                AssetProperty.ASSET_NAME, "My Asset 1"
-            ), "http://my-connector/ids/data");
+            createEventLogEntry(dsl, today, "http://my-event-log/ids/log");
 
-            var result = brokerServerClient().brokerServerApi().connectorPage(new ConnectorPageQuery());
-            assertThat(result.getConnectors()).hasSize(1);
+            var result = brokerServerClient().brokerServerApi().eventLogPage(new EventLogPageQuery());
+            assertThat(result.getEventLogEntries()).hasSize(1);
 
-            var connector = result.getConnectors().get(0);
-            assertThat(connector.getId()).isEqualTo("http://my-connector/ids/data");
-            assertThat(connector.getEndpoint()).isEqualTo("http://my-connector/ids/data");
-            assertThat(connector.getCreatedAt()).isEqualTo(today.minusDays(1));
-            assertThat(connector.getLastRefreshAttemptAt()).isEqualTo(today);
-            assertThat(connector.getLastSuccessfulRefreshAt()).isEqualTo(today);
+            var eventLog = result.getEventLogEntries().get(0);
+            assertThat(eventLog.getId()).isEqualTo("http://my-event-log/ids/log");
+            assertThat(eventLog.getCreatedAt()).isEqualTo(today.minusDays(1));
         });
     }
-
-    private void createConnector(DSLContext dsl, OffsetDateTime today, String connectorEndpoint) {
-        var connector = dsl.newRecord(Tables.CONNECTOR);
-        connector.setConnectorId("http://my-connector");
-        connector.setEndpoint(connectorEndpoint);
-        connector.setOnlineStatus(ConnectorOnlineStatus.ONLINE);
-        connector.setCreatedAt(today.minusDays(1));
-        connector.setLastRefreshAttemptAt(today);
-        connector.setLastSuccessfulRefreshAt(today);
-        connector.setDataOffersExceeded(ConnectorDataOffersExceeded.OK);
-        connector.setContractOffersExceeded(ConnectorContractOffersExceeded.OK);
-        connector.insert();
-    }
-
-    private void createEventLog(DSLContext dsl, OffsetDateTime today, String connectorEndpoint) {
+    private void createEventLogEntry(DSLContext dsl, OffsetDateTime today, String connectorEndpoint) {
         var eventLog = dsl.newRecord(Tables.BROKER_EVENT_LOG);
-        eventLog.setId(Integer.valueOf("05"));
-        eventLog.setUserMessage("Sample user message");
-        eventLog.setEvent(BrokerEventType.valueOf("CONNECTOR_UPDATED"));
-        eventLog.setEventStatus(BrokerEventStatus.valueOf("OK"));
+        eventLog.setCreatedAt(today.minusDays(1));
+        eventLog.setEvent(BrokerEventType.CONNECTOR_UPDATED);
+        eventLog.setEventStatus(BrokerEventStatus.OK);
         eventLog.setConnectorEndpoint(connectorEndpoint);
-        eventLog.setAssetId("Sample asset ID");
-        eventLog.setErrorStack("Sample error stack");
-        eventLog.setCreatedAt(today);
         eventLog.insert();
-    }
 
-
-
-    private void createDataOffer(DSLContext dsl, OffsetDateTime today, Map<String, String> assetProperties, String connectorEndpoint) {
-        var dataOffer = dsl.newRecord(Tables.DATA_OFFER);
-        dataOffer.setAssetId(assetProperties.get(AssetProperty.ASSET_ID));
-        dataOffer.setAssetName(assetProperties.getOrDefault(AssetProperty.ASSET_NAME, dataOffer.getAssetId()));
-        dataOffer.setAssetProperties(JSONB.jsonb(assetProperties(assetProperties)));
-        dataOffer.setConnectorEndpoint(connectorEndpoint);
-        dataOffer.setCreatedAt(today.minusDays(5));
-        dataOffer.setUpdatedAt(today);
-        dataOffer.insert();
-
-        var contractOffer = dsl.newRecord(Tables.DATA_OFFER_CONTRACT_OFFER);
-        contractOffer.setContractOfferId("my-contract-offer-1");
-        contractOffer.setConnectorEndpoint(connectorEndpoint);
-        contractOffer.setAssetId(assetProperties.get(AssetProperty.ASSET_ID));
-        contractOffer.setCreatedAt(today.minusDays(5));
-        contractOffer.setUpdatedAt(today);
-        contractOffer.setPolicy(JSONB.jsonb(policyToJson(dummyPolicy())));
-        contractOffer.insert();
-    }
-
-    private Policy dummyPolicy() {
-        return Policy.Builder.newInstance()
-            .assignee("Example Assignee")
-            .build();
-    }
-
-    private String policyToJson(Policy policy) {
-        return toJson(policy);
-    }
-
-    @SneakyThrows
-    private String assetProperties(Map<String, String> assetProperties) {
-        return new ObjectMapper().writeValueAsString(assetProperties);
     }
 }

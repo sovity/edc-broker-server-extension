@@ -28,8 +28,8 @@ import java.util.List;
 @Schema(description = "Event Log Page Data")
 public class EventLogPageResult {
 
-    @Schema(description = "Current page of event Logs", requiredMode = Schema.RequiredMode.REQUIRED)
-    private List<EventLogEntry> eventLogs;
+    @Schema(description = "Current page of event log entries", requiredMode = Schema.RequiredMode.REQUIRED)
+    private List<EventLogEntry> eventLogEntries;
 
 }
 

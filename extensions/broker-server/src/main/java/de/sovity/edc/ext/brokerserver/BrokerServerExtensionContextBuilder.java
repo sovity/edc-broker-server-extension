@@ -24,7 +24,7 @@ import de.sovity.edc.ext.brokerserver.dao.pages.catalog.CatalogQueryFilterServic
 import de.sovity.edc.ext.brokerserver.dao.pages.catalog.CatalogQueryService;
 import de.sovity.edc.ext.brokerserver.dao.pages.catalog.CatalogQuerySortingService;
 import de.sovity.edc.ext.brokerserver.dao.pages.connector.ConnectorDetailPageQueryService;
-import de.sovity.edc.ext.brokerserver.dao.pages.connector.ConnectorPageQueryService;
+import de.sovity.edc.ext.brokerserver.dao.pages.connector.ConnectorListPageQueryService;
 import de.sovity.edc.ext.brokerserver.dao.pages.dataoffer.DataOfferDetailPageQueryService;
 import de.sovity.edc.ext.brokerserver.dao.pages.log.EventLogPageQueryService;
 import de.sovity.edc.ext.brokerserver.dao.pages.dataoffer.ViewCountLogger;
@@ -124,7 +124,7 @@ public class BrokerServerExtensionContextBuilder {
                 catalogQueryAvailableFilterFetcher,
                 brokerServerSettings
         );
-        var connectorPageQueryService = new ConnectorPageQueryService();
+        var connectorPageQueryService = new ConnectorListPageQueryService();
         var eventLogPageQueryService = new EventLogPageQueryService();
         var connectorDetailPageQueryService = new ConnectorDetailPageQueryService();
         var dataOfferDetailPageQueryService = new DataOfferDetailPageQueryService(catalogQueryContractOfferFetcher, brokerServerSettings);

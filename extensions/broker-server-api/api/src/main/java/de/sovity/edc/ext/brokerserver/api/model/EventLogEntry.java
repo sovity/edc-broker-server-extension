@@ -14,6 +14,8 @@
 
 package de.sovity.edc.ext.brokerserver.api.model;
 
+import de.sovity.edc.ext.brokerserver.db.jooq.enums.BrokerEventStatus;
+import de.sovity.edc.ext.brokerserver.db.jooq.enums.BrokerEventType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -37,10 +39,10 @@ public class EventLogEntry {
     private String userMessage;
 
     @Schema(description = "Event Type", example = "Refresh", requiredMode = Schema.RequiredMode.REQUIRED)
-    private EventLogEventType event;
+    private BrokerEventType event;
 
     @Schema(description = "Event Status", example = "SUCCESS", requiredMode = Schema.RequiredMode.REQUIRED)
-    private EventLogEventStatus eventStatus;
+    private BrokerEventStatus eventStatus;
 
     @Schema(description = "Connector Endpoint", example = "https://my-test.connector/control/ids/data", requiredMode = Schema.RequiredMode.REQUIRED)
     private String connectorEndpoint;

@@ -8,14 +8,14 @@ insert into data_offer (connector_endpoint, asset_id, asset_properties, created_
 values ('https://my-connector.com/ids/data',
         'test-asset-1',
         '{
-          "asset:prop:id": "test-asset-1"
+          "asset:prop:eventId": "test-asset-1"
         }',
         '2019-01-01 00:00:00',
         '2019-01-01 00:00:00'),
        ('https://my-connector.com/ids/data',
         'test-asset-2',
         '{
-          "asset:prop:id": "urn:artifact:db-rail-network-2023-jan",
+          "asset:prop:eventId": "urn:artifact:db-rail-network-2023-jan",
           "asset:prop:name": "Rail Network DB 2023 January",
           "asset:prop:version": "1.1",
           "asset:prop:originator": "https://example-connector.rail-mgmt.bahn.de/api/v1/ids/data",

@@ -63,7 +63,7 @@ public interface BrokerServerResource {
     @Path("event-log-page")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(description = "Query a Known Connector's Log Page")
+    @Operation(description = "Query recent Event Log Entries")
     EventLogPageResult eventLogPage(EventLogPageQuery query);
 
     @PUT

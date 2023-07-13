@@ -19,7 +19,7 @@ import de.sovity.edc.ext.brokerserver.dao.pages.catalog.models.AvailableFilterVa
 /**
  * Implementation of a filter attribute definition for the catalog.
  *
- * @param name          technical id of the attribute
+ * @param name          technical eventId of the attribute
  * @param label         UI showing label for the attribute
  * @param valueGetter   query existing values from DB
  * @param filterApplier apply a filter to a data offer query
