@@ -24,6 +24,10 @@ import lombok.*;
 @AllArgsConstructor
 @Schema(description = "Event Log Page Query")
 public class EventLogPageQuery {
+
+    @Schema(description = "Search query")
+    private String searchQuery;
+
     @Schema(description = "Event Log")
     private String eventLogId;
 }
