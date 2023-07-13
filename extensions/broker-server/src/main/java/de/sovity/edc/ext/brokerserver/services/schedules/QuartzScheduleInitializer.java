@@ -14,6 +14,7 @@
 
 package de.sovity.edc.ext.brokerserver.services.schedules;
 
+import de.sovity.edc.ext.brokerserver.services.DatabaseSettingsProvider;
 import de.sovity.edc.ext.brokerserver.services.schedules.utils.CronJobRef;
 import de.sovity.edc.ext.brokerserver.services.schedules.utils.JobFactoryImpl;
 import lombok.RequiredArgsConstructor;
@@ -31,9 +32,9 @@ import java.util.Collection;
 
 @RequiredArgsConstructor
 public class QuartzScheduleInitializer {
-    private final Config config;
     private final Monitor monitor;
     private final Collection<CronJobRef<?>> jobs;
+    private final DatabaseSettingsProvider databaseSettingsProvider;
 
     @SneakyThrows
     public void startSchedules() {
@@ -51,7 +52,7 @@ public class QuartzScheduleInitializer {
         var jobName = cronJobRef.configPropertyName();
 
         // Skip scheduling if property not provided to ensure tests have no schedules running
-        var cronTrigger = config.getString(jobName, "");
+        var cronTrigger = (String) databaseSettingsProvider.getSetting(jobName, "");
         if (StringUtils.isBlank(cronTrigger)) {
             monitor.info("No cron trigger configured for %s. Skipping.".formatted(jobName));
             return;

@@ -99,10 +99,6 @@ public class BrokerServerExtensionContextBuilder {
             TypeManager typeManager,
             CatalogService catalogService
     ) {
-        var brokerServerSettingsFactory = new BrokerServerSettingsFactory(config, monitor);
-        var brokerServerSettings = brokerServerSettingsFactory.buildBrokerServerSettings();
-        var adminApiKeyValidator = new AdminApiKeyValidator(brokerServerSettings);
-
         // Database
         var dataSourceFactory = new DataSourceFactory(config);
         var dataSource = dataSourceFactory.newDataSource();
@@ -110,6 +106,10 @@ public class BrokerServerExtensionContextBuilder {
         var dslContext = dslContextFactory.newDslContext();
         var databaseSettingsInitializer = new DatabaseSettingsInitializer(config);
         var databaseSettingsProvider = new DatabaseSettingsProvider(dslContext);
+
+        var brokerServerSettingsFactory = new BrokerServerSettingsFactory(config, monitor);
+        var brokerServerSettings = brokerServerSettingsFactory.buildBrokerServerSettings();
+        var adminApiKeyValidator = new AdminApiKeyValidator(brokerServerSettings);
 
         // Dao
         var dataOfferQueries = new DataOfferQueries();
@@ -202,7 +202,7 @@ public class BrokerServerExtensionContextBuilder {
         );
 
         // Startup
-        var quartzScheduleInitializer = new QuartzScheduleInitializer(config, monitor, jobs);
+        var quartzScheduleInitializer = new QuartzScheduleInitializer(monitor, jobs, databaseSettingsProvider);
         var brokerServerInitializer = new BrokerServerInitializer(
                 dslContextFactory,
                 knownConnectorsInitializer,
