@@ -34,7 +34,6 @@ import de.sovity.edc.ext.brokerserver.services.ConnectorCleaner;
 import de.sovity.edc.ext.brokerserver.services.ConnectorCreator;
 import de.sovity.edc.ext.brokerserver.services.ConnectorKiller;
 import de.sovity.edc.ext.brokerserver.services.KnownConnectorsInitializer;
-import de.sovity.edc.ext.brokerserver.services.OfflineConnectorRemover;
 import de.sovity.edc.ext.brokerserver.services.api.*;
 import de.sovity.edc.ext.brokerserver.services.OfflineConnectorKiller;
 import de.sovity.edc.ext.brokerserver.services.api.AssetPropertyParser;
@@ -125,7 +124,7 @@ public class BrokerServerExtensionContextBuilder {
                 brokerServerSettings
         );
         var connectorPageQueryService = new ConnectorPageQueryService();
-        var logPageQueryService = new EventLogPageQueryService();
+        var eventLogPageQueryService = new EventLogPageQueryService();
         var dataOfferDetailPageQueryService = new DataOfferDetailPageQueryService(catalogQueryContractOfferFetcher, brokerServerSettings);
 
 
@@ -221,8 +220,8 @@ public class BrokerServerExtensionContextBuilder {
                 paginationMetadataUtils
         );
 
-        var logApiService = new EventLogApiService(
-            logPageQueryService
+        var eventLogApiService = new EventLogApiService(
+            eventLogPageQueryService
         );
 
         var dataOfferDetailApiService = new DataOfferDetailApiService(
@@ -236,7 +235,7 @@ public class BrokerServerExtensionContextBuilder {
                 connectorApiService,
                 catalogApiService,
                 dataOfferDetailApiService,
-                logApiService,
+                eventLogApiService,
                 adminApiKeyValidator
         );
 
