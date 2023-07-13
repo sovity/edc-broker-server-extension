@@ -19,11 +19,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Deployment Migration Notes
 
-## [v1.0.0] Broker MvP Bugfix / Feature Release - 2023-07-12
+## [v1.0.1] Broker MvP Bugfix / Feature Release - 2023-07-12
 
 ### Overview
 
-Bugfix / Feature Release for the Broker MvP with MS8: Connectors can now be added at runtime
+Bugfix / Feature Release for the Broker MvP with MS8: Connectors can now be added at runtime.
 
 ### Detailed Changes
 
@@ -38,6 +38,8 @@ Bugfix / Feature Release for the Broker MvP with MS8: Connectors can now be adde
 - Connector Online Status is now visualized.
 
 #### Patch
+
+- Fixed Backend Docker Healthcheck
 
 ### Deployment Migration Notes
 1. Added new **required** configuration properties:
@@ -87,6 +89,9 @@ Bugfix / Feature Release for the Broker MvP with MS8: Connectors can now be adde
 - Broker UI Docker Image: `ghcr.io/sovity/edc-ui:0.0.1-milestone-8-sovity12`
 - Sovity EDC CE: [`4.0.1`](https://github.com/sovity/edc-extensions/tree/v4.0.1/connector)
 
+## [v1.0.0] 
+
+Release was deleted in favor of above release due to a bug.
 
 ## [v0.1.0] Broker MvP Release - 2023-06-23
 
