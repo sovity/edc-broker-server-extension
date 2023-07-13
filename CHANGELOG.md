@@ -85,13 +85,13 @@ Bugfix / Feature Release for the Broker MvP with MS8: Connectors can now be adde
    
 #### Compatible Versions
 
-- Broker Backend Docker Image: `ghcr.io/sovity/broker-server-ce:1.0.0`
+- Broker Backend Docker Image: `ghcr.io/sovity/broker-server-ce:1.0.1`
 - Broker UI Docker Image: `ghcr.io/sovity/edc-ui:0.0.1-milestone-8-sovity12`
 - Sovity EDC CE: [`4.0.1`](https://github.com/sovity/edc-extensions/tree/v4.0.1/connector)
 
 ## [v1.0.0] 
 
-Release was deleted in favor of above release due to a bug.
+Release was deleted in favor of above release. There was a bug, and we just decided to re-do the release.
 
 ## [v0.1.0] Broker MvP Release - 2023-06-23
 
