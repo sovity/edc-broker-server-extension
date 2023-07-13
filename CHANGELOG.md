@@ -13,22 +13,80 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 #### Major
 
-- Broker Server API now generates into it's own Broker Server Client Typescript Library.
-
 #### Minor
-
-- Broker Server API is now part of this repository.
-- Dead Connectors are now deleted periodically.
 
 #### Patch
 
 ### Deployment Migration Notes
 
-1. There are new **optional** configuration properties:
+## [v1.0.0] Broker MvP Bugfix / Feature Release - 2023-07-12
+
+### Overview
+
+Bugfix / Feature Release for the Broker MvP with MS8: Connectors can now be added at runtime
+
+### Detailed Changes
+
+#### Major
+
+- Broker Server API now generates into its own Broker Server Client Typescript Library.
+
+#### Minor
+
+- Broker Server API is now part of this repository.
+- Dead Connectors are now deleted periodically.
+- Connector Online Status is now visualized.
+
+#### Patch
+
+### Deployment Migration Notes
+1. Added new **required** configuration properties:
     ```yaml
-    # Deletion of Connectors after they have been offline for a certain amount of time
-    EDC_BROKER_SERVER_DELETE_OFFLINE_CONNECTORS_AFTER=P5D
-    EDC_BROKER_SERVER_SCHEDULED_DELETE_OFFLINE_CONNECTORS=0 0 12 ? * *
+    # Broker Server Admin Api Key (required)                                            
+    # This is a stopgap until we have IAM
+    EDC_BROKER_SERVER_ADMIN_API_KEY: DefaultBrokerServerAdminApiKey
+    ```
+2. Added new **optional** configuration properties:
+    ```yaml
+    # CRON interval for crawling ONLINE connectors
+    EDC_BROKER_SERVER_CRON_ONLINE_CONNECTOR_REFRESH: "*/20 * * ? * *" # every 20s
+    
+    # CRON interval for crawling OFFLINE connectors
+    EDC_BROKER_SERVER_CRON_OFFLINE_CONNECTOR_REFRESH: "0 */5 * ? * *" # every 5 minutes
+    
+    # CRON interval for crawling DEAD connectors
+    EDC_BROKER_SERVER_CRON_DEAD_CONNECTOR_REFRESH: "0 0 * ? * *" # every hour
+    
+    # CRON interval for marking connectors as DEAD
+    EDC_BROKER_SERVER_SCHEDULED_KILL_OFFLINE_CONNECTORS: "0 0 2 ? * *" # every day at 2am
+    
+    # Delete data offers / mark as dead after connector has been offline for:
+    EDC_BROKER_SERVER_KILL_OFFLINE_CONNECTORS_AFTER: "P5D"
+    
+    # Hide data offers after connector has been offline for:
+    EDC_BROKER_SERVER_HIDE_OFFLINE_DATA_OFFERS_AFTER: "P1D"
+    ```
+3. Removed **optional** configuration properties:
+    ```yaml
+    # (Removed) CRON interval for crawling connectors
+    EDC_BROKER_SERVER_CRON_CONNECTOR_REFRESH: "0 */5 * ? * *"
+    ```
+4. Connectors can now be dynamically added at runtime by using the following endpoint:
+    ```shell script
+    # Response should be 204 No Content
+    curl --request PUT \
+        --url 'http://localhost:11002/backend/api/v1/management/wrapper/broker/connectors?adminApiKey=DefaultBrokerServerAdminApiKey' \
+        --header 'Content-Type: application/json' \
+        --header 'X-Api-Key: ApiKeyDefaultValue' \
+        --data '["https://some-new-connector/api/v1/ids/data", "https://some-other-new-connector/api/v1/ids/data"]'
+    ```
+   
+#### Compatible Versions
+
+- Broker Backend Docker Image: `ghcr.io/sovity/broker-server-ce:1.0.0`
+- Broker UI Docker Image: `ghcr.io/sovity/edc-ui:0.0.1-milestone-8-sovity12`
+- Sovity EDC CE: [`4.0.1`](https://github.com/sovity/edc-extensions/tree/v4.0.1/connector)
+
 
 ## [v0.1.0] Broker MvP Release - 2023-06-23
 
@@ -82,6 +140,12 @@ Broker MvP using Core EDC MS8.
    
     # Pagination Configuration: Catalog Page Size (default: 20)
     EDC_BROKER_SERVER_CATALOG_PAGE_PAGE_SIZE: 20
+
+    # Database Connection Pool Size
+    EDC_BROKER_SERVER_DB_CONNECTION_POOL_SIZE: 30
+    
+    # Database Connection Timeout (in ms)
+    EDC_BROKER_SERVER_DB_CONNECTION_TIMEOUT_IN_MS: 30000
     ```
 3. An issue prevented the keystore file from being read, preventing a successful data space log in.
 4. Added a reference to [connector/.env](connector/.env) as source for other possible broker server configuration

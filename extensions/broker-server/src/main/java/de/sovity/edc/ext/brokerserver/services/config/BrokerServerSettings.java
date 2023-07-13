@@ -22,6 +22,7 @@ import java.time.Duration;
 @Value
 @Builder
 public class BrokerServerSettings {
+    String adminApiKey;
     Duration hideOfflineDataOffersAfter;
 
     int catalogPagePageSize;
@@ -30,5 +31,5 @@ public class BrokerServerSettings {
 
     int numThreads;
 
-    Duration deleteOfflineConnectorsAfter;
+    Duration killOfflineConnectorsAfter;
 }

@@ -19,9 +19,13 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
+
+import java.util.List;
 
 @Path("wrapper/broker")
 @Tag(name = "Broker Server", description = "Broker Server API Endpoints. Requires the Broker Server Extension")
@@ -61,4 +65,10 @@ public interface BrokerServerResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(description = "Query a Known Connector's Log Page")
     EventLogPageResult eventLogPage(EventLogPageQuery query);
+
+    @PUT
+    @Path("connectors")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Operation(description = "Add unknown Connectors to the Broker Server")
+    void addConnectors(List<String> endpoints, @QueryParam("adminApiKey") String adminApiKey);
 }

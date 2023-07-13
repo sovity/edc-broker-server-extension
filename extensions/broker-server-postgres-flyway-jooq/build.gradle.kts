@@ -27,7 +27,7 @@ buildscript {
 }
 
 plugins {
-    id("org.flywaydb.flyway") version "9.20.0"
+    id("org.flywaydb.flyway") version "9.20.1"
     id("nu.studer.jooq") version "7.1.1"
     `java-library`
     `maven-publish`
@@ -39,6 +39,7 @@ dependencies {
 
     jooqGenerator("org.postgresql:postgresql:42.6.0")
     flywayMigration("org.postgresql:postgresql:42.6.0")
+    implementation("com.zaxxer:HikariCP:5.0.1")
 
     annotationProcessor("org.projectlombok:lombok:1.18.28")
     compileOnly("org.projectlombok:lombok:1.18.28")

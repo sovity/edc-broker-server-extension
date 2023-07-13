@@ -21,7 +21,10 @@ import de.sovity.edc.ext.brokerserver.services.api.CatalogApiService;
 import de.sovity.edc.ext.brokerserver.services.api.ConnectorApiService;
 import de.sovity.edc.ext.brokerserver.services.api.DataOfferDetailApiService;
 import de.sovity.edc.ext.brokerserver.services.api.EventLogApiService;
+import de.sovity.edc.ext.brokerserver.services.config.AdminApiKeyValidator;
 import lombok.RequiredArgsConstructor;
+
+import java.util.List;
 
 
 /**
@@ -34,6 +37,7 @@ public class BrokerServerResourceImpl implements BrokerServerResource {
     private final CatalogApiService catalogApiService;
     private final DataOfferDetailApiService dataOfferDetailApiService;
     private final EventLogApiService eventLogApiService;
+    private final AdminApiKeyValidator adminApiKeyValidator;
 
     @Override
     public CatalogPageResult catalogPage(CatalogPageQuery query) {
@@ -54,6 +58,13 @@ public class BrokerServerResourceImpl implements BrokerServerResource {
     public ConnectorDetailPageResult connectorDetailPage(ConnectorDetailPageQuery query) {
         return dslContextFactory.transactionResult(dsl -> connectorApiService.connectorDetailPage(dsl, query));
     }
+
+    @Override
+    public void addConnectors(List<String> endpoints, String adminApiKey) {
+        adminApiKeyValidator.validateAdminApiKey(adminApiKey);
+        dslContextFactory.transaction(dsl -> connectorApiService.addConnectors(dsl, endpoints));
+    }
+
 
     @Override
     public EventLogPageResult eventLogPage(EventLogPageQuery query) {
