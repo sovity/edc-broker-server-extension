@@ -21,7 +21,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.edc.spi.monitor.Monitor;
-import org.eclipse.edc.spi.system.configuration.Config;
 import org.quartz.CronScheduleBuilder;
 import org.quartz.JobBuilder;
 import org.quartz.Scheduler;

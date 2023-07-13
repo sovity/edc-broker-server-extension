@@ -139,7 +139,7 @@ public class BrokerServerExtensionContextBuilder {
         var contractOfferRecordUpdater = new ContractOfferRecordUpdater();
         var dataOfferRecordUpdater = new DataOfferRecordUpdater();
         var dataOfferContractOfferQueries = new DataOfferContractOfferQueries();
-        var dataOfferLimitsEnforcer = new DataOfferLimitsEnforcer(config, brokerEventLogger);
+        var dataOfferLimitsEnforcer = new DataOfferLimitsEnforcer(brokerEventLogger, databaseSettingsProvider);
         var dataOfferPatchBuilder = new DataOfferPatchBuilder(
                 dataOfferContractOfferQueries,
                 dataOfferQueries,

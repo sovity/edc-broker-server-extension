@@ -18,17 +18,17 @@ import de.sovity.edc.ext.brokerserver.BrokerServerExtension;
 import de.sovity.edc.ext.brokerserver.db.jooq.enums.ConnectorContractOffersExceeded;
 import de.sovity.edc.ext.brokerserver.db.jooq.enums.ConnectorDataOffersExceeded;
 import de.sovity.edc.ext.brokerserver.db.jooq.tables.records.ConnectorRecord;
+import de.sovity.edc.ext.brokerserver.services.DatabaseSettingsProvider;
 import de.sovity.edc.ext.brokerserver.services.logging.BrokerEventLogger;
 import de.sovity.edc.ext.brokerserver.services.refreshing.offers.model.FetchedDataOffer;
 import lombok.RequiredArgsConstructor;
-import org.eclipse.edc.spi.system.configuration.Config;
 
 import java.util.Collection;
 
 @RequiredArgsConstructor
 public class DataOfferLimitsEnforcer {
-    private final Config config;
     private final BrokerEventLogger brokerEventLogger;
+    private final DatabaseSettingsProvider databaseSettingsProvider;
 
     public record DataOfferLimitsEnforced(
             Collection<FetchedDataOffer> abbreviatedDataOffers,
@@ -38,9 +38,9 @@ public class DataOfferLimitsEnforcer {
     }
 
     public DataOfferLimitsEnforced enforceLimits(Collection<FetchedDataOffer> dataOffers) {
-        // Get limits from config
-        var maxDataOffers = config.getInteger(BrokerServerExtension.MAX_DATA_OFFERS_PER_CONNECTOR, -1);
-        var maxContractOffers = config.getInteger(BrokerServerExtension.MAX_CONTRACT_OFFERS_PER_DATA_OFFER, -1);
+        // Get limits
+        var maxDataOffers = (Integer) databaseSettingsProvider.getSetting(BrokerServerExtension.MAX_DATA_OFFERS_PER_CONNECTOR, -1);
+        var maxContractOffers = (Integer) databaseSettingsProvider.getSetting(BrokerServerExtension.MAX_CONTRACT_OFFERS_PER_DATA_OFFER, -1);
         var offerList = dataOffers.stream().toList();
 
         // No limits set

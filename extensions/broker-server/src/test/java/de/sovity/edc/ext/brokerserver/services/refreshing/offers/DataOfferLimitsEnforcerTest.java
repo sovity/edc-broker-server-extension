@@ -18,10 +18,10 @@ import de.sovity.edc.ext.brokerserver.BrokerServerExtension;
 import de.sovity.edc.ext.brokerserver.db.jooq.enums.ConnectorContractOffersExceeded;
 import de.sovity.edc.ext.brokerserver.db.jooq.enums.ConnectorDataOffersExceeded;
 import de.sovity.edc.ext.brokerserver.db.jooq.tables.records.ConnectorRecord;
+import de.sovity.edc.ext.brokerserver.services.DatabaseSettingsProvider;
 import de.sovity.edc.ext.brokerserver.services.logging.BrokerEventLogger;
 import de.sovity.edc.ext.brokerserver.services.refreshing.offers.model.FetchedDataOffer;
 import de.sovity.edc.ext.brokerserver.services.refreshing.offers.model.FetchedDataOfferContractOffer;
-import org.eclipse.edc.spi.system.configuration.Config;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -39,14 +39,14 @@ import static org.mockito.Mockito.when;
 
 class DataOfferLimitsEnforcerTest {
     DataOfferLimitsEnforcer dataOfferLimitsEnforcer;
-    Config config;
     BrokerEventLogger brokerEventLogger;
+    DatabaseSettingsProvider databaseSettingsProvider;
 
     @BeforeEach
     void setup() {
-        config = mock(Config.class);
+        databaseSettingsProvider = mock(DatabaseSettingsProvider.class);
         brokerEventLogger = mock(BrokerEventLogger.class);
-        dataOfferLimitsEnforcer = new DataOfferLimitsEnforcer(config, brokerEventLogger);
+        dataOfferLimitsEnforcer = new DataOfferLimitsEnforcer(brokerEventLogger, databaseSettingsProvider);
     }
 
     @Test
@@ -54,8 +54,8 @@ class DataOfferLimitsEnforcerTest {
         // arrange
         int maxDataOffers = -1;
         int maxContractOffers = -1;
-        when(config.getInteger(eq(BrokerServerExtension.MAX_DATA_OFFERS_PER_CONNECTOR), any())).thenReturn(maxDataOffers);
-        when(config.getInteger(eq(BrokerServerExtension.MAX_CONTRACT_OFFERS_PER_DATA_OFFER), any())).thenReturn(maxContractOffers);
+        when(databaseSettingsProvider.getSetting(eq(BrokerServerExtension.MAX_DATA_OFFERS_PER_CONNECTOR), any())).thenReturn(maxDataOffers);
+        when(databaseSettingsProvider.getSetting(eq(BrokerServerExtension.MAX_CONTRACT_OFFERS_PER_DATA_OFFER), any())).thenReturn(maxContractOffers);
 
         var myDataOffer = new FetchedDataOffer();
         myDataOffer.setContractOffers(List.of(new FetchedDataOfferContractOffer(), new FetchedDataOfferContractOffer()));
@@ -78,8 +78,8 @@ class DataOfferLimitsEnforcerTest {
         // arrange
         int maxDataOffers = 0;
         int maxContractOffers = 0;
-        when(config.getInteger(eq(BrokerServerExtension.MAX_DATA_OFFERS_PER_CONNECTOR), any())).thenReturn(maxDataOffers);
-        when(config.getInteger(eq(BrokerServerExtension.MAX_CONTRACT_OFFERS_PER_DATA_OFFER), any())).thenReturn(maxContractOffers);
+        when(databaseSettingsProvider.getSetting(eq(BrokerServerExtension.MAX_DATA_OFFERS_PER_CONNECTOR), any())).thenReturn(maxDataOffers);
+        when(databaseSettingsProvider.getSetting(eq(BrokerServerExtension.MAX_CONTRACT_OFFERS_PER_DATA_OFFER), any())).thenReturn(maxContractOffers);
 
         var dataOffers = List.of(new FetchedDataOffer());
 
@@ -100,8 +100,8 @@ class DataOfferLimitsEnforcerTest {
         // arrange
         int maxDataOffers = 1;
         int maxContractOffers = 1;
-        when(config.getInteger(eq(BrokerServerExtension.MAX_DATA_OFFERS_PER_CONNECTOR), any())).thenReturn(maxDataOffers);
-        when(config.getInteger(eq(BrokerServerExtension.MAX_CONTRACT_OFFERS_PER_DATA_OFFER), any())).thenReturn(maxContractOffers);
+        when(databaseSettingsProvider.getSetting(eq(BrokerServerExtension.MAX_DATA_OFFERS_PER_CONNECTOR), any())).thenReturn(maxDataOffers);
+        when(databaseSettingsProvider.getSetting(eq(BrokerServerExtension.MAX_CONTRACT_OFFERS_PER_DATA_OFFER), any())).thenReturn(maxContractOffers);
 
         var myDataOffer = new FetchedDataOffer();
         myDataOffer.setContractOffers(List.of(new FetchedDataOfferContractOffer(), new FetchedDataOfferContractOffer()));
@@ -129,8 +129,8 @@ class DataOfferLimitsEnforcerTest {
 
         int maxDataOffers = 1;
         int maxContractOffers = 1;
-        when(config.getInteger(eq(BrokerServerExtension.MAX_DATA_OFFERS_PER_CONNECTOR), any())).thenReturn(maxDataOffers);
-        when(config.getInteger(eq(BrokerServerExtension.MAX_CONTRACT_OFFERS_PER_DATA_OFFER), any())).thenReturn(maxContractOffers);
+        when(databaseSettingsProvider.getSetting(eq(BrokerServerExtension.MAX_DATA_OFFERS_PER_CONNECTOR), any())).thenReturn(maxDataOffers);
+        when(databaseSettingsProvider.getSetting(eq(BrokerServerExtension.MAX_CONTRACT_OFFERS_PER_DATA_OFFER), any())).thenReturn(maxContractOffers);
 
         var myDataOffer = new FetchedDataOffer();
         myDataOffer.setContractOffers(List.of(new FetchedDataOfferContractOffer(), new FetchedDataOfferContractOffer()));
@@ -153,8 +153,8 @@ class DataOfferLimitsEnforcerTest {
 
         int maxDataOffers = -1;
         int maxContractOffers = -1;
-        when(config.getInteger(eq(BrokerServerExtension.MAX_DATA_OFFERS_PER_CONNECTOR), any())).thenReturn(maxDataOffers);
-        when(config.getInteger(eq(BrokerServerExtension.MAX_CONTRACT_OFFERS_PER_DATA_OFFER), any())).thenReturn(maxContractOffers);
+        when(databaseSettingsProvider.getSetting(eq(BrokerServerExtension.MAX_DATA_OFFERS_PER_CONNECTOR), any())).thenReturn(maxDataOffers);
+        when(databaseSettingsProvider.getSetting(eq(BrokerServerExtension.MAX_CONTRACT_OFFERS_PER_DATA_OFFER), any())).thenReturn(maxContractOffers);
 
         var myDataOffer = new FetchedDataOffer();
         myDataOffer.setContractOffers(List.of(new FetchedDataOfferContractOffer(), new FetchedDataOfferContractOffer()));
@@ -177,8 +177,8 @@ class DataOfferLimitsEnforcerTest {
 
         int maxDataOffers = 1;
         int maxContractOffers = 1;
-        when(config.getInteger(eq(BrokerServerExtension.MAX_DATA_OFFERS_PER_CONNECTOR), any())).thenReturn(maxDataOffers);
-        when(config.getInteger(eq(BrokerServerExtension.MAX_CONTRACT_OFFERS_PER_DATA_OFFER), any())).thenReturn(maxContractOffers);
+        when(databaseSettingsProvider.getSetting(eq(BrokerServerExtension.MAX_DATA_OFFERS_PER_CONNECTOR), any())).thenReturn(maxDataOffers);
+        when(databaseSettingsProvider.getSetting(eq(BrokerServerExtension.MAX_CONTRACT_OFFERS_PER_DATA_OFFER), any())).thenReturn(maxContractOffers);
 
         var myDataOffer = new FetchedDataOffer();
         myDataOffer.setContractOffers(List.of(new FetchedDataOfferContractOffer(), new FetchedDataOfferContractOffer()));
@@ -201,8 +201,8 @@ class DataOfferLimitsEnforcerTest {
 
         int maxDataOffers = -1;
         int maxContractOffers = -1;
-        when(config.getInteger(eq(BrokerServerExtension.MAX_DATA_OFFERS_PER_CONNECTOR), any())).thenReturn(maxDataOffers);
-        when(config.getInteger(eq(BrokerServerExtension.MAX_CONTRACT_OFFERS_PER_DATA_OFFER), any())).thenReturn(maxContractOffers);
+        when(databaseSettingsProvider.getSetting(eq(BrokerServerExtension.MAX_DATA_OFFERS_PER_CONNECTOR), any())).thenReturn(maxDataOffers);
+        when(databaseSettingsProvider.getSetting(eq(BrokerServerExtension.MAX_CONTRACT_OFFERS_PER_DATA_OFFER), any())).thenReturn(maxContractOffers);
 
         var myDataOffer = new FetchedDataOffer();
         myDataOffer.setContractOffers(List.of(new FetchedDataOfferContractOffer(), new FetchedDataOfferContractOffer()));
