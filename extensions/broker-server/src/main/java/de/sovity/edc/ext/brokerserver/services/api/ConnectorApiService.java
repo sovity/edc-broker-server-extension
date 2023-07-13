@@ -26,9 +26,6 @@ import de.sovity.edc.ext.brokerserver.dao.pages.connector.ConnectorPageQueryServ
 import de.sovity.edc.ext.brokerserver.dao.pages.connector.model.ConnectorDetailsRs;
 import de.sovity.edc.ext.brokerserver.dao.pages.connector.model.ConnectorListEntryRs;
 import de.sovity.edc.ext.brokerserver.utils.UrlUtils;
-import de.sovity.edc.ext.brokerserver.api.model.*;
-import de.sovity.edc.ext.brokerserver.dao.pages.connector.ConnectorPageQueryService;
-import de.sovity.edc.ext.brokerserver.dao.pages.connector.model.ConnectorRs;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 
@@ -76,7 +73,7 @@ public class ConnectorApiService {
     }
 
 
-    private List<ConnectorListEntry> buildConnectorListEntries(List<ConnectorRs> connectors) {
+    private List<ConnectorListEntry> buildConnectorListEntries(List<ConnectorListEntryRs> connectors) {
         return connectors.stream().map(this::buildConnectorListEntry).toList();
     }
 

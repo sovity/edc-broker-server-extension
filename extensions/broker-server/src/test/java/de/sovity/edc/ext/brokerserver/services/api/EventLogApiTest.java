@@ -36,14 +36,13 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 import java.time.OffsetDateTime;
 import java.util.Map;
 
-import static de.sovity.edc.ext.brokerserver.TestUtils.createConfiguration;
-import static de.sovity.edc.ext.brokerserver.TestUtils.edcClient;
+import static de.sovity.edc.ext.brokerserver.TestUtils.*;
 import static groovy.json.JsonOutput.toJson;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ApiTest
 @ExtendWith(EdcExtension.class)
-class LogApiTest {
+class EventLogApiTest {
 
     @RegisterExtension
     private static final TestDatabase TEST_DATABASE = TestDatabaseFactory.getTestDatabase();
@@ -60,39 +59,17 @@ class LogApiTest {
             var today = OffsetDateTime.now().withNano(0);
 
             createConnector(dsl, today, "http://my-connector/ids/data");
-            createEventLog(dsl, today, "http://my-connector/ids/data");
             createDataOffer(dsl, today, Map.of(
                 AssetProperty.ASSET_ID, "urn:artifact:my-asset-1",
                 AssetProperty.DATA_CATEGORY, "my-category",
                 AssetProperty.ASSET_NAME, "My Asset 1"
             ), "http://my-connector/ids/data");
 
-            var result = edcClient().brokerServerApi().connectorPage(new ConnectorPageQuery());
+            var result = brokerServerClient().brokerServerApi().connectorPage(new ConnectorPageQuery());
             assertThat(result.getConnectors()).hasSize(1);
 
             var connector = result.getConnectors().get(0);
-            assertThat(connector.getId()).isEqualTo("http://my-connector");
-            assertThat(connector.getEndpoint()).isEqualTo("http://my-connector/ids/data");
-            assertThat(connector.getCreatedAt()).isEqualTo(today.minusDays(1));
-            assertThat(connector.getLastRefreshAttemptAt()).isEqualTo(today);
-            assertThat(connector.getLastSuccessfulRefreshAt()).isEqualTo(today);
-        });
-    }
-
-    @Test
-    void testQueryConnectorDetails() {
-        TEST_DATABASE.testTransaction(dsl -> {
-            var today = OffsetDateTime.now().withNano(0);
-
-            createConnector(dsl, today, "http://my-connector/ids/data");
-            createDataOffer(dsl, today, Map.of(
-                AssetProperty.ASSET_ID, "urn:artifact:my-asset-1",
-                AssetProperty.DATA_CATEGORY, "my-category",
-                AssetProperty.ASSET_NAME, "My Asset 1"
-            ), "http://my-connector/ids/data");
-
-            var connector = edcClient().brokerServerApi().connectorDetailPage(new ConnectorDetailPageQuery("http://my-connector/ids/data"));
-            assertThat(connector.getId()).isEqualTo("http://my-connector");
+            assertThat(connector.getId()).isEqualTo("http://my-connector/ids/data");
             assertThat(connector.getEndpoint()).isEqualTo("http://my-connector/ids/data");
             assertThat(connector.getCreatedAt()).isEqualTo(today.minusDays(1));
             assertThat(connector.getLastRefreshAttemptAt()).isEqualTo(today);

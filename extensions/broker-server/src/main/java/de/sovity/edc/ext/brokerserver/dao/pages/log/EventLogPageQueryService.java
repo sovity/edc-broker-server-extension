@@ -34,7 +34,8 @@ public class EventLogPageQueryService {
 
         var query = dsl.select(e.asterisk())
             .from(e)
-            .where(filterBySearchQuery);
+            .where(filterBySearchQuery)
+            .limit(50);
 
 
         return MultisetUtils.multiset(query, EventLogEntryRs.class);
