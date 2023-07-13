@@ -30,7 +30,6 @@ import java.time.OffsetDateTime;
 @AllArgsConstructor
 @Schema(description = "Connector Detail Page Data")
 public class ConnectorDetailPageResult {
-    //Test
     @Schema(description = "Connector ID", example = "https://my-test.connector", requiredMode = Schema.RequiredMode.REQUIRED)
     private String id;
 
