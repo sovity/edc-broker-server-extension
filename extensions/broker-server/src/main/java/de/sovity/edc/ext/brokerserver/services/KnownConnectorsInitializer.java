@@ -28,7 +28,7 @@ import java.util.List;
 public class KnownConnectorsInitializer {
     private final ConnectorQueue connectorQueue;
     private final ConnectorCreator connectorCreator;
-    private final DatabaseSettingsInitializer databaseSettingsInitializer;
+    private final DatabaseSettingsProvider databaseSettingsProvider;
 
     public void addKnownConnectorsOnStartup(DSLContext dsl) {
         var connectorEndpoints = getKnownConnectorsConfigValue();
@@ -37,7 +37,7 @@ public class KnownConnectorsInitializer {
     }
 
     private List<String> getKnownConnectorsConfigValue() {
-        var knownConnectorsString = (String) databaseSettingsInitializer.readSettingFromDatabase(BrokerServerExtension.KNOWN_CONNECTORS, "");
+        var knownConnectorsString = (String) databaseSettingsProvider.getSetting(BrokerServerExtension.KNOWN_CONNECTORS, "");
         return Arrays.stream(knownConnectorsString.split(",")).map(String::trim).filter(StringUtils::isNotBlank).distinct().toList();
     }
 }

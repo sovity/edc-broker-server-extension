@@ -33,6 +33,7 @@ import de.sovity.edc.ext.brokerserver.services.ConnectorCleaner;
 import de.sovity.edc.ext.brokerserver.services.ConnectorCreator;
 import de.sovity.edc.ext.brokerserver.services.ConnectorKiller;
 import de.sovity.edc.ext.brokerserver.services.DatabaseSettingsInitializer;
+import de.sovity.edc.ext.brokerserver.services.DatabaseSettingsProvider;
 import de.sovity.edc.ext.brokerserver.services.KnownConnectorsInitializer;
 import de.sovity.edc.ext.brokerserver.services.OfflineConnectorKiller;
 import de.sovity.edc.ext.brokerserver.services.api.AssetPropertyParser;
@@ -100,14 +101,16 @@ public class BrokerServerExtensionContextBuilder {
         var brokerServerSettingsFactory = new BrokerServerSettingsFactory(config, monitor);
         var brokerServerSettings = brokerServerSettingsFactory.buildBrokerServerSettings();
 
-        // Database Settings Table
-        var databaseSettingsInitializer = new DatabaseSettingsInitializer(config);
-
-        // Dao
-        var dataOfferQueries = new DataOfferQueries();
+        // Database
         var dataSourceFactory = new DataSourceFactory(config);
         var dataSource = dataSourceFactory.newDataSource();
         var dslContextFactory = new DslContextFactory(dataSource);
+        var dslContext = dslContextFactory.newDslContext();
+        var databaseSettingsInitializer = new DatabaseSettingsInitializer(config);
+        var databaseSettingsProvider = new DatabaseSettingsProvider(dslContext);
+
+        // Dao
+        var dataOfferQueries = new DataOfferQueries();
         var connectorQueries = new ConnectorQueries();
         var catalogQuerySortingService = new CatalogQuerySortingService();
         var catalogQueryFilterService = new CatalogQueryFilterService(brokerServerSettings);
@@ -172,7 +175,7 @@ public class BrokerServerExtensionContextBuilder {
         var knownConnectorsInitializer = new KnownConnectorsInitializer(
                 connectorQueue,
                 connectorCreator,
-                databaseSettingsInitializer
+                databaseSettingsProvider
         );
         var catalogFilterAttributeDefinitionService = new CatalogFilterAttributeDefinitionService();
         var catalogFilterService = new CatalogFilterService(catalogFilterAttributeDefinitionService);
