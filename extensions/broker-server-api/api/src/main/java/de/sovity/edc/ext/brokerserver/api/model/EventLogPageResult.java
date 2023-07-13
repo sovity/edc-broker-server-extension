@@ -17,14 +17,20 @@ package de.sovity.edc.ext.brokerserver.api.model;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
+import java.util.List;
+
+
 @Getter
 @Setter
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-@Schema(description = "Connector Page Log Query")
-public class ConnectorEventLogPageQuery {
-    @Schema(description = "Connector Log")
-    private String logId;
+@Schema(description = "Event Log Page Data")
+public class EventLogPageResult {
+
+    @Schema(description = "Current page of event Logs", requiredMode = Schema.RequiredMode.REQUIRED)
+    private List<EventLogEntry> eventLogs;
+
 }
+
 

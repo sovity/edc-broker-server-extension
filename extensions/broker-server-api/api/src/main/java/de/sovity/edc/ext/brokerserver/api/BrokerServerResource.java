@@ -56,9 +56,9 @@ public interface BrokerServerResource {
     ConnectorDetailPageResult connectorDetailPage(ConnectorDetailPageQuery query);
 
     @POST
-    @Path("connector-log-page")
+    @Path("event-log-page")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(description = "Query a Known Connector's Log Page")
-    ConnectorEventLogPageResult connectorEventPage(ConnectorEventLogPageQuery query);
+    EventLogPageResult eventLogPage(EventLogPageQuery query);
 }

@@ -15,40 +15,37 @@
 package de.sovity.edc.ext.brokerserver.services.api;
 
 import de.sovity.edc.ext.brokerserver.api.model.*;
-import de.sovity.edc.ext.brokerserver.dao.pages.log.LogPageQueryService;
-import de.sovity.edc.ext.brokerserver.dao.pages.log.model.LogRs;
+import de.sovity.edc.ext.brokerserver.dao.pages.log.EventLogPageQueryService;
+import de.sovity.edc.ext.brokerserver.dao.pages.log.model.EventLogEntryRs;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 
+import java.util.List;
 import java.util.Objects;
 
 @RequiredArgsConstructor
-public class LogApiService {
-    private final LogPageQueryService logPageQueryService;
+public class EventLogApiService {
+    private final EventLogPageQueryService eventLogPageQueryService;
 
-
-    public ConnectorEventLogPageResult connectorLogPage(DSLContext dsl, ConnectorEventLogPageQuery query) {
+    public EventLogPageResult eventLogPage(DSLContext dsl, EventLogPageQuery query) {
         Objects.requireNonNull(query, "query must not be null");
 
-        var eventLogDbRow = logPageQueryService.queryConnectorLogPage(dsl, query.getLogId());
-        var eventLog = buildEventLogEntry(eventLogDbRow);
-
-        var result = new ConnectorEventLogPageResult();
-        result.setCreatedAt(eventLog.getCreatedAt());
-        result.setUserMessage(eventLog.getUserMessage());
-        result.setEvent(eventLog.getEvent());
-        result.setEventStatus(eventLog.getEventStatus());
-        result.setConnectorEndpoint(eventLog.getConnectorEndpoint());
-        result.setAssetId(eventLog.getAssetId());
-        result.setErrorStack(eventLog.getErrorStack());
-        result.setDurationInMs(Long.valueOf(eventLog.getDurationInMs()));
+        var eventLogRs = eventLogPageQueryService.queryEventLogPage(
+            dsl, query.getEventLogId());
+        var result = new EventLogPageResult();
+        result.setEventLogs(buildEventLogs(eventLogRs.getEventLogs()));
         return result;
     }
 
-    private LogEntry buildEventLogEntry(LogRs eventLog) {
-        var dto = new LogEntry();
+    private List<EventLogEntry> buildEventLogs(List<EventLogEntryRs> eventLogEntries) {
+        return eventLogEntries.stream()
+            .map(this::buildEventLogEntry)
+            .toList();
+    }
 
-        dto.setId(eventLog.getLogId());
+    private EventLogEntry buildEventLogEntry(EventLogEntryRs eventLog) {
+        var dto = new EventLogEntry();
+        dto.setId(eventLog.getEventLogId());
         dto.setUserMessage(eventLog.getUserMessage());
         dto.setEvent(eventLog.getEvent());
         dto.setEventStatus(eventLog.getEventStatus());

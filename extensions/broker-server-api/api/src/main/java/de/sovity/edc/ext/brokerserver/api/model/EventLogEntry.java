@@ -29,8 +29,8 @@ import java.time.OffsetDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Schema(description = "An Event Log Entry")
-public class LogEntry {
-    @Schema(description = "Log ID", example = "1", requiredMode = Schema.RequiredMode.REQUIRED)
+public class EventLogEntry {
+    @Schema(description = "Event Log ID", example = "1", requiredMode = Schema.RequiredMode.REQUIRED)
     private String id;
 
     @Schema(description = "User Message", example = "Successful refresh.", requiredMode = Schema.RequiredMode.REQUIRED)

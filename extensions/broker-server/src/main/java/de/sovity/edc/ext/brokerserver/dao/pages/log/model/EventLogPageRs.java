@@ -11,7 +11,6 @@
  *       sovity GmbH - initial API and implementation
  *
  */
-
 package de.sovity.edc.ext.brokerserver.dao.pages.log.model;
 
 import lombok.AccessLevel;
@@ -19,19 +18,12 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
-import java.time.OffsetDateTime;
+import java.util.List;
 
 @Getter
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class LogRs {
-    String logId;
-    OffsetDateTime createdAt;
-    String userMessage;
-    String event;
-    String eventStatus;
-    String connectorEndpoint;
-    String assetId;
-    String errorStack;
-    Long durationInMs;
+public class EventLogPageRs {
+    List<EventLogEntryRs> eventLogs;
+    int numTotalEventLogs;
 }

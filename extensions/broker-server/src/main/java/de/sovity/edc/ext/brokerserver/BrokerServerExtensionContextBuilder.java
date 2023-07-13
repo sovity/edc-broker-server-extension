@@ -25,7 +25,7 @@ import de.sovity.edc.ext.brokerserver.dao.pages.catalog.CatalogQueryService;
 import de.sovity.edc.ext.brokerserver.dao.pages.catalog.CatalogQuerySortingService;
 import de.sovity.edc.ext.brokerserver.dao.pages.connector.ConnectorPageQueryService;
 import de.sovity.edc.ext.brokerserver.dao.pages.dataoffer.DataOfferDetailPageQueryService;
-import de.sovity.edc.ext.brokerserver.dao.pages.log.LogPageQueryService;
+import de.sovity.edc.ext.brokerserver.dao.pages.log.EventLogPageQueryService;
 import de.sovity.edc.ext.brokerserver.db.DataSourceFactory;
 import de.sovity.edc.ext.brokerserver.db.DslContextFactory;
 import de.sovity.edc.ext.brokerserver.services.BrokerServerInitializer;
@@ -108,7 +108,7 @@ public class BrokerServerExtensionContextBuilder {
                 brokerServerSettings
         );
         var connectorPageQueryService = new ConnectorPageQueryService();
-        var logPageQueryService = new LogPageQueryService();
+        var logPageQueryService = new EventLogPageQueryService();
         var dataOfferDetailPageQueryService = new DataOfferDetailPageQueryService(catalogQueryContractOfferFetcher, brokerServerSettings);
 
 
@@ -199,7 +199,7 @@ public class BrokerServerExtensionContextBuilder {
                 paginationMetadataUtils
         );
 
-        var logApiService = new LogApiService(
+        var logApiService = new EventLogApiService(
             logPageQueryService
         );
 
