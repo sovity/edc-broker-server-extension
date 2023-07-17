@@ -1,5 +1,18 @@
 version: "3.8"
 services:
+  keycloak:
+    container_name: keycloak
+    depends_on:
+        - broker-postgresql
+    environment:
+        DB_VENDOR: postgres
+        DB_ADDR: broker-postgresql
+        DB_DATABASE: edc
+        DB_USER: edc
+        DB_PASSWORD: edc
+    image: jboss/keycloak:16.1.1
+    ports:
+      - '28080:8080'
   broker-ui:
     image: ${EDC_UI_IMAGE}
     ports:
@@ -23,7 +36,7 @@ services:
       EDC_BROKER_SERVER_KNOWN_DATASPACE_CONNECTORS: "Mobilithek=https://some-other-connector/ids/data"
 
       # Local Dev / Docker-Compose Config
-      MY_EDC_PROTOCOL: "http://" # We don't have TLS in the docker container
+      MY_EDC_PROTOCOL: "http://" # We don"t have TLS in the docker container
       MY_EDC_IDS_BASE_URL: "http://broker:11003" # Add the port, because we have no reverse proxy erasing the ports here
       EDC_WEB_REST_CORS_ENABLED: 'true'
       EDC_WEB_REST_CORS_HEADERS: 'origin,content-type,accept,authorization,x-api-key'
