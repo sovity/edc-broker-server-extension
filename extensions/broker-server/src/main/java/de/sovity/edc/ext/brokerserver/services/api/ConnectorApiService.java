@@ -135,4 +135,8 @@ public class ConnectorApiService {
                 .collect(toSet());
         connectorService.addConnectors(dsl, endpoints, ADDED_ON_API_CALL);
     }
+
+    public void deleteConnectors(DSLContext dsl, List<String> connectorEndpoints) {
+        connectorService.deleteConnectors(dsl,  connectorEndpoints);
+    }
 }

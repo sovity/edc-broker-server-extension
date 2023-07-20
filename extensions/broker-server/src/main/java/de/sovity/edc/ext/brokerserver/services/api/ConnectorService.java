@@ -34,6 +34,10 @@ public class ConnectorService {
         connectorQueue.addAll(connectorEndpoints, priority);
     }
 
+    public void deleteConnectors(DSLContext dsl, Collection<String> connectorEndpoints) {
+        dsl.deleteFrom(CONNECTOR).where(CONNECTOR.ENDPOINT.in(connectorEndpoints)).execute();
+    }
+
     public Set<String> getConnectorEndpoints(DSLContext dsl) {
         return dsl.select(CONNECTOR.ENDPOINT).from(CONNECTOR).fetchSet(CONNECTOR.ENDPOINT);
     }
