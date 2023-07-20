@@ -1,16 +1,15 @@
 version: "3.8"
 services:
   keycloak:
+    image: quay.io/keycloak/keycloak:22.0.1
+    command:
+        - start-dev
     container_name: keycloak
     depends_on:
         - broker-postgresql
     environment:
-        DB_VENDOR: postgres
-        DB_ADDR: broker-postgresql
-        DB_DATABASE: edc
-        DB_USER: edc
-        DB_PASSWORD: edc
-    image: jboss/keycloak:16.1.1
+        - KEYCLOAK_ADMIN=admin
+        - KEYCLOAK_ADMIN_PASSWORD=admin
     ports:
       - '28080:8080'
   broker-ui:
