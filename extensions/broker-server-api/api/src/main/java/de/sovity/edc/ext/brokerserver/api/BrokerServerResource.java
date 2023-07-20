@@ -24,6 +24,8 @@ import de.sovity.edc.ext.brokerserver.api.model.DataOfferDetailPageQuery;
 import de.sovity.edc.ext.brokerserver.api.model.DataOfferDetailPageResult;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.security.PermitAll;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
@@ -34,6 +36,7 @@ import jakarta.ws.rs.core.MediaType;
 
 import java.util.List;
 
+@PermitAll
 @Path("wrapper/broker")
 @Tag(name = "Broker Server", description = "Broker Server API Endpoints. Requires the Broker Server Extension")
 public interface BrokerServerResource {
@@ -67,6 +70,7 @@ public interface BrokerServerResource {
     ConnectorDetailPageResult connectorDetailPage(ConnectorDetailPageQuery query);
 
     @PUT
+    @RolesAllowed("admin")
     @Path("connectors")
     @Consumes(MediaType.APPLICATION_JSON)
     @Operation(description = "Add unknown Connectors to the Broker Server")

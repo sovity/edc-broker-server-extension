@@ -21,6 +21,7 @@ dependencies {
     api("io.swagger.core.v3:swagger-jaxrs2-jakarta:2.2.15")
     api("jakarta.servlet:jakarta.servlet-api:5.0.0")
 
+    implementation("jakarta.annotation:jakarta.annotation-api:2.1.1")
     implementation("org.apache.commons:commons-lang3:3.12.0")
     implementation("jakarta.validation:jakarta.validation-api:3.0.2")
     implementation("jakarta.ws.rs:jakarta.ws.rs-api:3.1.0")
