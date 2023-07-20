@@ -22,7 +22,6 @@ import java.time.Duration;
 @Value
 @Builder
 public class BrokerServerSettings {
-    String adminApiKey;
     Duration hideOfflineDataOffersAfter;
 
     int catalogPagePageSize;

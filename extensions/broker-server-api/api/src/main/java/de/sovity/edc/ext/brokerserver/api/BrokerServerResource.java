@@ -31,7 +31,6 @@ import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 
 import java.util.List;
@@ -74,5 +73,5 @@ public interface BrokerServerResource {
     @Path("connectors")
     @Consumes(MediaType.APPLICATION_JSON)
     @Operation(description = "Add unknown Connectors to the Broker Server")
-    void addConnectors(List<String> endpoints, @QueryParam("adminApiKey") String adminApiKey);
+    void addConnectors(List<String> endpoints);
 }

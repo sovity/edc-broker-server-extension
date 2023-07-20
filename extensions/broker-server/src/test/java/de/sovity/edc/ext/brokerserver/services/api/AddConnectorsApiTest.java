@@ -15,7 +15,6 @@
 package de.sovity.edc.ext.brokerserver.services.api;
 
 import de.sovity.edc.ext.brokerserver.BrokerServerExtension;
-import de.sovity.edc.ext.brokerserver.client.gen.ApiException;
 import de.sovity.edc.ext.brokerserver.client.gen.model.ConnectorListEntry;
 import de.sovity.edc.ext.brokerserver.client.gen.model.ConnectorPageQuery;
 import de.sovity.edc.ext.brokerserver.db.TestDatabase;
@@ -31,11 +30,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import static de.sovity.edc.ext.brokerserver.TestUtils.ADMIN_API_KEY;
-import static de.sovity.edc.ext.brokerserver.TestUtils.createConfiguration;
 import static de.sovity.edc.ext.brokerserver.TestUtils.brokerServerClient;
+import static de.sovity.edc.ext.brokerserver.TestUtils.createConfiguration;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @ApiTest
 @ExtendWith(EdcExtension.class)
@@ -58,9 +55,9 @@ class AddConnectorsApiTest {
         TEST_DATABASE.testTransaction(dsl -> {
             var client = brokerServerClient();
 
-            client.brokerServerApi().addConnectors(ADMIN_API_KEY, List.of());
+            client.brokerServerApi().addConnectors(List.of());
 
-            client.brokerServerApi().addConnectors(ADMIN_API_KEY, Arrays.asList(
+            client.brokerServerApi().addConnectors(Arrays.asList(
                     null,
                     "",
                     "  ",
@@ -73,7 +70,7 @@ class AddConnectorsApiTest {
                     .extracting(ConnectorListEntry::getEndpoint)
                     .containsExactlyInAnyOrder("http://a", "http://b");
 
-            client.brokerServerApi().addConnectors(ADMIN_API_KEY, Arrays.asList(
+            client.brokerServerApi().addConnectors(Arrays.asList(
                     "http://b",
                     " http://b\r\n",
                     "http://c"
@@ -83,20 +80,6 @@ class AddConnectorsApiTest {
                     .extracting(ConnectorListEntry::getEndpoint)
                     .containsExactlyInAnyOrder("http://a", "http://b", "http://c");
 
-        });
-    }
-
-    @Test
-    void testWrongApiKey() {
-        TEST_DATABASE.testTransaction(dsl -> {
-            var client = brokerServerClient();
-
-            assertThatThrownBy(() -> client.brokerServerApi().addConnectors("wrong-api-key", List.of()))
-                    .isInstanceOf(ApiException.class)
-                    .satisfies(ex -> {
-                        var apiException = (ApiException) ex;
-                        assertThat(apiException.getCode()).isEqualTo(401);
-                    });
         });
     }
 }

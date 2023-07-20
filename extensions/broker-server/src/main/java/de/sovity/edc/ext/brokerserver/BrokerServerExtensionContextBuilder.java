@@ -43,7 +43,6 @@ import de.sovity.edc.ext.brokerserver.services.api.PaginationMetadataUtils;
 import de.sovity.edc.ext.brokerserver.services.api.PolicyDtoBuilder;
 import de.sovity.edc.ext.brokerserver.services.api.filtering.CatalogFilterAttributeDefinitionService;
 import de.sovity.edc.ext.brokerserver.services.api.filtering.CatalogFilterService;
-import de.sovity.edc.ext.brokerserver.services.config.AdminApiKeyValidator;
 import de.sovity.edc.ext.brokerserver.services.config.BrokerServerSettingsFactory;
 import de.sovity.edc.ext.brokerserver.services.logging.BrokerEventLogger;
 import de.sovity.edc.ext.brokerserver.services.logging.BrokerExecutionTimeLogger;
@@ -99,7 +98,6 @@ public class BrokerServerExtensionContextBuilder {
     ) {
         var brokerServerSettingsFactory = new BrokerServerSettingsFactory(config, monitor);
         var brokerServerSettings = brokerServerSettingsFactory.buildBrokerServerSettings();
-        var adminApiKeyValidator = new AdminApiKeyValidator(brokerServerSettings);
 
         // Dao
         var dataOfferQueries = new DataOfferQueries();
@@ -226,8 +224,7 @@ public class BrokerServerExtensionContextBuilder {
                 dslContextFactory,
                 connectorApiService,
                 catalogApiService,
-                dataOfferDetailApiService,
-                adminApiKeyValidator
+                dataOfferDetailApiService
         );
 
         return new BrokerServerExtensionContext(

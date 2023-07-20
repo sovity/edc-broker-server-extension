@@ -35,9 +35,6 @@ public class TestUtils {
     public static final String MANAGEMENT_API_KEY = "123456";
     public static final String MANAGEMENT_ENDPOINT = "http://localhost:" + DATA_PORT + DATA_PATH;
 
-    public static final String ADMIN_API_KEY = "123456";
-
-
     public static final String PROTOCOL_HOST = "http://localhost:" + PROTOCOL_PORT;
     public static final String PROTOCOL_ENDPOINT = PROTOCOL_HOST + PROTOCOL_PATH + "/data";
 
@@ -65,7 +62,6 @@ public class TestUtils {
         config.put(PostgresFlywayExtension.FLYWAY_CLEAN_ENABLE, "true");
         config.put(PostgresFlywayExtension.FLYWAY_CLEAN, "true");
         config.put(BrokerServerExtension.NUM_THREADS, "0");
-        config.put(BrokerServerExtension.ADMIN_API_KEY, ADMIN_API_KEY);
         config.putAll(getCoreEdcJdbcConfig(testDatabase));
         config.putAll(additionalConfigProperties);
         return config;
