@@ -39,7 +39,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @ApiTest
 @ExtendWith(EdcExtension.class)
-class AddConnectorsApiTest {
+class AddAndDeleteConnectorsApiTest {
 
     @RegisterExtension
     private static final TestDatabase TEST_DATABASE = TestDatabaseFactory.getTestDatabase();
@@ -54,7 +54,7 @@ class AddConnectorsApiTest {
     }
 
     @Test
-    void testAddAndMerge() {
+    void testAddAndDeleteConnectors() {
         TEST_DATABASE.testTransaction(dsl -> {
             var client = brokerServerClient();
 
@@ -83,6 +83,14 @@ class AddConnectorsApiTest {
                     .extracting(ConnectorListEntry::getEndpoint)
                     .containsExactlyInAnyOrder("http://a", "http://b", "http://c");
 
+            //delete connectors again
+            client.brokerServerApi().deleteConnectors(ADMIN_API_KEY, Arrays.asList(
+                    "http://a",
+                    "http://b",
+                    "http://c"
+            ));
+
+            assertThat(client.brokerServerApi().connectorPage(new ConnectorPageQuery()).getConnectors()).isEmpty();
         });
     }
 
