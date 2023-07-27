@@ -39,7 +39,6 @@ dependencies {
     testImplementation("${edcGroup}:junit:${edcVersion}")
     testImplementation("${edcGroup}:http:${edcVersion}")
     testImplementation("${edcGroup}:iam-mock:${edcVersion}")
-    testImplementation("${edcGroup}:ids:${edcVersion}")
     testImplementation("${edcGroup}:monitor-jdk-logger:${edcVersion}")
     testImplementation("${edcGroup}:configuration-filesystem:${edcVersion}")
     testImplementation(project(":extensions:broker-server-api:client"))
