@@ -123,7 +123,7 @@ public class BrokerServerExtensionContextBuilder {
         );
         var connectorPageQueryService = new ConnectorPageQueryService();
         var dataOfferDetailPageQueryService = new DataOfferDetailPageQueryService(
-            catalogQueryContractOfferFetcher, brokerServerSettings);
+                catalogQueryContractOfferFetcher, brokerServerSettings);
 
 
         // Services
