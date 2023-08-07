@@ -50,7 +50,7 @@ public class BrokerServerSettingsFactory {
                 .numThreads(numThreads)
                 .killOfflineConnectorsAfter(killOfflineConnectorsAfter)
                 .maxDataOffersPerConnector(maxDataOffers)
-                .maxDataOffersPerConnector(maxContractOffers)
+                .maxContractOffersPerDataOffer(maxContractOffers)
                 .build();
     }
 
