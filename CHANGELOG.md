@@ -25,6 +25,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Bugfix Release for the Broker MvP with MS8.
 
+### Detailed Changes
+
 #### Patch
 
 - Fixed an issue where connector crawling failed when data offer limits were exceeded.
