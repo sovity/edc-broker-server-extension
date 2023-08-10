@@ -25,10 +25,8 @@ FROM eclipse-temurin:17-jre-alpine
 ARG JVM_ARGS=""
 
 # Install curl for healthcheck
-RUN apk add --no-cache curl
-
 # Create empty properties file to avoid errors when loading properties
-RUN touch /emtpy-properties-file.properties
+RUN apk add --no-cache curl && touch /emtpy-properties-file.properties
 
 WORKDIR /app
 
