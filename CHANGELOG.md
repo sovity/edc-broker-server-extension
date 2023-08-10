@@ -30,6 +30,10 @@ Bugfix Release for the Broker MvP with MS8.
 - Fixed an issue where connector crawling failed when data offer limits were exceeded.
 - Fixed searching data offers with capital letters didn't work.
 
+### Deployment Migration Notes
+
+No configuration changes are required.
+
 #### Compatible Versions
 
 - Broker Backend Docker Image: `ghcr.io/sovity/broker-server-ce:1.0.2`
