@@ -24,8 +24,7 @@ FROM eclipse-temurin:17-jre-alpine
 # Optional JVM arguments, such as memory settings
 ARG JVM_ARGS=""
 
-# Install curl for healthcheck
-# Create empty properties file to avoid errors when loading properties
+# Install curl for healthcheck and create an empty properties file as migitation for a core EDC issue
 RUN apk add --no-cache curl && touch /emtpy-properties-file.properties
 
 WORKDIR /app
