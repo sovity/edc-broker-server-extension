@@ -42,10 +42,12 @@ public class DataOfferBuilder {
      * @return {@link FetchedDataOffer}s
      */
     public Collection<FetchedDataOffer> deduplicateContractOffers(Collection<ContractOffer> contractOffers) {
-        return groupByAssetId(contractOffers)
-                .stream()
-                .map(offers -> buildFetchedDataOffer(offers.get(0).getAsset(), offers))
-                .toList();
+        //return groupByAssetId(contractOffers)
+        //        .stream()
+        //        .map(offers -> buildFetchedDataOffer(offers.get(0).getAsset(), offers))
+        //       .toList();
+
+        return null; //TODO: magic stuff
     }
 
     @NotNull
@@ -75,7 +77,9 @@ public class DataOfferBuilder {
     }
 
     private Collection<List<ContractOffer>> groupByAssetId(Collection<ContractOffer> contractOffers) {
-        return contractOffers.stream().collect(groupingBy(offer -> offer.getAsset().getId())).values();
+        //return contractOffers.stream().collect(groupingBy(offer -> offer.getAsset().getId())).values();
+        //TODO: magic stuff
+        return null;
     }
 
     private String getAssetName(Asset asset) {

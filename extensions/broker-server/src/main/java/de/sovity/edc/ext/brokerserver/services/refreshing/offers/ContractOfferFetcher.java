@@ -20,7 +20,10 @@ import lombok.SneakyThrows;
 import org.eclipse.edc.connector.contract.spi.types.offer.ContractOffer;
 import org.eclipse.edc.connector.spi.catalog.CatalogService;
 import org.eclipse.edc.spi.query.QuerySpec;
+import org.eclipse.edc.spi.response.StatusResult;
+import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -36,7 +39,12 @@ public class ContractOfferFetcher {
     @SneakyThrows
     public List<ContractOffer> fetch(String connectorEndpoint) {
         try {
-            return catalogService.getByProviderUrl(connectorEndpoint, QuerySpec.max()).get().getContractOffers();
+            StatusResult<byte[]> result = catalogService.request(connectorEndpoint, "dataspace-protocol-http", QuerySpec.max()).get();
+            byte[] resultContent = result.getContent();
+            JSONObject resultJson = new JSONObject(new String(resultContent));
+
+            return new ArrayList<>(); //TODO: magic stuff
+
         } catch (InterruptedException e) {
             throw e;
         } catch (Exception e) {
