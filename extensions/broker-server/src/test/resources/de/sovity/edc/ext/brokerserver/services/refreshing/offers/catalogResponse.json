@@ -1,0 +1,83 @@
+{
+    "@id": "478a07bb-4df0-471e-aabe-c6d47558b329",
+    "@type": "dcat:Catalog",
+    "dcat:dataset": [
+        {
+            "@id": "test-1.0",
+            "@type": "dcat:Dataset",
+            "odrl:hasPolicy": {
+                "@id": "dGVzdC1jb250cmFjdC1kZWZpbml0aW9u:dGVzdC0xLjA=:MTIwMjk2ODItMGQzNC00OWNiLTgxNjItNTM5ZGIwZWUxZWU2",
+                "@type": "odrl:Set",
+                "odrl:permission": {
+                    "odrl:target": "test-1.0",
+                    "odrl:action": {
+                        "odrl:type": "USE"
+                    },
+                    "odrl:constraint": [
+                        {
+                            "odrl:leftOperand": "POLICY_EVALUATION_TIME",
+                            "odrl:operator": {
+                                "@id": "odrl:gteq"
+                            },
+                            "odrl:rightOperand": "2022-05-31T22:00:00.000Z"
+                        },
+                        {
+                            "odrl:leftOperand": "POLICY_EVALUATION_TIME",
+                            "odrl:operator": {
+                                "@id": "odrl:lt"
+                            },
+                            "odrl:rightOperand": "2030-06-30T22:00:00.000Z"
+                        }
+                    ]
+                },
+                "odrl:prohibition": [],
+                "odrl:obligation": [],
+                "odrl:target": "test-1.0"
+            },
+            "dcat:distribution": [],
+            "asset:prop:curatorOrganizationName": "Example GmbH",
+            "http://w3id.org/mds#transportMode": "Road",
+            "asset:prop:contenttype": "application/json",
+            "asset:prop:version": "1.0",
+            "http://w3id.org/mds#geoReferenceMethod": "Geo reference method",
+            "http://w3id.org/mds#dataModel": "Data Model",
+            "http://w3id.org/mds#dataSubcategory": "Accidents",
+            "asset:prop:language": "https://w3id.org/idsa/code/EN",
+            "asset:prop:keywords": "keyword1, keyword2",
+            "asset:prop:name": "test",
+            "asset:prop:description": "My Asset Description",
+            "http://w3id.org/mds#dataCategory": "Traffic Information",
+            "edc:id": "test-1.0",
+            "asset:prop:originator": "http://edc:11003/api/v1/ids/data"
+        },
+        {
+            "@id": "c0b8446a-b5bd-441a-836f-7e6d93bf4dc0",
+            "@type": "dcat:Dataset",
+            "odrl:hasPolicy": {
+                "@id": "ZTA3YTUyYzQtNTY1Yi00NjBmLTg1YmItOTRlYTY2ZmM2OGU5:YzBiODQ0NmEtYjViZC00NDFhLTgzNmYtN2U2ZDkzYmY0ZGMw:NzkyNjUzMWItMjU3NS00NWE5LTg1N2MtZjk2ZjIwMzAwOWVj",
+                "@type": "odrl:Set",
+                "odrl:permission": [],
+                "odrl:prohibition": [],
+                "odrl:obligation": [],
+                "odrl:target": "c0b8446a-b5bd-441a-836f-7e6d93bf4dc0"
+            },
+            "dcat:distribution": [],
+            "edc:description": "description",
+            "edc:id": "c0b8446a-b5bd-441a-836f-7e6d93bf4dc0"
+        }
+    ],
+    "dcat:service": {
+        "@id": "eea310e7-9725-4e77-b080-fe64ac5b6435",
+        "@type": "dcat:DataService",
+        "dct:terms": "connector",
+        "dct:endpointUrl": "http://localhost:12000/dsp"
+    },
+    "edc:participantId": "provider",
+    "@context": {
+        "dct": "https://purl.org/dc/terms/",
+        "edc": "https://w3id.org/edc/v0.0.1/ns/",
+        "dcat": "https://www.w3.org/ns/dcat/",
+        "odrl": "http://www.w3.org/ns/odrl/2/",
+        "dspace": "https://w3id.org/dspace/v0.8/"
+    }
+}

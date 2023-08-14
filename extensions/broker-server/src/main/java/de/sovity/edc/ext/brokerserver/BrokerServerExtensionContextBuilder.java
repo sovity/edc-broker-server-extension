@@ -54,9 +54,7 @@ import de.sovity.edc.ext.brokerserver.services.queue.ThreadPoolTaskQueue;
 import de.sovity.edc.ext.brokerserver.services.refreshing.ConnectorUpdateFailureWriter;
 import de.sovity.edc.ext.brokerserver.services.refreshing.ConnectorUpdateSuccessWriter;
 import de.sovity.edc.ext.brokerserver.services.refreshing.ConnectorUpdater;
-import de.sovity.edc.ext.brokerserver.services.refreshing.offers.ContractOfferFetcher;
 import de.sovity.edc.ext.brokerserver.services.refreshing.offers.ContractOfferRecordUpdater;
-import de.sovity.edc.ext.brokerserver.services.refreshing.offers.DataOfferBuilder;
 import de.sovity.edc.ext.brokerserver.services.refreshing.offers.DataOfferFetcher;
 import de.sovity.edc.ext.brokerserver.services.refreshing.offers.DataOfferLimitsEnforcer;
 import de.sovity.edc.ext.brokerserver.services.refreshing.offers.DataOfferPatchApplier;
@@ -147,9 +145,7 @@ public class BrokerServerExtensionContextBuilder {
                 dataOfferLimitsEnforcer
         );
         var connectorUpdateFailureWriter = new ConnectorUpdateFailureWriter(brokerEventLogger, monitor);
-        var contractOfferFetcher = new ContractOfferFetcher(catalogService);
-        var fetchedDataOfferBuilder = new DataOfferBuilder(objectMapper);
-        var dataOfferFetcher = new DataOfferFetcher(contractOfferFetcher, fetchedDataOfferBuilder);
+        var dataOfferFetcher = new DataOfferFetcher(catalogService);
         var connectorUpdater = new ConnectorUpdater(
                 dataOfferFetcher,
                 connectorUpdateSuccessWriter,

@@ -49,6 +49,9 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.10.0")
     testImplementation("org.skyscreamer:jsonassert:1.5.1")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.10.0")
+    testImplementation("${edcGroup}:dsp:${edcVersion}")
+    testImplementation("${edcGroup}:json-ld:${edcVersion}")
+    implementation("commons-io:commons-io:2.13.0")
 
     implementation("org.json:json:20230618")
     implementation("org.quartz-scheduler:quartz:2.3.2")

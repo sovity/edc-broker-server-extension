@@ -14,30 +14,47 @@
 
 package de.sovity.edc.ext.brokerserver.services.refreshing.offers;
 
+import de.sovity.edc.ext.brokerserver.services.refreshing.exceptions.ConnectorUnreachableException;
 import de.sovity.edc.ext.brokerserver.services.refreshing.offers.model.FetchedDataOffer;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import org.eclipse.edc.connector.contract.spi.types.offer.ContractOffer;
+import org.eclipse.edc.connector.spi.catalog.CatalogService;
+import org.eclipse.edc.spi.query.QuerySpec;
+import org.json.JSONObject;
 
-import java.util.Collection;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 @RequiredArgsConstructor
 public class DataOfferFetcher {
-    private final ContractOfferFetcher contractOfferFetcher;
-    private final DataOfferBuilder dataOfferBuilder;
+    private final CatalogService catalogService;
 
     /**
-     * Fetches {@link ContractOffer}s and de-duplicates them into {@link FetchedDataOffer}s.
+     * Fetches Connector contract offers
      *
      * @param connectorEndpoint connector endpoint
      * @return updated connector db row
      */
     @SneakyThrows
-    public Collection<FetchedDataOffer> fetch(String connectorEndpoint) {
-        // Contract Offers contain assets multiple times, with different policies
-        var contractOffers = contractOfferFetcher.fetch(connectorEndpoint);
+    public List<FetchedDataOffer> fetch(String connectorEndpoint) {
+        try {
+            var json = fetchCatalogJson(connectorEndpoint);
 
-        // Data Offers represent unique assets
-        return dataOfferBuilder.deduplicateContractOffers(contractOffers);
+
+            return new ArrayList<>(); //TODO: magic stuff
+
+        } catch (InterruptedException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new ConnectorUnreachableException("Failed to fetch connector contract offers", e);
+        }
+    }
+
+    private JSONObject fetchCatalogJson(String connectorEndpoint) throws InterruptedException, ExecutionException {
+        var resultContent = catalogService.request(connectorEndpoint,
+            "dataspace-protocol-http", QuerySpec.max()).get().getContent();
+        return new JSONObject(new String(resultContent, StandardCharsets.UTF_8));
     }
 }

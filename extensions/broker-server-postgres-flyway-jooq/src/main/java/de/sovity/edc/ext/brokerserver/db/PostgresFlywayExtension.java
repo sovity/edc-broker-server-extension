@@ -14,12 +14,15 @@
 
 package de.sovity.edc.ext.brokerserver.db;
 
-import org.eclipse.edc.connector.dataplane.selector.store.sql.schema.DataPlaneInstanceStatements;
-import org.eclipse.edc.connector.dataplane.selector.store.sql.schema.postgres.PostgresDataPlaneInstanceStatements;
+import org.eclipse.edc.connector.dataplane.selector.spi.instance.DataPlaneInstance;
+import org.eclipse.edc.connector.dataplane.selector.spi.store.DataPlaneInstanceStore;
 import org.eclipse.edc.runtime.metamodel.annotation.Provider;
 import org.eclipse.edc.runtime.metamodel.annotation.Setting;
+import org.eclipse.edc.spi.result.StoreResult;
 import org.eclipse.edc.spi.system.ServiceExtension;
 import org.eclipse.edc.spi.system.ServiceExtensionContext;
+
+import java.util.stream.Stream;
 
 public class PostgresFlywayExtension implements ServiceExtension {
     @Setting(required = true)
@@ -40,8 +43,8 @@ public class PostgresFlywayExtension implements ServiceExtension {
     public static final String DB_CONNECTION_TIMEOUT_IN_MS = "edc.broker.server.db.connection.timeout.in.ms";
 
     @Provider
-    public DataPlaneInstanceStatements dataPlaneInstanceStatements() {
-        return new PostgresDataPlaneInstanceStatements();
+    public DataPlaneInstanceStore dataPlaneInstanceStore() {
+        return new NoopDataplaneInstanceStore();
     }
 
     @Override
@@ -61,5 +64,27 @@ public class PostgresFlywayExtension implements ServiceExtension {
         var flyway = flywayFactory.setupFlyway(dataSource);
         var flywayMigrator = new FlywayMigrator(flyway, config, monitor);
         flywayMigrator.migrateAndRepair();
+    }
+
+    private static class NoopDataplaneInstanceStore implements DataPlaneInstanceStore {
+        @Override
+        public StoreResult<Void> create(DataPlaneInstance instance) {
+            return null;
+        }
+
+        @Override
+        public StoreResult<Void> update(DataPlaneInstance instance) {
+            return null;
+        }
+
+        @Override
+        public DataPlaneInstance findById(String id) {
+            return null;
+        }
+
+        @Override
+        public Stream<DataPlaneInstance> getAll() {
+            return null;
+        }
     }
 }

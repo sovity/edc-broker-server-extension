@@ -96,7 +96,7 @@ class ConnectorUpdaterTest {
                 .id("always-true")
                 .policy(Policy.Builder.newInstance().build())
                 .build();
-        policyDefinitionStore.save(policyDefinition);
+        policyDefinitionStore.create(policyDefinition);
     }
 
     public void createAlwaysTrueContractDefinition(ContractDefinitionStore contractDefinitionStore) {
@@ -104,8 +104,6 @@ class ConnectorUpdaterTest {
                 .id("always-true-cd")
                 .contractPolicyId("always-true")
                 .accessPolicyId("always-true")
-                .selectorExpression(AssetSelectorExpression.SELECT_ALL)
-                .validity(1000) //else throws "validity must be strictly positive"
                 .build();
         contractDefinitionStore.save(contractDefinition);
     }

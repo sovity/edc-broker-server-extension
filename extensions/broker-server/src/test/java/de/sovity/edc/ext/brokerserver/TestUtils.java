@@ -17,7 +17,6 @@ package de.sovity.edc.ext.brokerserver;
 import de.sovity.edc.ext.brokerserver.client.BrokerServerClient;
 import de.sovity.edc.ext.brokerserver.db.PostgresFlywayExtension;
 import de.sovity.edc.ext.brokerserver.db.TestDatabase;
-import org.eclipse.edc.protocol.ids.api.configuration.IdsApiConfigurationExtension;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
@@ -54,8 +53,7 @@ public class TestUtils {
         config.put("web.http.protocol.port", String.valueOf(PROTOCOL_PORT));
         config.put("web.http.protocol.path", PROTOCOL_PATH);
         config.put("edc.api.auth.key", MANAGEMENT_API_KEY);
-        config.put("edc.ids.endpoint", PROTOCOL_ENDPOINT);
-        config.put(IdsApiConfigurationExtension.IDS_WEBHOOK_ADDRESS, PROTOCOL_HOST);
+        config.put("edc.dsp.callback.address", PROTOCOL_ENDPOINT);
         config.put("edc.oauth.provider.audience", "idsc:IDS_CONNECTORS_ALL");
         config.put(PostgresFlywayExtension.JDBC_URL, testDatabase.getJdbcUrl());
         config.put(PostgresFlywayExtension.JDBC_USER, testDatabase.getJdbcUser());
@@ -66,25 +64,7 @@ public class TestUtils {
         config.put(PostgresFlywayExtension.FLYWAY_CLEAN, "true");
         config.put(BrokerServerExtension.NUM_THREADS, "0");
         config.put(BrokerServerExtension.ADMIN_API_KEY, ADMIN_API_KEY);
-        config.putAll(getCoreEdcJdbcConfig(testDatabase));
         config.putAll(additionalConfigProperties);
-        return config;
-    }
-
-    private static Map<String, String> getCoreEdcJdbcConfig(TestDatabase testDatabase) {
-        Map<String, String> config = new HashMap<>();
-        List.of("asset",
-                "contractdefinition",
-                "contractnegotiation",
-                "policy",
-                "transferprocess",
-                "dataplaneinstance"
-        ).forEach(it -> {
-            config.put("edc.datasource.%s.name".formatted(it), it);
-            config.put("edc.datasource.%s.url".formatted(it), testDatabase.getJdbcUrl());
-            config.put("edc.datasource.%s.user".formatted(it), testDatabase.getJdbcUser());
-            config.put("edc.datasource.%s.password".formatted(it), testDatabase.getJdbcPassword());
-        });
         return config;
     }
 
