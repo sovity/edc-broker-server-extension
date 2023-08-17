@@ -16,6 +16,7 @@ package de.sovity.edc.ext.brokerserver.services.refreshing.offers;
 
 import de.sovity.edc.ext.brokerserver.services.refreshing.exceptions.ConnectorUnreachableException;
 import de.sovity.edc.ext.brokerserver.services.refreshing.offers.model.FetchedDataOffer;
+import de.sovity.edc.ext.brokerserver.services.refreshing.offers.model.FetchedDataOfferContractOffer;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.eclipse.edc.connector.spi.catalog.CatalogService;
@@ -39,11 +40,36 @@ public class DataOfferFetcher {
      */
     @SneakyThrows
     public List<FetchedDataOffer> fetch(String connectorEndpoint) {
+        var dataOfferList = new ArrayList<FetchedDataOffer>();
+
         try {
             var json = fetchCatalogJson(connectorEndpoint);
+            var dataSets = json.getJSONArray("dcat:dataset");
+            for (int i = 0; i < dataSets.length(); i++) {
+                var dataSet = dataSets.getJSONObject(i);
+                var id = dataSet.getString("edc:id");
+                var name = dataSet.getString("edc:name");
+                var version = dataSet.getString("edc:version");
+                var type = dataSet.getString("edc:type");
+                var contenttype = dataSet.getString("edc:contenttype");
+                var originator = dataSet.getString("edc:originator");
+                var policyJson = dataSet.getJSONObject("odrl:hasPolicy").toString();
 
+                var fetchedDataOfferContractOffer = new FetchedDataOfferContractOffer();
+                fetchedDataOfferContractOffer.setContractOfferId(id);
+                fetchedDataOfferContractOffer.setPolicyJson(policyJson);
 
-            return new ArrayList<>(); //TODO: magic stuff
+                var contractOffers = new ArrayList<FetchedDataOfferContractOffer>();
+                contractOffers.add(fetchedDataOfferContractOffer);
+
+                var dataOffer = new FetchedDataOffer();
+                dataOffer.setAssetId(id);
+                dataOffer.setAssetName(name);
+                dataOffer.setContractOffers(contractOffers);
+                dataOfferList.add(dataOffer);
+            }
+
+            return dataOfferList;
 
         } catch (InterruptedException e) {
             throw e;
