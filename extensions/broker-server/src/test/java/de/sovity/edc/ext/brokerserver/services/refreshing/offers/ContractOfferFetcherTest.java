@@ -47,7 +47,7 @@ class ContractOfferFetcherTest {
         // arrange
         var catalogJson = readFile("catalogResponse.json");
         var result = CompletableFuture.completedFuture(StatusResult.success(catalogJson.getBytes(StandardCharsets.UTF_8)));
-        when(catalogService.request(eq(connectorEndpoint), eq("dataspace-protocol-http"), eq(QuerySpec.max()))).thenReturn(result);
+        when(catalogService.requestCatalog(eq(connectorEndpoint), eq("dataspace-protocol-http"), eq(QuerySpec.max()))).thenReturn(result);
         new DataOfferFetcher(catalogService).fetch("http://localhost:11003/api/v1/dsp");
 
         // act

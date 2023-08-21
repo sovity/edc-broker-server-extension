@@ -45,27 +45,29 @@ public class DataOfferFetcher {
         try {
             var json = fetchCatalogJson(connectorEndpoint);
             var dataSets = json.getJSONArray("dcat:dataset");
+
             for (int i = 0; i < dataSets.length(); i++) {
                 var dataSet = dataSets.getJSONObject(i);
-                var id = dataSet.getString("edc:id");
+
+                var assetId = dataSet.getString("edc:id");
                 var name = dataSet.getString("edc:name");
-                var version = dataSet.getString("edc:version");
-                var type = dataSet.getString("edc:type");
-                var contenttype = dataSet.getString("edc:contenttype");
-                var originator = dataSet.getString("edc:originator");
                 var policyJson = dataSet.getJSONObject("odrl:hasPolicy").toString();
 
+                dataSet.remove("odrl:hasPolicy");
+
                 var fetchedDataOfferContractOffer = new FetchedDataOfferContractOffer();
-                fetchedDataOfferContractOffer.setContractOfferId(id);
+                fetchedDataOfferContractOffer.setContractOfferId(assetId);
                 fetchedDataOfferContractOffer.setPolicyJson(policyJson);
 
                 var contractOffers = new ArrayList<FetchedDataOfferContractOffer>();
                 contractOffers.add(fetchedDataOfferContractOffer);
 
                 var dataOffer = new FetchedDataOffer();
-                dataOffer.setAssetId(id);
+                dataOffer.setAssetId(assetId);
                 dataOffer.setAssetName(name);
+                dataOffer.setAssetPropertiesJson(dataSet.toString());
                 dataOffer.setContractOffers(contractOffers);
+
                 dataOfferList.add(dataOffer);
             }
 
@@ -79,7 +81,7 @@ public class DataOfferFetcher {
     }
 
     private JSONObject fetchCatalogJson(String connectorEndpoint) throws InterruptedException, ExecutionException {
-        var resultContent = catalogService.request(connectorEndpoint,
+        var resultContent = catalogService.requestCatalog(connectorEndpoint,
             "dataspace-protocol-http", QuerySpec.max()).get().getContent();
         return new JSONObject(new String(resultContent, StandardCharsets.UTF_8));
     }
