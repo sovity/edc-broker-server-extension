@@ -82,7 +82,7 @@ public class DataOfferFetcher {
 
     private JSONObject fetchCatalogJson(String connectorEndpoint) throws InterruptedException, ExecutionException {
         var resultContent = catalogService.requestCatalog(connectorEndpoint,
-            "dataspace-protocol-http", QuerySpec.max()).get().getContent();
+                "dataspace-protocol-http", QuerySpec.max()).get().getContent();
         return new JSONObject(new String(resultContent, StandardCharsets.UTF_8));
     }
 }
