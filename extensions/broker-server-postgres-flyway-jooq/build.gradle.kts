@@ -27,14 +27,14 @@ buildscript {
 }
 
 plugins {
-    id("org.flywaydb.flyway") version "9.21.0"
+    id("org.flywaydb.flyway") version "9.21.1"
     id("nu.studer.jooq") version "7.1.1"
     `java-library`
     `maven-publish`
 }
 
 dependencies {
-    api("org.jooq:jooq:3.18.5")
+    api("org.jooq:jooq:3.18.6")
     api("com.github.t9t.jooq:jooq-postgresql-json:4.0.0")
 
     jooqGenerator("org.postgresql:postgresql:42.6.0")
@@ -43,7 +43,7 @@ dependencies {
 
     annotationProcessor("org.projectlombok:lombok:1.18.28")
     compileOnly("org.projectlombok:lombok:1.18.28")
-    implementation("org.apache.commons:commons-lang3:3.12.0")
+    implementation("org.apache.commons:commons-lang3:3.13.0")
 
     implementation("${edcGroup}:core-spi:${edcVersion}")
 
