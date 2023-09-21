@@ -55,6 +55,11 @@ dependencies {
 
     implementation("org.json:json:20230618")
     implementation("org.quartz-scheduler:quartz:2.3.2")
+
+    implementation("de.sovity.edc:catalog-parser:0.0.1-SNAPSHOT")
+    implementation("de.sovity.edc:json-and-jsonld-utils:0.0.1-SNAPSHOT")
+    implementation("de.sovity.edc:wrapper-common-api:4.2.0")
+    implementation("de.sovity.edc:wrapper-common-mappers:0.0.1-SNAPSHOT")
 }
 
 tasks.getByName<Test>("test") {
