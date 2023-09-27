@@ -7,7 +7,7 @@ val assertj: String by project
 plugins {
     `java-library`
     `maven-publish`
-    id("org.openapi.generator") version "6.6.0"
+    id("org.openapi.generator") version "7.0.1"
 }
 
 repositories {
@@ -35,8 +35,8 @@ dependencies {
     implementation("jakarta.annotation:jakarta.annotation-api:1.3.5")
 
     // Lombok
-    compileOnly("org.projectlombok:lombok:1.18.28")
-    annotationProcessor("org.projectlombok:lombok:1.18.28")
+    compileOnly("org.projectlombok:lombok:1.18.30")
+    annotationProcessor("org.projectlombok:lombok:1.18.30")
 }
 
 tasks.getByName<Test>("test") {
