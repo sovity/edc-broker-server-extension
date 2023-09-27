@@ -67,6 +67,8 @@ import de.sovity.edc.ext.brokerserver.services.schedules.OfflineConnectorRefresh
 import de.sovity.edc.ext.brokerserver.services.schedules.OnlineConnectorRefreshJob;
 import de.sovity.edc.ext.brokerserver.services.schedules.QuartzScheduleInitializer;
 import de.sovity.edc.ext.brokerserver.services.schedules.utils.CronJobRef;
+import de.sovity.edc.utils.catalog.DspCatalogService;
+import de.sovity.edc.utils.catalog.mapper.DspDataOfferBuilder;
 import lombok.NoArgsConstructor;
 import org.eclipse.edc.connector.spi.catalog.CatalogService;
 import org.eclipse.edc.runtime.metamodel.annotation.Inject;
@@ -146,7 +148,11 @@ public class BrokerServerExtensionContextBuilder {
                 dataOfferLimitsEnforcer
         );
         var connectorUpdateFailureWriter = new ConnectorUpdateFailureWriter(brokerEventLogger, monitor);
-        var dataOfferFetcher = new DataOfferFetcher(catalogService);
+
+        var dspDataOfferBuilder = new DspDataOfferBuilder();
+        var dspCatalogService = new DspCatalogService(catalogService, dspDataOfferBuilder);
+        var dataOfferFetcher = new DataOfferFetcher(dspCatalogService);
+
         var connectorUpdater = new ConnectorUpdater(
                 dataOfferFetcher,
                 connectorUpdateSuccessWriter,

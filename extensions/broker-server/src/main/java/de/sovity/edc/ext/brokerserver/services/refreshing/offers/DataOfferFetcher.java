@@ -17,20 +17,16 @@ package de.sovity.edc.ext.brokerserver.services.refreshing.offers;
 import de.sovity.edc.ext.brokerserver.services.refreshing.exceptions.ConnectorUnreachableException;
 import de.sovity.edc.ext.brokerserver.services.refreshing.offers.model.FetchedDataOffer;
 import de.sovity.edc.ext.brokerserver.services.refreshing.offers.model.FetchedDataOfferContractOffer;
+import de.sovity.edc.utils.catalog.DspCatalogService;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import org.eclipse.edc.connector.spi.catalog.CatalogService;
-import org.eclipse.edc.spi.query.QuerySpec;
-import org.json.JSONObject;
 
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 @RequiredArgsConstructor
 public class DataOfferFetcher {
-    private final CatalogService catalogService;
+    private final DspCatalogService dspCatalogService;
 
     /**
      * Fetches Connector contract offers
@@ -43,17 +39,15 @@ public class DataOfferFetcher {
         var dataOfferList = new ArrayList<FetchedDataOffer>();
 
         try {
-            var json = fetchCatalogJson(connectorEndpoint);
-            var dataSets = json.getJSONArray("dcat:dataset");
+            var dspDataOffers = dspCatalogService.fetchDataOffers(connectorEndpoint);
 
-            for (int i = 0; i < dataSets.length(); i++) {
-                var dataSet = dataSets.getJSONObject(i);
+            for (int i = 0; i < dspDataOffers.size(); i++) {
+                var dspDataOffer = dspDataOffers.get(i);
+                var assertProperties = dspDataOffer.getAssetPropertiesJsonLd();
 
-                var assetId = dataSet.getString("edc:id");
-                var name = dataSet.getString("edc:name");
-                var policyJson = dataSet.getJSONObject("odrl:hasPolicy").toString();
-
-                dataSet.remove("odrl:hasPolicy");
+                var assetId = assertProperties.getString("edc:id");
+                var name = assertProperties.getString("edc:name");
+                var policyJson = assertProperties.getJsonObject("odrl:hasPolicy").toString();
 
                 var fetchedDataOfferContractOffer = new FetchedDataOfferContractOffer();
                 fetchedDataOfferContractOffer.setContractOfferId(assetId);
@@ -65,24 +59,15 @@ public class DataOfferFetcher {
                 var dataOffer = new FetchedDataOffer();
                 dataOffer.setAssetId(assetId);
                 dataOffer.setAssetName(name);
-                dataOffer.setAssetPropertiesJson(dataSet.toString());
+                dataOffer.setAssetPropertiesJson(assertProperties.toString());
                 dataOffer.setContractOffers(contractOffers);
 
                 dataOfferList.add(dataOffer);
             }
 
             return dataOfferList;
-
-        } catch (InterruptedException e) {
-            throw e;
         } catch (Exception e) {
             throw new ConnectorUnreachableException("Failed to fetch connector contract offers", e);
         }
-    }
-
-    private JSONObject fetchCatalogJson(String connectorEndpoint) throws InterruptedException, ExecutionException {
-        var resultContent = catalogService.requestCatalog(connectorEndpoint,
-                "dataspace-protocol-http", QuerySpec.max()).get().getContent();
-        return new JSONObject(new String(resultContent, StandardCharsets.UTF_8));
     }
 }
