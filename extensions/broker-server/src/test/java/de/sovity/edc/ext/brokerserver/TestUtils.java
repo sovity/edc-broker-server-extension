@@ -29,7 +29,7 @@ public class TestUtils {
     private static final int DATA_PORT = getFreePort();
     private static final int PROTOCOL_PORT = getFreePort();
     private static final String DATA_PATH = "/api/v1/data";
-    private static final String PROTOCOL_PATH = "/api/v1/ids";
+    private static final String PROTOCOL_PATH = "/api/dsp";
     public static final String MANAGEMENT_API_KEY = "123456";
     public static final String MANAGEMENT_ENDPOINT = "http://localhost:" + DATA_PORT + DATA_PATH;
 
@@ -37,7 +37,7 @@ public class TestUtils {
 
 
     public static final String PROTOCOL_HOST = "http://localhost:" + PROTOCOL_PORT;
-    public static final String PROTOCOL_ENDPOINT = PROTOCOL_HOST + PROTOCOL_PATH + "/data";
+    public static final String PROTOCOL_ENDPOINT = PROTOCOL_HOST + PROTOCOL_PATH;
 
     @NotNull
     public static Map<String, String> createConfiguration(
