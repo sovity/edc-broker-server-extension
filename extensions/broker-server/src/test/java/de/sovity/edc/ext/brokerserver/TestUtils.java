@@ -20,7 +20,6 @@ import de.sovity.edc.ext.brokerserver.db.TestDatabase;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static org.eclipse.edc.junit.testfixtures.TestUtils.getFreePort;
