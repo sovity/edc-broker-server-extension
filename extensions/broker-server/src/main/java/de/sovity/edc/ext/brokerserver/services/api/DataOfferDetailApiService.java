@@ -45,10 +45,10 @@ public class DataOfferDetailApiService {
         result.setAssetId(dataOffer.getAssetId());
         result.setConnectorEndpoint(dataOffer.getConnectorEndpoint());
         result.setConnectorOnlineStatus(mapConnectorOnlineStatus(dataOffer.getConnectorOnlineStatus()));
-        result.setConnectorOfflineSinceOrLastUpdatedAt(dataOffer.getConnectorOfflineSinceOrLastUpdatedAt());
+        result.setConnectorOfflineSinceOrLastUpdatedAt(dataOffer.getConnectorOfflineSinceOrLastUpdatedAt().toInstant().toEpochMilli());
         result.setProperties(assetPropertyParser.parsePropertiesFromJsonString(dataOffer.getAssetPropertiesJson()));
-        result.setCreatedAt(dataOffer.getCreatedAt());
-        result.setUpdatedAt(dataOffer.getUpdatedAt());
+        result.setCreatedAt(dataOffer.getCreatedAt().toInstant().toEpochMilli());
+        result.setUpdatedAt(dataOffer.getUpdatedAt().toInstant().toEpochMilli());
         result.setContractOffers(buildDataOfferDetailContractOffers(dataOffer.getContractOffers()));
         result.setViewCount(dataOffer.getViewCount());
         return result;

@@ -20,17 +20,15 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
-import java.time.OffsetDateTime;
-
 @Getter
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ConnectorDetailsRs {
     String endpoint;
     String connectorId;
-    OffsetDateTime createdAt;
-    OffsetDateTime lastSuccessfulRefreshAt;
-    OffsetDateTime lastRefreshAttemptAt;
+    Long createdAt;
+    Long lastSuccessfulRefreshAt;
+    Long lastRefreshAttemptAt;
     ConnectorOnlineStatus onlineStatus;
     Integer numDataOffers;
     Long connectorCrawlingTimeAvg;

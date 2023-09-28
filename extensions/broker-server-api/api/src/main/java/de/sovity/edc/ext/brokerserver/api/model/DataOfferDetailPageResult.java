@@ -21,7 +21,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -42,13 +41,13 @@ public class DataOfferDetailPageResult {
     private ConnectorOnlineStatus connectorOnlineStatus;
 
     @Schema(description = "Date to be displayed as last update date, for online connectors it's the last refresh date, for offline connectors it's the creation date or last successful fetch.")
-    private OffsetDateTime connectorOfflineSinceOrLastUpdatedAt;
+    private Long connectorOfflineSinceOrLastUpdatedAt;
 
     @Schema(description = "Creation date in Broker", requiredMode = Schema.RequiredMode.REQUIRED)
-    private OffsetDateTime createdAt;
+    private Long createdAt;
 
     @Schema(description = "Update date in Broker", requiredMode = Schema.RequiredMode.REQUIRED)
-    private OffsetDateTime updatedAt;
+    private Long updatedAt;
 
     @Schema(description = "Asset properties", requiredMode = Schema.RequiredMode.REQUIRED)
     private Map<String, String> properties;

@@ -21,8 +21,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.time.OffsetDateTime;
-
 @Getter
 @Setter
 @ToString
@@ -37,13 +35,13 @@ public class ConnectorListEntry {
     private String endpoint;
 
     @Schema(description = "Creation date in Broker", requiredMode = Schema.RequiredMode.REQUIRED)
-    private OffsetDateTime createdAt;
+    private Long createdAt;
 
     @Schema(description = "Last time the connector was successfully refreshed.")
-    private OffsetDateTime lastSuccessfulRefreshAt;
+    private Long lastSuccessfulRefreshAt;
 
     @Schema(description = "Last time the connector was tried to be refreshed.")
-    private OffsetDateTime lastRefreshAttemptAt;
+    private Long lastRefreshAttemptAt;
 
     @Schema(description = "Connector Online Status", requiredMode = Schema.RequiredMode.REQUIRED)
     private ConnectorOnlineStatus onlineStatus;
