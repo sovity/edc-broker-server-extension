@@ -81,8 +81,8 @@ public class ConnectorApiService {
         dto.setId(connector.getConnectorId());
         dto.setEndpoint(connector.getEndpoint());
         dto.setCreatedAt(connector.getCreatedAt().toInstant().toEpochMilli());
-        dto.setLastRefreshAttemptAt(connector.getLastRefreshAttemptAt().toInstant().toEpochMilli());
-        dto.setLastSuccessfulRefreshAt(connector.getLastSuccessfulRefreshAt().toInstant().toEpochMilli());
+        dto.setLastRefreshAttemptAt(connector.getLastRefreshAttemptAt() == null ? null : connector.getLastRefreshAttemptAt().toInstant().toEpochMilli());
+        dto.setLastSuccessfulRefreshAt(connector.getLastSuccessfulRefreshAt() == null ? null : connector.getLastSuccessfulRefreshAt().toInstant().toEpochMilli());
         dto.setOnlineStatus(getOnlineStatus(connector));
         dto.setNumContractOffers(connector.getNumDataOffers());
         return dto;
