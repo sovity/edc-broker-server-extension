@@ -71,6 +71,7 @@ import de.sovity.edc.utils.catalog.DspCatalogService;
 import de.sovity.edc.utils.catalog.mapper.DspDataOfferBuilder;
 import lombok.NoArgsConstructor;
 import org.eclipse.edc.connector.spi.catalog.CatalogService;
+import org.eclipse.edc.jsonld.spi.JsonLd;
 import org.eclipse.edc.runtime.metamodel.annotation.Inject;
 import org.eclipse.edc.spi.monitor.Monitor;
 import org.eclipse.edc.spi.system.configuration.Config;
@@ -95,7 +96,8 @@ public class BrokerServerExtensionContextBuilder {
             Config config,
             Monitor monitor,
             TypeManager typeManager,
-            CatalogService catalogService
+            CatalogService catalogService,
+            JsonLd jsonLd
     ) {
         var brokerServerSettingsFactory = new BrokerServerSettingsFactory(config, monitor);
         var brokerServerSettings = brokerServerSettingsFactory.buildBrokerServerSettings();
@@ -149,7 +151,7 @@ public class BrokerServerExtensionContextBuilder {
         );
         var connectorUpdateFailureWriter = new ConnectorUpdateFailureWriter(brokerEventLogger, monitor);
 
-        var dspDataOfferBuilder = new DspDataOfferBuilder();
+        var dspDataOfferBuilder = new DspDataOfferBuilder(jsonLd);
         var dspCatalogService = new DspCatalogService(catalogService, dspDataOfferBuilder);
         var dataOfferFetcher = new DataOfferFetcher(dspCatalogService);
 

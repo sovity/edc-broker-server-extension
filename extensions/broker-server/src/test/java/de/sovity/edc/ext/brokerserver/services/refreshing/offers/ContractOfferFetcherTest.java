@@ -14,6 +14,7 @@
 
 package de.sovity.edc.ext.brokerserver.services.refreshing.offers;
 
+import de.sovity.edc.utils.catalog.DspCatalogService;
 import lombok.SneakyThrows;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.edc.connector.spi.catalog.CatalogService;
@@ -34,12 +35,14 @@ import static org.mockito.Mockito.when;
 class ContractOfferFetcherTest {
     DataOfferFetcher contractOfferFetcher;
     CatalogService catalogService;
+    DspCatalogService dspCatalogService;
     String connectorEndpoint = "http://localhost:11003/api/v1/dsp";
 
     @BeforeEach
     void setUp() {
         catalogService = mock(CatalogService.class);
-        contractOfferFetcher = new DataOfferFetcher(catalogService);
+        dspCatalogService = mock(DspCatalogService.class);
+        contractOfferFetcher = new DataOfferFetcher(dspCatalogService);
     }
 
     @Test
@@ -48,7 +51,7 @@ class ContractOfferFetcherTest {
         var catalogJson = readFile("catalogResponse.json");
         var result = CompletableFuture.completedFuture(StatusResult.success(catalogJson.getBytes(StandardCharsets.UTF_8)));
         when(catalogService.requestCatalog(eq(connectorEndpoint), eq("dataspace-protocol-http"), eq(QuerySpec.max()))).thenReturn(result);
-        new DataOfferFetcher(catalogService).fetch("http://localhost:11003/api/v1/dsp");
+        new DataOfferFetcher(dspCatalogService).fetch("http://localhost:11003/api/v1/dsp");
 
         // act
         var actual = contractOfferFetcher.fetch(connectorEndpoint);

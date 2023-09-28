@@ -16,6 +16,7 @@ package de.sovity.edc.ext.brokerserver;
 
 import org.eclipse.edc.connector.api.management.configuration.ManagementApiConfiguration;
 import org.eclipse.edc.connector.spi.catalog.CatalogService;
+import org.eclipse.edc.jsonld.spi.JsonLd;
 import org.eclipse.edc.runtime.metamodel.annotation.Inject;
 import org.eclipse.edc.runtime.metamodel.annotation.Setting;
 import org.eclipse.edc.spi.system.ServiceExtension;
@@ -83,6 +84,9 @@ public class BrokerServerExtension implements ServiceExtension {
     @Inject
     private CatalogService catalogService;
 
+    @Inject
+    private JsonLd jsonLd;
+
     /**
      * Manual Dependency Injection Result
      */
@@ -99,7 +103,8 @@ public class BrokerServerExtension implements ServiceExtension {
                 context.getConfig(),
                 context.getMonitor(),
                 typeManager,
-                catalogService
+                catalogService,
+                jsonLd
         );
 
         // This is a hack for tests, so we can access the running context from tests.
