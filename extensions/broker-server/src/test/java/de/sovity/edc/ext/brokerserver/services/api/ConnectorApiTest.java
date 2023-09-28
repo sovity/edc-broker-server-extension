@@ -77,9 +77,9 @@ class ConnectorApiTest {
             var connector = result.getConnectors().get(0);
             assertThat(connector.getId()).isEqualTo("http://my-connector/ids/data");
             assertThat(connector.getEndpoint()).isEqualTo("http://my-connector/ids/data");
-            assertThat(connector.getCreatedAt()).isEqualTo(today.minusDays(1));
-            assertThat(connector.getLastRefreshAttemptAt()).isEqualTo(today);
-            assertThat(connector.getLastSuccessfulRefreshAt()).isEqualTo(today);
+            assertThat(connector.getCreatedAt()).isEqualTo(today.minusDays(1).toInstant().toEpochMilli());
+            assertThat(connector.getLastRefreshAttemptAt()).isEqualTo(today.toInstant().toEpochMilli());
+            assertThat(connector.getLastSuccessfulRefreshAt()).isEqualTo(today.toInstant().toEpochMilli());
         });
     }
 

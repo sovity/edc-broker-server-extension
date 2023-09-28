@@ -161,14 +161,14 @@ class CatalogApiTest {
 
             var dataOfferResult = result.getDataOffers().get(0);
             assertThat(dataOfferResult.getConnectorEndpoint()).isEqualTo("http://my-connector/ids/data");
-            assertThat(dataOfferResult.getConnectorOfflineSinceOrLastUpdatedAt()).isEqualTo(today);
+            assertThat(dataOfferResult.getConnectorOfflineSinceOrLastUpdatedAt()).isEqualTo(today.toInstant().toEpochMilli());
             assertThat(dataOfferResult.getConnectorOnlineStatus()).isEqualTo(CatalogDataOffer.ConnectorOnlineStatusEnum.ONLINE);
             assertThat(dataOfferResult.getAssetId()).isEqualTo("urn:artifact:my-asset");
             assertThat(dataOfferResult.getProperties()).isEqualTo(Map.of(
                     AssetProperty.ASSET_ID, "urn:artifact:my-asset",
                     AssetProperty.ASSET_NAME, "my-asset"
             ));
-            assertThat(dataOfferResult.getCreatedAt()).isEqualTo(today.minusDays(5));
+            assertThat(dataOfferResult.getCreatedAt()).isEqualTo(today.minusDays(5).toInstant().toEpochMilli());
         });
     }
 
