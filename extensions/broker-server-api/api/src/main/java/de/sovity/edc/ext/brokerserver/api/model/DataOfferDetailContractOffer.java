@@ -22,8 +22,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.time.OffsetDateTime;
-
 @Getter
 @Setter
 @ToString
@@ -35,10 +33,10 @@ public class DataOfferDetailContractOffer {
     private String contractOfferId;
 
     @Schema(description = "Creation date in Broker", requiredMode = Schema.RequiredMode.REQUIRED)
-    private OffsetDateTime createdAt;
+    private Long createdAt;
 
     @Schema(description = "Update date in Broker", requiredMode = Schema.RequiredMode.REQUIRED)
-    private OffsetDateTime updatedAt;
+    private Long updatedAt;
 
     @Schema(description = "Contract Policy", requiredMode = Schema.RequiredMode.REQUIRED)
     private PolicyDto contractPolicy;

@@ -91,21 +91,21 @@ class DataOfferDetailApiTest {
             var actual = brokerServerClient().brokerServerApi().dataOfferDetailPage(new DataOfferDetailPageQuery("http://my-connector/ids/data", "urn:artifact:my-asset-1"));
             assertThat(actual.getAssetId()).isEqualTo("urn:artifact:my-asset-1");
             assertThat(actual.getConnectorEndpoint()).isEqualTo("http://my-connector/ids/data");
-            assertThat(actual.getConnectorOfflineSinceOrLastUpdatedAt()).isEqualTo(today);
+            assertThat(actual.getConnectorOfflineSinceOrLastUpdatedAt()).isEqualTo(today.toInstant().toEpochMilli());
             assertThat(actual.getConnectorOnlineStatus()).isEqualTo(DataOfferDetailPageResult.ConnectorOnlineStatusEnum.ONLINE);
-            assertThat(actual.getCreatedAt()).isEqualTo(today.minusDays(5));
+            assertThat(actual.getCreatedAt()).isEqualTo(today.minusDays(5).toInstant().toEpochMilli());
             assertThat(actual.getProperties()).isEqualTo(Map.of(
                 AssetProperty.ASSET_ID, "urn:artifact:my-asset-1",
                 AssetProperty.DATA_CATEGORY, "my-category",
                 AssetProperty.ASSET_NAME, "My Asset 1"
             ));
-            assertThat(actual.getUpdatedAt()).isEqualTo(today);
+            assertThat(actual.getUpdatedAt()).isEqualTo(today.toInstant().toEpochMilli());
             assertThat(actual.getContractOffers()).hasSize(1);
             var contractOffer = actual.getContractOffers().get(0);
             assertThat(contractOffer.getContractOfferId()).isEqualTo("my-contract-offer-1");
             assertEqualJson(contractOffer.getContractPolicy().getLegacyPolicy(), policyToJson(dummyPolicy()));
-            assertThat(contractOffer.getCreatedAt()).isEqualTo(today.minusDays(5));
-            assertThat(contractOffer.getUpdatedAt()).isEqualTo(today);
+            assertThat(contractOffer.getCreatedAt()).isEqualTo(today.minusDays(5).toInstant().toEpochMilli());
+            assertThat(contractOffer.getUpdatedAt()).isEqualTo(today.toInstant().toEpochMilli());
             assertThat(actual.getViewCount()).isEqualTo(2);
         });
     }

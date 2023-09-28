@@ -75,8 +75,8 @@ public class DataOfferDetailApiService {
     @NotNull
     private DataOfferDetailContractOffer buildDataOfferDetailContractOffer(ContractOfferRs offer) {
         var newOffer = new DataOfferDetailContractOffer();
-        newOffer.setCreatedAt(offer.getCreatedAt());
-        newOffer.setUpdatedAt(offer.getUpdatedAt());
+        newOffer.setCreatedAt(offer.getCreatedAt().toInstant().toEpochMilli());
+        newOffer.setUpdatedAt(offer.getUpdatedAt().toInstant().toEpochMilli());
         newOffer.setContractOfferId(offer.getContractOfferId());
         newOffer.setContractPolicy(policyDtoBuilder.buildPolicyFromJson(offer.getPolicyJson()));
         return newOffer;

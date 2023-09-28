@@ -86,12 +86,12 @@ public class CatalogApiService {
     private CatalogDataOffer buildCatalogDataOffer(DataOfferListEntryRs dataOfferRs) {
         var dataOffer = new CatalogDataOffer();
         dataOffer.setAssetId(dataOfferRs.getAssetId());
-        dataOffer.setCreatedAt(dataOfferRs.getCreatedAt());
-        dataOffer.setUpdatedAt(dataOfferRs.getUpdatedAt());
+        dataOffer.setCreatedAt(dataOfferRs.getCreatedAt().toInstant().toEpochMilli());
+        dataOffer.setUpdatedAt(dataOfferRs.getUpdatedAt().toInstant().toEpochMilli());
         dataOffer.setProperties(assetPropertyParser.parsePropertiesFromJsonString(dataOfferRs.getAssetPropertiesJson()));
         dataOffer.setContractOffers(buildCatalogContractOffers(dataOfferRs));
         dataOffer.setConnectorEndpoint(dataOfferRs.getConnectorEndpoint());
-        dataOffer.setConnectorOfflineSinceOrLastUpdatedAt(dataOfferRs.getConnectorOfflineSinceOrLastUpdatedAt());
+        dataOffer.setConnectorOfflineSinceOrLastUpdatedAt(dataOfferRs.getConnectorOfflineSinceOrLastUpdatedAt().toInstant().toEpochMilli());
         dataOffer.setConnectorOnlineStatus(getOnlineStatus(dataOfferRs));
         return dataOffer;
     }
@@ -106,8 +106,8 @@ public class CatalogApiService {
         var contractOffer = new CatalogContractOffer();
         contractOffer.setContractOfferId(contractOfferDbRow.getContractOfferId());
         contractOffer.setContractPolicy(policyDtoBuilder.buildPolicyFromJson(contractOfferDbRow.getPolicyJson()));
-        contractOffer.setCreatedAt(contractOfferDbRow.getCreatedAt());
-        contractOffer.setUpdatedAt(contractOfferDbRow.getUpdatedAt());
+        contractOffer.setCreatedAt(contractOfferDbRow.getCreatedAt().toInstant().toEpochMilli());
+        contractOffer.setUpdatedAt(contractOfferDbRow.getUpdatedAt().toInstant().toEpochMilli());
         return contractOffer;
     }
 
