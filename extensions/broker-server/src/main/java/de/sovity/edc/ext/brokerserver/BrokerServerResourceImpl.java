@@ -75,5 +75,4 @@ public class BrokerServerResourceImpl implements BrokerServerResource {
         adminApiKeyValidator.validateAdminApiKey(adminApiKey);
         dslContextFactory.transaction(dsl -> connectorApiService.deleteConnectors(dsl, endpoints));
     }
-
 }
