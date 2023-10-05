@@ -49,6 +49,7 @@ dependencies {
 
     implementation("${edcGroup}:data-plane-selector-spi:${edcVersion}")
     implementation("org.postgresql:postgresql:${postgresVersion}")
+    implementation("${edcGroup}:data-plane-instance-store-sql:${edcVersion}")
 
     api("org.flywaydb:flyway-core:${flywayVersion}")
 
