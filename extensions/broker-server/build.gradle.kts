@@ -60,6 +60,8 @@ dependencies {
     implementation("de.sovity.edc:json-and-jsonld-utils:0.0.1-SNAPSHOT")
     implementation("de.sovity.edc:wrapper-common-api:4.2.0")
     implementation("de.sovity.edc:wrapper-common-mappers:0.0.1-SNAPSHOT")
+
+    implementation("${edcGroup}:data-plane-instance-store-sql:${edcVersion}")
 }
 
 tasks.getByName<Test>("test") {
