@@ -14,6 +14,7 @@
 
 package de.sovity.edc.ext.brokerserver.api.model;
 
+import de.sovity.edc.ext.wrapper.api.common.model.UiAsset;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -23,7 +24,6 @@ import lombok.ToString;
 
 import java.time.OffsetDateTime;
 import java.util.List;
-import java.util.Map;
 
 @Getter
 @Setter
@@ -51,7 +51,7 @@ public class DataOfferDetailPageResult {
     private OffsetDateTime updatedAt;
 
     @Schema(description = "Asset properties", requiredMode = Schema.RequiredMode.REQUIRED)
-    private Map<String, String> properties;
+    private UiAsset asset;
 
     @Schema(description = "Available Contract Offers", requiredMode = Schema.RequiredMode.REQUIRED)
     private List<DataOfferDetailContractOffer> contractOffers;

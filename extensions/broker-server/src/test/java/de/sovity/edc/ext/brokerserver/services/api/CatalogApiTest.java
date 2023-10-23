@@ -145,6 +145,7 @@ class CatalogApiTest {
 
     @Test
     void testDataOfferDetails() {
+        // TODO: copy other test, change endpoint to detail endpoint
         TEST_DATABASE.testTransaction(dsl -> {
             // arrange
             var today = OffsetDateTime.now().withNano(0);

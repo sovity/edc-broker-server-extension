@@ -12,11 +12,17 @@
  *
  */
 
-package de.sovity.edc.ext.brokerserver.services.config;
+package de.sovity.edc.ext.brokerserver.services.refreshing.offers.model;
 
-/**
- * We have special connectors that represent entire other data spaces.
- * Here we associate the name of the data space with the connector endpoint.
- */
-public record DataSpaceConnector(String endpoint, String dataSpaceName) {
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.FieldDefaults;
+
+@Getter
+@Setter
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public class FetchedContractOffer {
+    String contractOfferId;
+    String policyJson;
 }

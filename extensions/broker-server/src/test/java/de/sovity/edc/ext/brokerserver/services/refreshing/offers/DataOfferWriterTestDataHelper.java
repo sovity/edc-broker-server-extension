@@ -20,7 +20,7 @@ import de.sovity.edc.ext.brokerserver.db.jooq.tables.records.DataOfferContractOf
 import de.sovity.edc.ext.brokerserver.db.jooq.tables.records.DataOfferRecord;
 import de.sovity.edc.ext.brokerserver.services.ConnectorCreator;
 import de.sovity.edc.ext.brokerserver.services.refreshing.offers.model.FetchedDataOffer;
-import de.sovity.edc.ext.brokerserver.services.refreshing.offers.model.FetchedDataOfferContractOffer;
+import de.sovity.edc.ext.brokerserver.services.refreshing.offers.model.FetchedContractOffer;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 import org.jooq.DSLContext;
@@ -102,8 +102,8 @@ class DataOfferWriterTestDataHelper {
     private FetchedDataOffer dummyFetchedDataOffer(Do dataOffer) {
         var fetchedDataOffer = new FetchedDataOffer();
         fetchedDataOffer.setAssetId(dataOffer.getAssetId());
-        fetchedDataOffer.setAssetName(dataOffer.getAssetName());
-        fetchedDataOffer.setAssetPropertiesJson(dummyAssetJson(dataOffer));
+        fetchedDataOffer.setAssetTitle(dataOffer.getAssetName());
+        fetchedDataOffer.setAssetPropertiesJsonLd(dummyAssetJson(dataOffer));
 
         var contractOffersMapped = dataOffer.getContractOffers().stream().map(this::dummyFetchedContractOffer).collect(Collectors.toList());
         fetchedDataOffer.setContractOffers(contractOffersMapped);
@@ -125,8 +125,8 @@ class DataOfferWriterTestDataHelper {
     }
 
     @NotNull
-    private FetchedDataOfferContractOffer dummyFetchedContractOffer(Co it) {
-        var contractOffer = new FetchedDataOfferContractOffer();
+    private FetchedContractOffer dummyFetchedContractOffer(Co it) {
+        var contractOffer = new FetchedContractOffer();
         contractOffer.setContractOfferId(it.getId());
         contractOffer.setPolicyJson(dummyPolicyJson(it.getPolicyValue()));
         return contractOffer;

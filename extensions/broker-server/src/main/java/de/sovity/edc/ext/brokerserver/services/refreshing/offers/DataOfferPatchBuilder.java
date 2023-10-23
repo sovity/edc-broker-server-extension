@@ -19,8 +19,8 @@ import de.sovity.edc.ext.brokerserver.dao.DataOfferQueries;
 import de.sovity.edc.ext.brokerserver.db.jooq.tables.records.DataOfferContractOfferRecord;
 import de.sovity.edc.ext.brokerserver.db.jooq.tables.records.DataOfferRecord;
 import de.sovity.edc.ext.brokerserver.services.refreshing.offers.model.DataOfferPatch;
+import de.sovity.edc.ext.brokerserver.services.refreshing.offers.model.FetchedContractOffer;
 import de.sovity.edc.ext.brokerserver.services.refreshing.offers.model.FetchedDataOffer;
-import de.sovity.edc.ext.brokerserver.services.refreshing.offers.model.FetchedDataOfferContractOffer;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 
@@ -98,7 +98,7 @@ public class DataOfferPatchBuilder {
             DataOfferPatch patch,
             DataOfferRecord dataOffer,
             Collection<DataOfferContractOfferRecord> contractOffers,
-            Collection<FetchedDataOfferContractOffer> fetchedContractOffers
+            Collection<FetchedContractOffer> fetchedContractOffers
     ) {
         var hasUpdates = new AtomicBoolean(false);
 
@@ -106,7 +106,7 @@ public class DataOfferPatchBuilder {
                 contractOffers,
                 DataOfferContractOfferRecord::getContractOfferId,
                 fetchedContractOffers,
-                FetchedDataOfferContractOffer::getContractOfferId
+                FetchedContractOffer::getContractOfferId
         );
 
         diff.added().forEach(fetched -> {

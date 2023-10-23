@@ -35,5 +35,6 @@ public class DataOfferListEntryRs {
     List<ContractOfferRs> contractOffers;
     String connectorEndpoint;
     ConnectorOnlineStatus connectorOnlineStatus;
+    String connectorParticipantId;
     OffsetDateTime connectorOfflineSinceOrLastUpdatedAt;
 }

@@ -59,9 +59,10 @@ public class CatalogQueryDataOfferFetcher {
                 d.ASSET_PROPERTIES.cast(String.class).as("assetPropertiesJson"),
                 d.CREATED_AT,
                 d.UPDATED_AT,
-                catalogQueryContractOfferFetcher.getContractOffers(fields).as("contractOffers"),
+                catalogQueryContractOfferFetcher.getContractOffers(d).as("contractOffers"),
                 c.ENDPOINT.as("connectorEndpoint"),
                 c.ONLINE_STATUS.as("connectorOnlineStatus"),
+                c.PARTICIPANT_ID.as("connectorParticipantId"),
                 fields.getOfflineSinceOrLastUpdatedAt().as("connectorOfflineSinceOrLastUpdatedAt")
         );
 

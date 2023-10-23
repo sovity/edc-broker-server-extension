@@ -14,6 +14,9 @@
 
 package de.sovity.edc.ext.brokerserver;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import de.sovity.edc.ext.brokerserver.dao.ConnectorQueries;
 import de.sovity.edc.ext.brokerserver.dao.DataOfferContractOfferQueries;
 import de.sovity.edc.ext.brokerserver.dao.DataOfferQueries;
@@ -34,13 +37,12 @@ import de.sovity.edc.ext.brokerserver.services.ConnectorCreator;
 import de.sovity.edc.ext.brokerserver.services.ConnectorKiller;
 import de.sovity.edc.ext.brokerserver.services.KnownConnectorsInitializer;
 import de.sovity.edc.ext.brokerserver.services.OfflineConnectorKiller;
-import de.sovity.edc.ext.brokerserver.services.api.AssetPropertyParser;
 import de.sovity.edc.ext.brokerserver.services.api.CatalogApiService;
 import de.sovity.edc.ext.brokerserver.services.api.ConnectorApiService;
 import de.sovity.edc.ext.brokerserver.services.api.ConnectorService;
 import de.sovity.edc.ext.brokerserver.services.api.DataOfferDetailApiService;
+import de.sovity.edc.ext.brokerserver.services.api.DataOfferMappingUtils;
 import de.sovity.edc.ext.brokerserver.services.api.PaginationMetadataUtils;
-import de.sovity.edc.ext.brokerserver.services.api.PolicyDtoBuilder;
 import de.sovity.edc.ext.brokerserver.services.api.filtering.CatalogFilterAttributeDefinitionService;
 import de.sovity.edc.ext.brokerserver.services.api.filtering.CatalogFilterService;
 import de.sovity.edc.ext.brokerserver.services.config.AdminApiKeyValidator;
@@ -54,27 +56,39 @@ import de.sovity.edc.ext.brokerserver.services.queue.ThreadPoolTaskQueue;
 import de.sovity.edc.ext.brokerserver.services.refreshing.ConnectorUpdateFailureWriter;
 import de.sovity.edc.ext.brokerserver.services.refreshing.ConnectorUpdateSuccessWriter;
 import de.sovity.edc.ext.brokerserver.services.refreshing.ConnectorUpdater;
-import de.sovity.edc.ext.brokerserver.services.refreshing.offers.ContractOfferFetcher;
+import de.sovity.edc.ext.brokerserver.services.refreshing.offers.CatalogFetcher;
 import de.sovity.edc.ext.brokerserver.services.refreshing.offers.ContractOfferRecordUpdater;
-import de.sovity.edc.ext.brokerserver.services.refreshing.offers.DataOfferBuilder;
-import de.sovity.edc.ext.brokerserver.services.refreshing.offers.DataOfferFetcher;
 import de.sovity.edc.ext.brokerserver.services.refreshing.offers.DataOfferLimitsEnforcer;
 import de.sovity.edc.ext.brokerserver.services.refreshing.offers.DataOfferPatchApplier;
 import de.sovity.edc.ext.brokerserver.services.refreshing.offers.DataOfferPatchBuilder;
 import de.sovity.edc.ext.brokerserver.services.refreshing.offers.DataOfferRecordUpdater;
 import de.sovity.edc.ext.brokerserver.services.refreshing.offers.DataOfferWriter;
+import de.sovity.edc.ext.brokerserver.services.refreshing.offers.FetchedCatalogBuilder;
 import de.sovity.edc.ext.brokerserver.services.schedules.DeadConnectorRefreshJob;
 import de.sovity.edc.ext.brokerserver.services.schedules.OfflineConnectorKillerJob;
 import de.sovity.edc.ext.brokerserver.services.schedules.OfflineConnectorRefreshJob;
 import de.sovity.edc.ext.brokerserver.services.schedules.OnlineConnectorRefreshJob;
 import de.sovity.edc.ext.brokerserver.services.schedules.QuartzScheduleInitializer;
 import de.sovity.edc.ext.brokerserver.services.schedules.utils.CronJobRef;
+import de.sovity.edc.ext.wrapper.api.common.mappers.AssetMapper;
+import de.sovity.edc.ext.wrapper.api.common.mappers.OperatorMapper;
+import de.sovity.edc.ext.wrapper.api.common.mappers.PolicyMapper;
+import de.sovity.edc.ext.wrapper.api.common.mappers.utils.AssetJsonLdUtils;
+import de.sovity.edc.ext.wrapper.api.common.mappers.utils.AtomicConstraintMapper;
+import de.sovity.edc.ext.wrapper.api.common.mappers.utils.ConstraintExtractor;
+import de.sovity.edc.ext.wrapper.api.common.mappers.utils.EdcPropertyUtils;
+import de.sovity.edc.ext.wrapper.api.common.mappers.utils.LiteralMapper;
+import de.sovity.edc.ext.wrapper.api.common.mappers.utils.PolicyValidator;
+import de.sovity.edc.ext.wrapper.api.common.mappers.utils.UiAssetMapper;
+import de.sovity.edc.utils.catalog.DspCatalogService;
 import lombok.NoArgsConstructor;
-import org.eclipse.edc.connector.spi.catalog.CatalogService;
+import org.eclipse.edc.jsonld.spi.JsonLd;
 import org.eclipse.edc.runtime.metamodel.annotation.Inject;
+import org.eclipse.edc.spi.CoreConstants;
 import org.eclipse.edc.spi.monitor.Monitor;
 import org.eclipse.edc.spi.system.configuration.Config;
 import org.eclipse.edc.spi.types.TypeManager;
+import org.eclipse.edc.transform.spi.TypeTransformerRegistry;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -95,7 +109,9 @@ public class BrokerServerExtensionContextBuilder {
             Config config,
             Monitor monitor,
             TypeManager typeManager,
-            CatalogService catalogService
+            DspCatalogService dspCatalogService,
+            TypeTransformerRegistry typeTransformerRegistry,
+            JsonLd jsonLd
     ) {
         var brokerServerSettingsFactory = new BrokerServerSettingsFactory(config, monitor);
         var brokerServerSettings = brokerServerSettingsFactory.buildBrokerServerSettings();
@@ -128,6 +144,7 @@ public class BrokerServerExtensionContextBuilder {
 
         // Services
         var objectMapper = typeManager.getMapper();
+        var objectMapperJsonLd = getJsonLdObjectMapper(typeManager);
         var brokerEventLogger = new BrokerEventLogger();
         var brokerExecutionTimeLogger = new BrokerExecutionTimeLogger();
         var contractOfferRecordUpdater = new ContractOfferRecordUpdater();
@@ -147,10 +164,23 @@ public class BrokerServerExtensionContextBuilder {
                 dataOfferWriter,
                 dataOfferLimitsEnforcer
         );
+        var edcPropertyUtils = new EdcPropertyUtils();
+        var assetJsonLdUtils = new AssetJsonLdUtils();
+        var uiAssetMapper = new UiAssetMapper(
+                edcPropertyUtils,
+                assetJsonLdUtils
+        );
+        var assetMapper = new AssetMapper(
+                typeTransformerRegistry,
+                uiAssetMapper,
+                jsonLd
+        );
+        var fetchedDataOfferBuilder = new FetchedCatalogBuilder(
+                assetMapper,
+                assetJsonLdUtils
+        );
+        var dataOfferFetcher = new CatalogFetcher(dspCatalogService, fetchedDataOfferBuilder);
         var connectorUpdateFailureWriter = new ConnectorUpdateFailureWriter(brokerEventLogger, monitor);
-        var contractOfferFetcher = new ContractOfferFetcher(catalogService);
-        var fetchedDataOfferBuilder = new DataOfferBuilder(objectMapper);
-        var dataOfferFetcher = new DataOfferFetcher(contractOfferFetcher, fetchedDataOfferBuilder);
         var connectorUpdater = new ConnectorUpdater(
                 dataOfferFetcher,
                 connectorUpdateSuccessWriter,
@@ -160,8 +190,6 @@ public class BrokerServerExtensionContextBuilder {
                 monitor,
                 brokerExecutionTimeLogger
         );
-        var policyDtoBuilder = new PolicyDtoBuilder();
-        var assetPropertyParser = new AssetPropertyParser(objectMapper);
         var paginationMetadataUtils = new PaginationMetadataUtils();
         var threadPoolTaskQueue = new ThreadPoolTaskQueue();
         var threadPool = new ThreadPool(threadPoolTaskQueue, brokerServerSettings, monitor);
@@ -186,6 +214,28 @@ public class BrokerServerExtensionContextBuilder {
                 connectorKiller,
                 connectorClearer
         );
+        var operatorMapper = new OperatorMapper();
+        var literalMapper = new LiteralMapper(
+                objectMapperJsonLd
+        );
+        var atomicConstraintMapper = new AtomicConstraintMapper(
+                literalMapper,
+                operatorMapper
+        );
+        var policyValidator = new PolicyValidator();
+        var constraintExtractor = new ConstraintExtractor(
+                policyValidator,
+                atomicConstraintMapper
+        );
+        var policyMapper = new PolicyMapper(
+                constraintExtractor,
+                atomicConstraintMapper,
+                typeTransformerRegistry
+        );
+        var dataOfferMappingUtils = new DataOfferMappingUtils(
+                policyMapper,
+                assetMapper
+        );
 
         // Schedules
         List<CronJobRef<?>> jobs = List.of(
@@ -207,8 +257,7 @@ public class BrokerServerExtensionContextBuilder {
         var catalogApiService = new CatalogApiService(
                 paginationMetadataUtils,
                 catalogQueryService,
-                policyDtoBuilder,
-                assetPropertyParser,
+                dataOfferMappingUtils,
                 catalogFilterService,
                 brokerServerSettings
         );
@@ -221,8 +270,7 @@ public class BrokerServerExtensionContextBuilder {
         var dataOfferDetailApiService = new DataOfferDetailApiService(
                 dataOfferDetailPageQueryService,
                 viewCountLogger,
-                policyDtoBuilder,
-                assetPropertyParser
+                dataOfferMappingUtils
         );
         var brokerServerResource = new BrokerServerResourceImpl(
                 dslContextFactory,
@@ -274,5 +322,16 @@ public class BrokerServerExtensionContextBuilder {
                 DeadConnectorRefreshJob.class,
                 () -> new DeadConnectorRefreshJob(dslContextFactory, connectorQueueFiller)
         );
+    }
+
+    private static ObjectMapper getJsonLdObjectMapper(TypeManager typeManager) {
+        var objectMapper = typeManager.getMapper(CoreConstants.JSON_LD);
+
+        // Fixes Dates in JSON-LD Object Mapper
+        // The Core EDC uses longs over OffsetDateTime, so they never fixed the date format
+        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
+        return objectMapper;
     }
 }

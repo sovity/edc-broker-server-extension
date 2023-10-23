@@ -56,15 +56,15 @@ public class DataOfferRecordUpdater {
      * @return whether any fields were updated
      */
     public boolean updateDataOffer(DataOfferRecord dataOffer, FetchedDataOffer fetchedDataOffer, boolean changed) {
-        if (!Objects.equals(fetchedDataOffer.getAssetName(), dataOffer.getAssetName())) {
-            Objects.requireNonNull(fetchedDataOffer.getAssetName(),
+        if (!Objects.equals(fetchedDataOffer.getAssetTitle(), dataOffer.getAssetName())) {
+            Objects.requireNonNull(fetchedDataOffer.getAssetTitle(),
                     "Fetched data offer's asset name should have been set as id if name isn't present");
-            dataOffer.setAssetName(fetchedDataOffer.getAssetName());
+            dataOffer.setAssetName(fetchedDataOffer.getAssetTitle());
             changed = true;
         }
 
         String existingAssetProps = JsonbUtils.getDataOrNull(dataOffer.getAssetProperties());
-        var fetchedAssetProps = fetchedDataOffer.getAssetPropertiesJson();
+        var fetchedAssetProps = fetchedDataOffer.getAssetPropertiesJsonLd();
         if (!Objects.equals(fetchedAssetProps, existingAssetProps)) {
             dataOffer.setAssetProperties(JSONB.jsonb(fetchedAssetProps));
             changed = true;

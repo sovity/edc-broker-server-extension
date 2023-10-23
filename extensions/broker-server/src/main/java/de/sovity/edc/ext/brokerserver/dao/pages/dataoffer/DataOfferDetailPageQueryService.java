@@ -44,10 +44,11 @@ public class DataOfferDetailPageQueryService {
                         d.ASSET_PROPERTIES.cast(String.class).as("assetPropertiesJson"),
                         d.CREATED_AT,
                         d.UPDATED_AT,
-                        catalogQueryContractOfferFetcher.getContractOffers(fields).as("contractOffers"),
+                        catalogQueryContractOfferFetcher.getContractOffers(fields.getDataOfferTable()).as("contractOffers"),
                         fields.getOfflineSinceOrLastUpdatedAt().as("connectorOfflineSinceOrLastUpdatedAt"),
                         c.ENDPOINT.as("connectorEndpoint"),
                         c.ONLINE_STATUS.as("connectorOnlineStatus"),
+                        c.PARTICIPANT_ID.as("connectorParticipantId"),
                         fields.getViewCount().as("viewCount"))
                 .from(d)
                 .leftJoin(c).on(c.ENDPOINT.eq(d.CONNECTOR_ENDPOINT))
