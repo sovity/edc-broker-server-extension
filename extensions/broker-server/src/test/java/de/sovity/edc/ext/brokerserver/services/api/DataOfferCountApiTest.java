@@ -44,7 +44,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @ApiTest
 @ExtendWith(EdcExtension.class)
-public class DataOfferCountApiTest {
+class DataOfferCountApiTest {
 
     @RegisterExtension
     private static final TestDatabase TEST_DATABASE = TestDatabaseFactory.getTestDatabase();
@@ -58,58 +58,37 @@ public class DataOfferCountApiTest {
     void testCountByEndpoints() {
         TEST_DATABASE.testTransaction(dsl -> {
             var now = OffsetDateTime.now().withNano(0);
-            var endpoint1 = "http://my-connector/ids/data";
-            var endpoint2 = "http://my-connector2/ids/data";
-            var endpoint3 = "http://my-connector3/ids/data";
-            var endpoint4 = "http://my-connector4/ids/data";
 
-            createConnector(dsl, now, endpoint1);
-            createDataOffer(dsl, now, Map.of(
-                AssetProperty.ASSET_ID, "urn:artifact:my-asset-1",
-                AssetProperty.DATA_CATEGORY, "my-category",
-                AssetProperty.ASSET_NAME, "My Asset 1"
-            ), "http://my-connector/ids/data");
-            createDataOffer(dsl, now, Map.of(
-                AssetProperty.ASSET_ID, "urn:artifact:my-asset-1",
-                AssetProperty.DATA_CATEGORY, "my-category",
-                AssetProperty.ASSET_NAME, "My Asset 1"
-            ), "http://my-connector/ids/data");
+            createConnector(dsl, now, 1);
+            createDataOffer(dsl, now, 1, 1);
+            createDataOffer(dsl, now, 1, 2);
 
-            createConnector(dsl, now, endpoint2);
-            createDataOffer(dsl, now, Map.of(
-                AssetProperty.ASSET_ID, "urn:artifact:my-asset-3",
-                AssetProperty.DATA_CATEGORY, "my-category3",
-                AssetProperty.ASSET_NAME, "My Asset 3"
-            ), "http://my-connector2/ids/data");
+            createConnector(dsl, now, 2);
+            createDataOffer(dsl, now, 2, 1);
 
-            createConnector(dsl, now, endpoint3);
-            createDataOffer(dsl, now, Map.of(
-                AssetProperty.ASSET_ID, "urn:artifact:my-asset-4",
-                AssetProperty.DATA_CATEGORY, "my-category4",
-                AssetProperty.ASSET_NAME, "My Asset 4"
-            ), "http://my-connector2/ids/data");
+            createConnector(dsl, now, 3);
+            createDataOffer(dsl, now, 3, 1);
 
-            createConnector(dsl, now, endpoint4);
+            createConnector(dsl, now, 4);
 
             var actual = brokerServerClient().brokerServerApi().dataOfferCount(Arrays.asList(
-                    endpoint1,
-                    endpoint2,
-                    endpoint4
-                )
-            );
+                    getEndpoint(1),
+                    getEndpoint(2),
+                    getEndpoint(4)
+            ));
             var dataOfferCountMap = actual.getDataOfferCount();
             assertThat(dataOfferCountMap).isEqualTo(Map.of(
-                endpoint1, 2,
-                endpoint2, 1,
-                endpoint4, 0
+                    getEndpoint(1), 2,
+                    getEndpoint(2), 1,
+                    getEndpoint(4), 0
             ));
         });
     }
 
-    private void createConnector(DSLContext dsl, OffsetDateTime today, String connectorEndpoint) {
+    private void createConnector(DSLContext dsl, OffsetDateTime today, int iConnector) {
         var connector = dsl.newRecord(Tables.CONNECTOR);
-        connector.setConnectorId("http://my-connector");
-        connector.setEndpoint(connectorEndpoint);
+        connector.setConnectorId("https://my-connector");
+        connector.setEndpoint(getEndpoint(iConnector));
         connector.setOnlineStatus(ConnectorOnlineStatus.ONLINE);
         connector.setCreatedAt(today.minusDays(1));
         connector.setLastRefreshAttemptAt(today);
@@ -119,7 +98,16 @@ public class DataOfferCountApiTest {
         connector.insert();
     }
 
-    private void createDataOffer(DSLContext dsl, OffsetDateTime today, Map<String, String> assetProperties, String connectorEndpoint) {
+    private String getEndpoint(int iConnector) {
+        return "https://connector-%d".formatted(iConnector);
+    }
+
+    private void createDataOffer(DSLContext dsl, OffsetDateTime today, int iConnector, int iDataOffer) {
+        var connectorEndpoint = getEndpoint(iConnector);
+        var assetProperties = Map.of(
+                AssetProperty.ASSET_ID, "urn:artifact:my-asset-%d".formatted(iDataOffer)
+        );
+
         var dataOffer = dsl.newRecord(Tables.DATA_OFFER);
         dataOffer.setAssetId(assetProperties.get(AssetProperty.ASSET_ID));
         dataOffer.setAssetName(assetProperties.getOrDefault(AssetProperty.ASSET_NAME, dataOffer.getAssetId()));
@@ -141,8 +129,8 @@ public class DataOfferCountApiTest {
 
     private Policy dummyPolicy() {
         return Policy.Builder.newInstance()
-            .assignee("Example Assignee")
-            .build();
+                .assignee("Example Assignee")
+                .build();
     }
 
     private String policyToJson(Policy policy) {
