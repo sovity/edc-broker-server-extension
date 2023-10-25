@@ -81,7 +81,7 @@ public interface BrokerServerResource {
     void deleteConnectors(List<String> endpoints, @QueryParam("adminApiKey") String adminApiKey);
 
     @POST
-    @Path("data-offers")
+    @Path("authority-portal-api/data-offer-counts")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(description = "Query the amount of public Data Offers by provided Connector URLs")

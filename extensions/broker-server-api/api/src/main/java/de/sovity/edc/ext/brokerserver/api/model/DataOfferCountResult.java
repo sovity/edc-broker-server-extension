@@ -14,7 +14,7 @@ import java.util.Map;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-@Schema(description = "Number of Data Offers per Connector endpoint.")
+@Schema(description = "Number of Data Offers per Connector endpoint.", requiredMode = Schema.RequiredMode.REQUIRED)
 public class DataOfferCountResult {
     @Schema(description = "Map from endpoint URL to Data Offer count", requiredMode = Schema.RequiredMode.REQUIRED)
     private Map<String, Integer> dataOfferCount;
