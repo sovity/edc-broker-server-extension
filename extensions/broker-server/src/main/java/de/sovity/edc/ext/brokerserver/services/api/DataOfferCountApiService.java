@@ -32,14 +32,14 @@ public class DataOfferCountApiService {
     public DataOfferCountResult countByEndpoints(DSLContext dsl, List<String> endpoints) {
         var d = Tables.DATA_OFFER;
 
-        var count = DSL.count().as("num_data_offers");
+        var count = DSL.count().as("count");
         var numDataOffers = dsl.select(d.CONNECTOR_ENDPOINT, count)
             .from(d)
             .where(PostgresqlUtils.in(d.CONNECTOR_ENDPOINT, endpoints))
             .groupBy(d.CONNECTOR_ENDPOINT)
             .fetchMap(d.CONNECTOR_ENDPOINT, count);
 
-        var numDataOffersFilled = endpoints.stream().collect(toMap(
+        var numDataOffersFilled = endpoints.stream().distinct().collect(toMap(
             Function.identity(),
             endpoint -> numDataOffers.getOrDefault(endpoint, 0)
         ));

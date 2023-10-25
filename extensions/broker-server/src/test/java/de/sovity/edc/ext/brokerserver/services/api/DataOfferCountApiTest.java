@@ -73,6 +73,7 @@ class DataOfferCountApiTest {
 
             var actual = brokerServerClient().brokerServerApi().dataOfferCount(Arrays.asList(
                     getEndpoint(1),
+                    getEndpoint(1), // having this twice should not crash the query
                     getEndpoint(2),
                     getEndpoint(4)
             ));
