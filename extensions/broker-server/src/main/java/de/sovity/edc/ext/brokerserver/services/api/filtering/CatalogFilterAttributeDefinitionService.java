@@ -42,9 +42,9 @@ public class CatalogFilterAttributeDefinitionService {
 
     public CatalogFilterAttributeDefinition buildConnectorEndpointFilter() {
         return new CatalogFilterAttributeDefinition(
-            "connectorEndpoints",
-            "Connector Endpoints",
-            fields -> fields.getDataOfferViewCountTable().CONNECTOR_ENDPOINT,
+            "connectorEndpoint",
+            "Connector",
+            fields -> fields.getDataOfferTable().CONNECTOR_ENDPOINT,
             (fields, values) -> PostgresqlUtils.in(fields.getDataOfferTable().CONNECTOR_ENDPOINT, values)
         );
     }
