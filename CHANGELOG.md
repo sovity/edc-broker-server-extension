@@ -15,8 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 #### Minor
 
-- Add endpoint for counting Data Offers by Connector
-- Add possibility to filter Catalog by connector endpoints via Query Parameter
+- Added an endpoint for getting the data offer amounts for connectors.
+- Added a Connector filter to the Catalog Page.
 
 #### Patch
 
