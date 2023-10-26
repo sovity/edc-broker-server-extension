@@ -40,6 +40,15 @@ public class CatalogFilterAttributeDefinitionService {
         );
     }
 
+    public CatalogFilterAttributeDefinition buildConnectorEndpointFilter() {
+        return new CatalogFilterAttributeDefinition(
+            "connectorEndpoints",
+            "Connector Endpoints",
+            fields -> fields.getDataOfferViewCountTable().CONNECTOR_ENDPOINT,
+            (fields, values) -> PostgresqlUtils.in(fields.getDataOfferTable().CONNECTOR_ENDPOINT, values)
+        );
+    }
+
     @NotNull
     private Field<String> getValue(CatalogQueryFields fields, String assetProperty) {
         return DSL.coalesce(fields.getAssetProperty(assetProperty), DSL.value(""));
