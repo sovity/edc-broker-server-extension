@@ -37,8 +37,8 @@ Adapt to requirements of the Authority Portal - Release v2.0.0.
 #### Compatible Versions
 
 - Broker Backend Docker Image: `ghcr.io/sovity/broker-server-ce:1.2.0`
-- Broker UI Docker Image: `ghcr.io/sovity/edc-ui:0.0.1-milestone-8-sovity14`
-- Sovity EDC CE: [`4.2.1`](https://github.com/sovity/edc-extensions/tree/v4.2.0/connector)
+- Broker UI Docker Image: `ghcr.io/sovity/edc-ui:0.0.1-milestone-8-sovity13`
+- Sovity EDC CE: [`4.2.0`](https://github.com/sovity/edc-extensions/tree/v4.2.0/connector)
 
 ## [v1.1.1] - 2023-10-11
 
