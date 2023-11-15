@@ -16,34 +16,32 @@ package de.sovity.edc.ext.brokerserver.services.refreshing;
 
 import de.sovity.edc.client.EdcClient;
 import de.sovity.edc.client.gen.model.ContractDefinitionRequest;
+import de.sovity.edc.client.gen.model.OperatorDto;
 import de.sovity.edc.client.gen.model.PolicyDefinitionCreateRequest;
 import de.sovity.edc.client.gen.model.UiAssetCreateRequest;
 import de.sovity.edc.client.gen.model.UiCriterion;
 import de.sovity.edc.client.gen.model.UiCriterionLiteral;
 import de.sovity.edc.client.gen.model.UiCriterionLiteralType;
 import de.sovity.edc.client.gen.model.UiCriterionOperator;
+import de.sovity.edc.client.gen.model.UiPolicyConstraint;
 import de.sovity.edc.client.gen.model.UiPolicyCreateRequest;
+import de.sovity.edc.client.gen.model.UiPolicyLiteral;
+import de.sovity.edc.client.gen.model.UiPolicyLiteralType;
 import de.sovity.edc.ext.brokerserver.BrokerServerExtensionContext;
 import de.sovity.edc.ext.brokerserver.TestUtils;
 import de.sovity.edc.ext.brokerserver.client.BrokerServerClient;
 import de.sovity.edc.ext.brokerserver.client.gen.model.CatalogPageQuery;
 import de.sovity.edc.ext.brokerserver.db.TestDatabase;
 import de.sovity.edc.ext.brokerserver.db.TestDatabaseFactory;
-import de.sovity.edc.ext.brokerserver.db.jooq.Tables;
-import de.sovity.edc.ext.brokerserver.db.jooq.enums.ConnectorOnlineStatus;
 import de.sovity.edc.utils.jsonld.vocab.Prop;
-import org.eclipse.edc.connector.contract.spi.offer.store.ContractDefinitionStore;
-import org.eclipse.edc.connector.contract.spi.types.offer.ContractDefinition;
-import org.eclipse.edc.connector.spi.asset.AssetService;
 import org.eclipse.edc.junit.annotations.ApiTest;
 import org.eclipse.edc.junit.extensions.EdcExtension;
-import org.eclipse.edc.spi.asset.AssetSelectorExpression;
-import org.eclipse.edc.spi.query.Criterion;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -87,7 +85,7 @@ class ConnectorUpdaterTest {
             var connectorCreator = BrokerServerExtensionContext.instance.connectorCreator();
             String connectorEndpoint = TestUtils.PROTOCOL_ENDPOINT;
 
-            var policyId = createAlwaysTruePolicyDefinition();
+            var policyId = createPolicyDefinition();
             var assetId = createAsset();
             createContractDefinition(policyId, assetId);
             connectorCreator.addConnector(dsl, connectorEndpoint);
@@ -97,23 +95,69 @@ class ConnectorUpdaterTest {
 
             // assert
             var catalog = brokerServerClient.brokerServerApi().catalogPage(new CatalogPageQuery());
-            // TODO: hasSize1
+            assertThat(catalog.getDataOffers()).hasSize(1);
             var dataOffer = catalog.getDataOffers().get(0);
-            // TODO: hasSize1
+            assertThat(dataOffer.getContractOffers()).hasSize(1);
             var contractOffer = dataOffer.getContractOffers().get(0);
-            var asset = dataOffer.getAsset(); // alle felder
-            var policy = contractOffer.getContractPolicy(); // alle felder
-            // Example at: UiApiWrapperTest
+            var asset = dataOffer.getAsset();
+            assertThat(asset.getAssetId()).isEqualTo(assetId);
+            assertThat(asset.getTitle()).isEqualTo("AssetName");
+            assertThat(asset.getConnectorEndpoint()).isEqualTo(TestUtils.PROTOCOL_ENDPOINT);
+            assertThat(asset.getParticipantId()).isEqualTo(TestUtils.PARTICIPANT_ID);
+            assertThat(asset.getKeywords()).isEqualTo(List.of("keyword1", "keyword2"));
+            assertThat(asset.getDescription()).isEqualTo("AssetDescription");
+            assertThat(asset.getVersion()).isEqualTo("1.0.0");
+            assertThat(asset.getLanguage()).isEqualTo("en");
+            assertThat(asset.getMediaType()).isEqualTo("application/json");
+            assertThat(asset.getDataCategory()).isEqualTo("dataCategory");
+            assertThat(asset.getDataSubcategory()).isEqualTo("dataSubcategory");
+            assertThat(asset.getDataModel()).isEqualTo("dataModel");
+            assertThat(asset.getGeoReferenceMethod()).isEqualTo("geoReferenceMethod");
+            assertThat(asset.getTransportMode()).isEqualTo("transportMode");
+            assertThat(asset.getLicenseUrl()).isEqualTo("https://license-url");
+            assertThat(asset.getKeywords()).isEqualTo(List.of("keyword1", "keyword2"));
+            assertThat(asset.getCreatorOrganizationName()).isEqualTo(TestUtils.CURATOR_NAME);
+            assertThat(asset.getPublisherHomepage()).isEqualTo("publisherHomepage");
+            assertThat(asset.getHttpDatasourceHintsProxyMethod()).isFalse();
+            assertThat(asset.getHttpDatasourceHintsProxyPath()).isFalse();
+            assertThat(asset.getHttpDatasourceHintsProxyQueryParams()).isFalse();
+            assertThat(asset.getHttpDatasourceHintsProxyBody()).isFalse();
+            assertThat(asset.getAdditionalProperties())
+                .containsExactlyEntriesOf(Map.of("http://unknown/a", "x"));
+            assertThat(dataOffer.getAsset().getAdditionalJsonProperties())
+                .containsExactlyEntriesOf(Map.of("http://unknown/b", "{\"http://unknown/c\":\"y\"}"));
+            assertThat(dataOffer.getAsset().getPrivateProperties())
+                .containsExactlyEntriesOf(Map.of("http://unknown/a-private", "x-private"));
+            assertThat(dataOffer.getAsset().getPrivateJsonProperties())
+                .containsExactlyEntriesOf(Map.of("http://unknown/b-private", "{\"http://unknown/c-private\":\"y\"}"));
+            var policy = contractOffer.getContractPolicy();
+            assertThat(policy.getConstraints()).hasSize(1);
+            TestUtils.assertEqualsUsingJson(policy.getConstraints().get(0), createAfterYesterdayConstraint());
         });
     }
 
-    private String createAlwaysTruePolicyDefinition() {
-        return providerClient.uiApi().createPolicyDefinition(PolicyDefinitionCreateRequest.builder()
+    private String createPolicyDefinition() {
+        var afterYesterday = createAfterYesterdayConstraint();
+
+        var policyDefinition = PolicyDefinitionCreateRequest.builder()
             .policyDefinitionId("policy-1")
             .policy(UiPolicyCreateRequest.builder()
-                .constraints(List.of())
+                .constraints(List.of(afterYesterday))
                 .build())
-            .build()).getId();
+            .build();
+
+        return providerClient.uiApi().createPolicyDefinition(policyDefinition).getId();
+    }
+
+    private UiPolicyConstraint createAfterYesterdayConstraint() {
+        return UiPolicyConstraint.builder()
+            .left("POLICY_EVALUATION_TIME")
+            .operator(OperatorDto.GT)
+            .right(UiPolicyLiteral.builder()
+                .type(UiPolicyLiteralType.STRING)
+                .value(OffsetDateTime.now().minusDays(1).toString())
+                .build())
+            .build();
     }
 
     public void createContractDefinition(String policyId, String assetId) {

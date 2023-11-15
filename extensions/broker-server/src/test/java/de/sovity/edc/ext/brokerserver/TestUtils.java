@@ -16,6 +16,7 @@ package de.sovity.edc.ext.brokerserver;
 
 import de.sovity.edc.ext.brokerserver.client.BrokerServerClient;
 import de.sovity.edc.ext.brokerserver.client.gen.ApiException;
+import de.sovity.edc.ext.brokerserver.client.gen.JSON;
 import de.sovity.edc.ext.brokerserver.db.PostgresFlywayExtension;
 import de.sovity.edc.ext.brokerserver.db.TestDatabase;
 import org.assertj.core.api.ThrowableAssert;
@@ -41,6 +42,8 @@ public class TestUtils {
 
     public static final String PROTOCOL_HOST = "http://localhost:" + PROTOCOL_PORT;
     public static final String PROTOCOL_ENDPOINT = PROTOCOL_HOST + PROTOCOL_PATH;
+    public static final String PARTICIPANT_ID = "my-edc-participant-id";
+    public static final String CURATOR_NAME = "My Org";
 
     @NotNull
     public static Map<String, String> createConfiguration(
@@ -59,12 +62,12 @@ public class TestUtils {
         config.put("edc.dsp.callback.address", PROTOCOL_ENDPOINT);
         config.put("edc.oauth.provider.audience", "idsc:IDS_CONNECTORS_ALL");
 
-        config.put("edc.participant.id", "my-edc-participant-id");
-        config.put("my.edc.name.kebab.case", "my-edc-participant-id");
+        config.put("edc.participant.id", PARTICIPANT_ID);
+        config.put("my.edc.name.kebab.case", PARTICIPANT_ID);
         config.put("my.edc.title", "My Connector");
         config.put("my.edc.description", "My Connector Description");
         config.put("my.edc.curator.url", "https://connector.my-org");
-        config.put("my.edc.curator.name", "My Org");
+        config.put("my.edc.curator.name", CURATOR_NAME);
         config.put("my.edc.maintainer.url", "https://maintainer-org");
         config.put("my.edc.maintainer.name", "Maintainer Org");
 
@@ -114,5 +117,9 @@ public class TestUtils {
                     var apiException = (ApiException) ex;
                     assertThat(apiException.getCode()).isEqualTo(401);
                 });
+    }
+
+    public static void assertEqualsUsingJson(Object expected, Object actual) {
+        assertThat(JSON.serialize(expected)).isEqualTo(JSON.serialize(actual));
     }
 }
