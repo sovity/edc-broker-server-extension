@@ -14,13 +14,13 @@
 
 package de.sovity.edc.ext.brokerserver.services.refreshing.offers;
 
-import de.sovity.edc.ext.brokerserver.dao.AssetProperty;
 import de.sovity.edc.ext.brokerserver.dao.ConnectorQueries;
 import de.sovity.edc.ext.brokerserver.db.jooq.tables.records.DataOfferContractOfferRecord;
 import de.sovity.edc.ext.brokerserver.db.jooq.tables.records.DataOfferRecord;
 import de.sovity.edc.ext.brokerserver.services.ConnectorCreator;
 import de.sovity.edc.ext.brokerserver.services.refreshing.offers.model.FetchedContractOffer;
 import de.sovity.edc.ext.brokerserver.services.refreshing.offers.model.FetchedDataOffer;
+import de.sovity.edc.utils.jsonld.vocab.Prop;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 import org.jooq.DSLContext;
@@ -113,8 +113,8 @@ class DataOfferWriterTestDataHelper {
 
     public String dummyAssetJson(Do dataOffer) {
         return "{\"%s\": \"%s\", \"%s\": \"%s\"}".formatted(
-            AssetProperty.ASSET_ID, dataOffer.getAssetId(),
-            AssetProperty.ASSET_NAME, dataOffer.getAssetName()
+            Prop.ID, dataOffer.getAssetId(),
+            Prop.Dcterms.TITLE, dataOffer.getAssetName()
         );
     }
 

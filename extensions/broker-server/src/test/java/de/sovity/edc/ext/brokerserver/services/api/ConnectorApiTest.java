@@ -14,10 +14,8 @@
 
 package de.sovity.edc.ext.brokerserver.services.api;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import de.sovity.edc.ext.brokerserver.client.gen.model.ConnectorDetailPageQuery;
 import de.sovity.edc.ext.brokerserver.client.gen.model.ConnectorPageQuery;
-import de.sovity.edc.ext.brokerserver.dao.AssetProperty;
 import de.sovity.edc.ext.brokerserver.db.TestDatabase;
 import de.sovity.edc.ext.brokerserver.db.TestDatabaseFactory;
 import de.sovity.edc.ext.brokerserver.db.jooq.Tables;
@@ -27,8 +25,11 @@ import de.sovity.edc.ext.brokerserver.db.jooq.enums.ConnectorOnlineStatus;
 import de.sovity.edc.ext.brokerserver.db.jooq.enums.MeasurementErrorStatus;
 import de.sovity.edc.ext.brokerserver.db.jooq.enums.MeasurementType;
 import de.sovity.edc.ext.brokerserver.db.jooq.tables.records.ConnectorRecord;
+import de.sovity.edc.ext.wrapper.api.common.mappers.utils.AssetJsonLdUtils;
+import de.sovity.edc.utils.JsonUtils;
 import de.sovity.edc.utils.jsonld.vocab.Prop;
-import lombok.SneakyThrows;
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
 import org.eclipse.edc.junit.annotations.ApiTest;
 import org.eclipse.edc.junit.extensions.EdcExtension;
 import org.eclipse.edc.policy.model.Policy;
@@ -54,6 +55,8 @@ class ConnectorApiTest {
     @RegisterExtension
     private static final TestDatabase TEST_DATABASE = TestDatabaseFactory.getTestDatabase();
 
+    AssetJsonLdUtils assetJsonLdUtils = new AssetJsonLdUtils();
+
     @BeforeEach
     void setUp(EdcExtension extension) {
         extension.setConfiguration(createConfiguration(TEST_DATABASE, Map.of(
@@ -66,11 +69,12 @@ class ConnectorApiTest {
             var today = OffsetDateTime.now().withNano(0);
 
             createConnector(dsl, today, "http://my-connector/ids/data");
-            createDataOffer(dsl, today, Map.of(
-                AssetProperty.ASSET_ID, "urn:artifact:my-asset-1",
-                    Prop.Mds.DATA_CATEGORY, "my-category",
-                AssetProperty.ASSET_NAME, "My Asset 1"
-            ), "http://my-connector/ids/data");
+            createDataOffer(dsl, today, "http://my-connector/ids/data", Json.createObjectBuilder()
+                .add(Prop.ID, "my-asset-1")
+                .add(Prop.Mds.DATA_CATEGORY, "my-category")
+                .add(Prop.Dcterms.TITLE, "My Asset 1")
+                .build()
+            );
 
             var result = brokerServerClient().brokerServerApi().connectorPage(new ConnectorPageQuery());
             assertThat(result.getConnectors()).hasSize(1);
@@ -91,11 +95,12 @@ class ConnectorApiTest {
 
             createConnector(dsl, today, "http://my-connector/ids/data");
             createConnector(dsl, today, "http://my-connector2/ids/data");
-            createDataOffer(dsl, today, Map.of(
-                AssetProperty.ASSET_ID, "urn:artifact:my-asset-1",
-                    Prop.Mds.DATA_CATEGORY, "my-category",
-                AssetProperty.ASSET_NAME, "My Asset 1"
-            ), "http://my-connector/ids/data");
+            createDataOffer(dsl, today, "http://my-connector/ids/data", Json.createObjectBuilder()
+                .add(Prop.ID, "my-asset-1")
+                .add(Prop.Mds.DATA_CATEGORY, "my-category")
+                .add(Prop.Dcterms.TITLE, "My Asset 1")
+                .build()
+            );
 
             var connector = brokerServerClient().brokerServerApi().connectorDetailPage(new ConnectorDetailPageQuery("http://my-connector/ids/data"));
             assertThat(connector.getId()).isEqualTo("http://my-connector/ids/data");
@@ -133,11 +138,11 @@ class ConnectorApiTest {
         crawlingTime.insert();
     }
 
-    private void createDataOffer(DSLContext dsl, OffsetDateTime today, Map<String, String> assetProperties, String connectorEndpoint) {
+    private void createDataOffer(DSLContext dsl, OffsetDateTime today, String connectorEndpoint, JsonObject assetPropertiesJson) {
         var dataOffer = dsl.newRecord(Tables.DATA_OFFER);
-        dataOffer.setAssetId(assetProperties.get(AssetProperty.ASSET_ID));
-        dataOffer.setAssetName(assetProperties.getOrDefault(AssetProperty.ASSET_NAME, dataOffer.getAssetId()));
-        dataOffer.setAssetProperties(JSONB.jsonb(assetProperties(assetProperties)));
+        dataOffer.setAssetId(assetJsonLdUtils.getId(assetPropertiesJson));
+        dataOffer.setAssetName(assetJsonLdUtils.getTitle(assetPropertiesJson));
+        dataOffer.setAssetProperties(JSONB.jsonb(JsonUtils.toJson(assetPropertiesJson)));
         dataOffer.setConnectorEndpoint(connectorEndpoint);
         dataOffer.setCreatedAt(today.minusDays(5));
         dataOffer.setUpdatedAt(today);
@@ -146,7 +151,7 @@ class ConnectorApiTest {
         var contractOffer = dsl.newRecord(Tables.DATA_OFFER_CONTRACT_OFFER);
         contractOffer.setContractOfferId("my-contract-offer-1");
         contractOffer.setConnectorEndpoint(connectorEndpoint);
-        contractOffer.setAssetId(assetProperties.get(AssetProperty.ASSET_ID));
+        contractOffer.setAssetId(assetJsonLdUtils.getId(assetPropertiesJson));
         contractOffer.setCreatedAt(today.minusDays(5));
         contractOffer.setUpdatedAt(today);
         contractOffer.setPolicy(JSONB.jsonb(policyToJson(dummyPolicy())));
@@ -161,10 +166,5 @@ class ConnectorApiTest {
 
     private String policyToJson(Policy policy) {
         return toJson(policy);
-    }
-
-    @SneakyThrows
-    private String assetProperties(Map<String, String> assetProperties) {
-        return new ObjectMapper().writeValueAsString(assetProperties);
     }
 }

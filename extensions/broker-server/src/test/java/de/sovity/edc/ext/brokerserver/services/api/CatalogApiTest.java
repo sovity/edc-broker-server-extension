@@ -25,7 +25,6 @@ import de.sovity.edc.ext.brokerserver.client.gen.model.CnfFilterValue;
 import de.sovity.edc.ext.brokerserver.client.gen.model.CnfFilterValueAttribute;
 import de.sovity.edc.ext.brokerserver.client.gen.model.DataOfferDetailPageQuery;
 import de.sovity.edc.ext.brokerserver.client.gen.model.DataOfferDetailPageResult;
-import de.sovity.edc.ext.brokerserver.dao.AssetProperty;
 import de.sovity.edc.ext.brokerserver.db.TestDatabase;
 import de.sovity.edc.ext.brokerserver.db.TestDatabaseFactory;
 import de.sovity.edc.ext.brokerserver.db.jooq.Tables;
@@ -116,14 +115,16 @@ class CatalogApiTest {
 
             createConnector(dsl, today, "http://my-connector/ids/data");
             createConnector(dsl, today, "http://my-connector2/ids/data");
-            createDataOffer(dsl, today, Map.of(
-                    AssetProperty.ASSET_ID, "urn:artifact:my-asset",
-                    AssetProperty.ASSET_NAME, "my-asset"
-            ), "http://my-connector/ids/data");
-            createDataOffer(dsl, today, Map.of(
-                    AssetProperty.ASSET_ID, "urn:artifact:my-asset",
-                    AssetProperty.ASSET_NAME, "my-asset"
-            ), "http://my-connector2/ids/data");
+            createDataOffer(dsl, today, "http://my-connector/ids/data", Json.createObjectBuilder()
+                .add(Prop.ID, "my-asset")
+                .add(Prop.Dcterms.TITLE, "My Asset")
+                .build()
+            );
+            createDataOffer(dsl, today, "http://my-connector2/ids/data", Json.createObjectBuilder()
+                .add(Prop.ID, "my-asset")
+                .add(Prop.Dcterms.TITLE, "My Asset")
+                .build()
+            );
 
             var query = new CatalogPageQuery();
             query.setFilter(new CnfFilterValue(List.of(
@@ -131,7 +132,7 @@ class CatalogApiTest {
             )));
 
             var result = brokerServerClient().brokerServerApi().catalogPage(query);
-            assertThat(result.getDataOffers()).extracting(CatalogDataOffer::getAssetId).containsExactly("urn:artifact:my-asset");
+            assertThat(result.getDataOffers()).extracting(CatalogDataOffer::getAssetId).containsExactly("my-asset");
         });
     }
 
@@ -202,7 +203,7 @@ class CatalogApiTest {
             assertThat(dataOfferResult.getConnectorEndpoint()).isEqualTo("http://my-connector/ids/data");
             assertThat(dataOfferResult.getConnectorOfflineSinceOrLastUpdatedAt()).isEqualTo(today);
             assertThat(dataOfferResult.getConnectorOnlineStatus()).isEqualTo(CatalogDataOffer.ConnectorOnlineStatusEnum.ONLINE);
-            assertThat(dataOfferResult.getAssetId()).isEqualTo("urn:artifact:my-asset");
+            assertThat(dataOfferResult.getAssetId()).isEqualTo("my-asset");
             assertThat(dataOfferResult.getAsset().getTitle()).isEqualTo("My Asset");
             assertThat(dataOfferResult.getCreatedAt()).isEqualTo(today.minusDays(5));
         });
@@ -411,7 +412,7 @@ class CatalogApiTest {
 
             var result = brokerServerClient().brokerServerApi().catalogPage(query);
             assertThat(result.getDataOffers()).extracting(CatalogDataOffer::getAssetId)
-                    .isEqualTo(range(0, 10).mapToObj("urn:artifact:my-asset-%d"::formatted).toList());
+                    .isEqualTo(range(0, 10).mapToObj("my-asset-%d"::formatted).toList());
 
             var actual = result.getPaginationMetadata();
             assertThat(actual.getPageOneBased()).isEqualTo(1);
@@ -446,7 +447,7 @@ class CatalogApiTest {
             var result = brokerServerClient().brokerServerApi().catalogPage(query);
 
             assertThat(result.getDataOffers()).extracting(CatalogDataOffer::getAssetId)
-                    .isEqualTo(range(10, 15).mapToObj("urn:artifact:my-asset-%d"::formatted).toList());
+                    .isEqualTo(range(10, 15).mapToObj("my-asset-%d"::formatted).toList());
 
             var actual = result.getPaginationMetadata();
             assertThat(actual.getPageOneBased()).isEqualTo(2);
@@ -468,8 +469,8 @@ class CatalogApiTest {
             createDataOffer(dsl, today, endpoint, Json.createObjectBuilder().add(Prop.ID, "asset-2").build());
             createDataOffer(dsl, today, endpoint, Json.createObjectBuilder().add(Prop.ID, "asset-3").build());
 
-            range(0, 3).forEach(i -> dataOfferDetails(endpoint, "urn:artifact:asset-1"));
-            range(0, 5).forEach(i -> dataOfferDetails(endpoint, "urn:artifact:asset-2"));
+            range(0, 3).forEach(i -> dataOfferDetails(endpoint, "asset-1"));
+            range(0, 5).forEach(i -> dataOfferDetails(endpoint, "asset-2"));
 
 
             var query = new CatalogPageQuery();
@@ -477,9 +478,9 @@ class CatalogApiTest {
 
             var result = brokerServerClient().brokerServerApi().catalogPage(query);
             assertThat(result.getDataOffers()).extracting(CatalogDataOffer::getAssetId).containsExactly(
-                    "urn:artifact:asset-2",
-                    "urn:artifact:asset-1",
-                    "urn:artifact:asset-3"
+                    "asset-2",
+                    "asset-1",
+                    "asset-3"
             );
         });
     }
@@ -538,10 +539,5 @@ class CatalogApiTest {
     @SneakyThrows
     private String toJson(Object o) {
         return new ObjectMapper().writeValueAsString(o);
-    }
-
-    @SneakyThrows
-    private String assetProperties(Map<String, String> assetProperties) {
-        return new ObjectMapper().writeValueAsString(assetProperties);
     }
 }

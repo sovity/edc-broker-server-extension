@@ -14,15 +14,16 @@
 
 package de.sovity.edc.ext.brokerserver.services.api;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import de.sovity.edc.ext.brokerserver.dao.AssetProperty;
 import de.sovity.edc.ext.brokerserver.db.TestDatabase;
 import de.sovity.edc.ext.brokerserver.db.TestDatabaseFactory;
 import de.sovity.edc.ext.brokerserver.db.jooq.Tables;
 import de.sovity.edc.ext.brokerserver.db.jooq.enums.ConnectorContractOffersExceeded;
 import de.sovity.edc.ext.brokerserver.db.jooq.enums.ConnectorDataOffersExceeded;
 import de.sovity.edc.ext.brokerserver.db.jooq.enums.ConnectorOnlineStatus;
-import lombok.SneakyThrows;
+import de.sovity.edc.ext.wrapper.api.common.mappers.utils.AssetJsonLdUtils;
+import de.sovity.edc.utils.JsonUtils;
+import de.sovity.edc.utils.jsonld.vocab.Prop;
+import jakarta.json.Json;
 import org.eclipse.edc.junit.annotations.ApiTest;
 import org.eclipse.edc.junit.extensions.EdcExtension;
 import org.eclipse.edc.policy.model.Policy;
@@ -48,6 +49,8 @@ class DataOfferCountApiTest {
 
     @RegisterExtension
     private static final TestDatabase TEST_DATABASE = TestDatabaseFactory.getTestDatabase();
+
+    AssetJsonLdUtils assetJsonLdUtils = new AssetJsonLdUtils();
 
     @BeforeEach
     void setUp(EdcExtension extension) {
@@ -105,14 +108,14 @@ class DataOfferCountApiTest {
 
     private void createDataOffer(DSLContext dsl, OffsetDateTime today, int iConnector, int iDataOffer) {
         var connectorEndpoint = getEndpoint(iConnector);
-        var assetProperties = Map.of(
-                AssetProperty.ASSET_ID, "urn:artifact:my-asset-%d".formatted(iDataOffer)
-        );
+        var assetPropertiesJson =  Json.createObjectBuilder()
+            .add(Prop.ID, "my-asset-%d".formatted(iDataOffer))
+            .build();
 
         var dataOffer = dsl.newRecord(Tables.DATA_OFFER);
-        dataOffer.setAssetId(assetProperties.get(AssetProperty.ASSET_ID));
-        dataOffer.setAssetName(assetProperties.getOrDefault(AssetProperty.ASSET_NAME, dataOffer.getAssetId()));
-        dataOffer.setAssetProperties(JSONB.jsonb(assetProperties(assetProperties)));
+        dataOffer.setAssetId(assetJsonLdUtils.getId(assetPropertiesJson));
+        dataOffer.setAssetName(assetJsonLdUtils.getTitle(assetPropertiesJson));
+        dataOffer.setAssetProperties(JSONB.jsonb(JsonUtils.toJson(assetPropertiesJson)));
         dataOffer.setConnectorEndpoint(connectorEndpoint);
         dataOffer.setCreatedAt(today.minusDays(5));
         dataOffer.setUpdatedAt(today);
@@ -121,7 +124,7 @@ class DataOfferCountApiTest {
         var contractOffer = dsl.newRecord(Tables.DATA_OFFER_CONTRACT_OFFER);
         contractOffer.setContractOfferId("my-contract-offer-1");
         contractOffer.setConnectorEndpoint(connectorEndpoint);
-        contractOffer.setAssetId(assetProperties.get(AssetProperty.ASSET_ID));
+        contractOffer.setAssetId(assetJsonLdUtils.getId(assetPropertiesJson));
         contractOffer.setCreatedAt(today.minusDays(5));
         contractOffer.setUpdatedAt(today);
         contractOffer.setPolicy(JSONB.jsonb(policyToJson(dummyPolicy())));
@@ -136,10 +139,5 @@ class DataOfferCountApiTest {
 
     private String policyToJson(Policy policy) {
         return toJson(policy);
-    }
-
-    @SneakyThrows
-    private String assetProperties(Map<String, String> assetProperties) {
-        return new ObjectMapper().writeValueAsString(assetProperties);
     }
 }

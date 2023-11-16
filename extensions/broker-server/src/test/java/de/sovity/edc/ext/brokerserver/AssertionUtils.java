@@ -21,8 +21,6 @@ import lombok.SneakyThrows;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class AssertionUtils {
     @SneakyThrows
@@ -31,6 +29,6 @@ public class AssertionUtils {
     }
 
     public static void assertEqualUsingJson(Object expected, Object actual) {
-        assertThat(JSON.serialize(expected)).isEqualTo(JSON.serialize(actual));
+        assertEqualJson(JSON.serialize(expected), JSON.serialize(actual));
     }
 }
