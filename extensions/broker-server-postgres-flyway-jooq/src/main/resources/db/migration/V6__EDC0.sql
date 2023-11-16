@@ -154,13 +154,13 @@ set asset_json_ld = pg_temp.build_asset_json_ld(asset_id, asset_title);
 
 -- Extracted Asset Metadata from the JSON-LD for Search / Filtering
 alter table data_offer
-    add column description               text,
-    add column curator_organization_name text,
-    add column data_category             text,
-    add column data_subcategory          text,
-    add column data_model                text,
-    add column transport_mode            text,
-    add column geo_reference_method      text,
-    add column keywords                  text[],
+    add column description               text not null default '',
+    add column curator_organization_name text not null default '',
+    add column data_category             text not null default '',
+    add column data_subcategory          text not null default '',
+    add column data_model                text not null default '',
+    add column transport_mode            text not null default '',
+    add column geo_reference_method      text not null default '',
+    add column keywords                  text[] not null default '{}',
     -- comma joined keywords for easier search
-    add column keywords_comma_joined     text;
+    add column keywords_comma_joined     text not null default '';

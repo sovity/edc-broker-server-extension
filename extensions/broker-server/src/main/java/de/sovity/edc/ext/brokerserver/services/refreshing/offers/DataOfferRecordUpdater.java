@@ -148,7 +148,16 @@ public class DataOfferRecordUpdater {
             Consumer<String> setter
     ) {
         var fetched = fetchedField.apply(fetchedDataOffer);
+        if (fetched == null) {
+            fetched = "";
+        }
+
         var existing = existingField.apply(dataOffer);
+        if (existing == null) {
+            existing = "";
+        }
+
+
         if (Objects.equals(fetched, existing)) {
             return false;
         }
