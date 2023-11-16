@@ -50,6 +50,7 @@ import de.sovity.edc.ext.brokerserver.services.api.DataOfferMappingUtils;
 import de.sovity.edc.ext.brokerserver.services.api.PaginationMetadataUtils;
 import de.sovity.edc.ext.brokerserver.services.api.filtering.CatalogFilterAttributeDefinitionService;
 import de.sovity.edc.ext.brokerserver.services.api.filtering.CatalogFilterService;
+import de.sovity.edc.ext.brokerserver.services.api.filtering.CatalogSearchService;
 import de.sovity.edc.ext.brokerserver.services.config.AdminApiKeyValidator;
 import de.sovity.edc.ext.brokerserver.services.config.BrokerServerSettingsFactory;
 import de.sovity.edc.ext.brokerserver.services.logging.BrokerEventLogger;
@@ -131,7 +132,8 @@ public class BrokerServerExtensionContextBuilder {
         var dslContextFactory = new DslContextFactory(dataSource);
         var connectorQueries = new ConnectorQueries();
         var catalogQuerySortingService = new CatalogQuerySortingService();
-        var catalogQueryFilterService = new CatalogQueryFilterService(brokerServerSettings);
+        var catalogSearchService = new CatalogSearchService();
+        var catalogQueryFilterService = new CatalogQueryFilterService(brokerServerSettings, catalogSearchService);
         var catalogQueryContractOfferFetcher = new CatalogQueryContractOfferFetcher();
         var catalogQueryDataOfferFetcher = new CatalogQueryDataOfferFetcher(
                 catalogQuerySortingService,
@@ -182,10 +184,7 @@ public class BrokerServerExtensionContextBuilder {
                 uiAssetMapper,
                 jsonLd
         );
-        var fetchedDataOfferBuilder = new FetchedCatalogBuilder(
-                assetMapper,
-                assetJsonLdUtils
-        );
+        var fetchedDataOfferBuilder = new FetchedCatalogBuilder(assetMapper);
         var dspDataOfferBuilder = new DspDataOfferBuilder(jsonLd);
         var dspCatalogService = new DspCatalogService(
                 catalogService,
@@ -302,7 +301,9 @@ public class BrokerServerExtensionContextBuilder {
                 brokerServerInitializer,
                 connectorUpdater,
                 connectorCreator,
-                policyMapper
+                policyMapper,
+                fetchedDataOfferBuilder,
+                dataOfferRecordUpdater
         );
     }
 

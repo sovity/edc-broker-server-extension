@@ -21,9 +21,6 @@ import de.sovity.edc.ext.brokerserver.db.jooq.enums.ConnectorContractOffersExcee
 import de.sovity.edc.ext.brokerserver.db.jooq.enums.ConnectorDataOffersExceeded;
 import de.sovity.edc.ext.brokerserver.db.jooq.enums.ConnectorOnlineStatus;
 import de.sovity.edc.ext.wrapper.api.common.mappers.utils.AssetJsonLdUtils;
-import de.sovity.edc.utils.JsonUtils;
-import de.sovity.edc.utils.jsonld.vocab.Prop;
-import jakarta.json.Json;
 import org.eclipse.edc.junit.annotations.ApiTest;
 import org.eclipse.edc.junit.extensions.EdcExtension;
 import org.eclipse.edc.policy.model.Policy;
@@ -38,6 +35,8 @@ import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.Map;
 
+import static de.sovity.edc.ext.brokerserver.TestAsset.getAssetJsonLd;
+import static de.sovity.edc.ext.brokerserver.TestAsset.setDataOfferAssetMetadata;
 import static de.sovity.edc.ext.brokerserver.TestUtils.brokerServerClient;
 import static de.sovity.edc.ext.brokerserver.TestUtils.createConfiguration;
 import static groovy.json.JsonOutput.toJson;
@@ -108,14 +107,10 @@ class DataOfferCountApiTest {
 
     private void createDataOffer(DSLContext dsl, OffsetDateTime today, int iConnector, int iDataOffer) {
         var connectorEndpoint = getEndpoint(iConnector);
-        var assetJsonLd =  Json.createObjectBuilder()
-            .add(Prop.ID, "my-asset-%d".formatted(iDataOffer))
-            .build();
+        var assetJsonLd = getAssetJsonLd("my-asset-%d".formatted(iDataOffer));
 
         var dataOffer = dsl.newRecord(Tables.DATA_OFFER);
-        dataOffer.setAssetId(assetJsonLdUtils.getId(assetJsonLd));
-        dataOffer.setAssetTitle(assetJsonLdUtils.getTitle(assetJsonLd));
-        dataOffer.setAssetJsonLd(JSONB.jsonb(JsonUtils.toJson(assetJsonLd)));
+        setDataOfferAssetMetadata(dataOffer, assetJsonLd);
         dataOffer.setConnectorEndpoint(connectorEndpoint);
         dataOffer.setCreatedAt(today.minusDays(5));
         dataOffer.setUpdatedAt(today);

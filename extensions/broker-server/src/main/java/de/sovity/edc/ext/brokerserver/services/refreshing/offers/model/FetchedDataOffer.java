@@ -30,6 +30,14 @@ import java.util.List;
 public class FetchedDataOffer {
     String assetId;
     String assetTitle;
+    String description;
+    String curatorOrganizationName;
+    String dataCategory;
+    String dataSubcategory;
+    String dataModel;
+    String transportMode;
+    String geoReferenceMethod;
+    List<String> keywords;
     String assetJsonLd;
     List<FetchedContractOffer> contractOffers;
 }

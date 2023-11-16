@@ -49,7 +49,7 @@ public class ConnectorDetailPageResult {
     private ConnectorOnlineStatus onlineStatus;
 
     @Schema(description = "Number of known data offerings")
-    private Integer numContractOffers;
+    private Integer numDataOffers;
 
     @Schema(description = "Average time to crawl the connector")
     private Long connectorCrawlingTimeAvg;

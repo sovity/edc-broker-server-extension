@@ -71,7 +71,8 @@ begin
               from pg_catalog.pg_constraint con
                        inner join pg_catalog.pg_class rel on rel.oid = con.conrelid
                        inner join pg_catalog.pg_namespace nsp on nsp.oid = connamespace
-              where rel.relname = table_name and conname like '%fkey%')
+              where rel.relname = table_name
+                and conname like '%fkey%')
         loop
             execute format('alter table %s drop constraint %s', table_name, i.conname);
         end loop;
@@ -150,3 +151,16 @@ alter table data_offer
     rename column asset_name to asset_title;
 update data_offer
 set asset_json_ld = pg_temp.build_asset_json_ld(asset_id, asset_title);
+
+-- Extracted Asset Metadata from the JSON-LD for Search / Filtering
+alter table data_offer
+    add column description               text,
+    add column curator_organization_name text,
+    add column data_category             text,
+    add column data_subcategory          text,
+    add column data_model                text,
+    add column transport_mode            text,
+    add column geo_reference_method      text,
+    add column keywords                  text[],
+    -- comma joined keywords for easier search
+    add column keywords_comma_joined     text;

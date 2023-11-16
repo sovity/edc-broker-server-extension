@@ -49,6 +49,6 @@ public class ConnectorListEntry {
     private ConnectorOnlineStatus onlineStatus;
 
     @Schema(description = "Number of known data offerings")
-    private Integer numContractOffers;
+    private Integer numDataOffers;
 }
 

@@ -16,27 +16,27 @@ package de.sovity.edc.ext.brokerserver.services.api.filtering;
 
 import de.sovity.edc.ext.brokerserver.dao.pages.catalog.CatalogQueryFields;
 import de.sovity.edc.ext.brokerserver.dao.utils.PostgresqlUtils;
-import org.jetbrains.annotations.NotNull;
+import de.sovity.edc.ext.brokerserver.db.jooq.tables.records.DataOfferRecord;
 import org.jooq.Field;
-import org.jooq.impl.DSL;
+import org.jooq.TableField;
 
 public class CatalogFilterAttributeDefinitionService {
 
-    public CatalogFilterAttributeDefinition fromAssetProperty(String assetProperty, String label) {
+    public CatalogFilterAttributeDefinition fromDataOfferField(TableField<DataOfferRecord, String> field, String label) {
         return new CatalogFilterAttributeDefinition(
-                assetProperty,
-                label,
-                fields -> getValue(fields, assetProperty),
-                (fields, values) -> PostgresqlUtils.in(getValue(fields, assetProperty), values)
+            field.getName(),
+            label,
+            fields -> getDataOfferField(field, fields),
+            (fields, values) -> PostgresqlUtils.in(getDataOfferField(field, fields), values)
         );
     }
 
     public CatalogFilterAttributeDefinition buildDataSpaceFilter() {
         return new CatalogFilterAttributeDefinition(
-                "dataSpace",
-                "Data Space",
-                CatalogQueryFields::getDataSpace,
-                (fields, values) -> PostgresqlUtils.in(fields.getDataSpace(), values)
+            "dataSpace",
+            "Data Space",
+            CatalogQueryFields::getDataSpace,
+            (fields, values) -> PostgresqlUtils.in(fields.getDataSpace(), values)
         );
     }
 
@@ -49,8 +49,7 @@ public class CatalogFilterAttributeDefinitionService {
         );
     }
 
-    @NotNull
-    private Field<String> getValue(CatalogQueryFields fields, String assetProperty) {
-        return DSL.coalesce(fields.getAssetProperty(assetProperty), DSL.value(""));
+    private Field<String> getDataOfferField(TableField<DataOfferRecord, String> field, CatalogQueryFields fields) {
+        return fields.getDataOfferTable().field(field);
     }
 }

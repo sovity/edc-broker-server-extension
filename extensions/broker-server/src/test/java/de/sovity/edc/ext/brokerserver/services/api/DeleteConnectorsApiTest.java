@@ -41,6 +41,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import static de.sovity.edc.ext.brokerserver.TestAsset.getAssetJsonLd;
+import static de.sovity.edc.ext.brokerserver.TestAsset.setDataOfferAssetMetadata;
 import static de.sovity.edc.ext.brokerserver.TestUtils.ADMIN_API_KEY;
 import static de.sovity.edc.ext.brokerserver.TestUtils.brokerServerClient;
 import static de.sovity.edc.ext.brokerserver.TestUtils.createConfiguration;
@@ -108,9 +110,7 @@ class DeleteConnectorsApiTest {
         var assetId = "my-asset";
 
         var dataOffer = dsl.newRecord(Tables.DATA_OFFER);
-        dataOffer.setAssetId(assetId);
-        dataOffer.setAssetTitle("My Asset");
-        dataOffer.setAssetJsonLd(JSONB.valueOf("{}"));
+        setDataOfferAssetMetadata(dataOffer, getAssetJsonLd("my-asset"));
         dataOffer.setConnectorEndpoint(endpoint);
         dataOffer.setCreatedAt(OffsetDateTime.now());
         dataOffer.setUpdatedAt(OffsetDateTime.now());

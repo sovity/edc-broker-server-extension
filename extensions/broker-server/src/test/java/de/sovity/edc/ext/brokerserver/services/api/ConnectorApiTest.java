@@ -25,10 +25,7 @@ import de.sovity.edc.ext.brokerserver.db.jooq.enums.ConnectorOnlineStatus;
 import de.sovity.edc.ext.brokerserver.db.jooq.enums.MeasurementErrorStatus;
 import de.sovity.edc.ext.brokerserver.db.jooq.enums.MeasurementType;
 import de.sovity.edc.ext.brokerserver.db.jooq.tables.records.ConnectorRecord;
-import de.sovity.edc.ext.wrapper.api.common.mappers.utils.AssetJsonLdUtils;
-import de.sovity.edc.utils.JsonUtils;
 import de.sovity.edc.utils.jsonld.vocab.Prop;
-import jakarta.json.Json;
 import jakarta.json.JsonObject;
 import org.eclipse.edc.junit.annotations.ApiTest;
 import org.eclipse.edc.junit.extensions.EdcExtension;
@@ -43,6 +40,8 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 import java.time.OffsetDateTime;
 import java.util.Map;
 
+import static de.sovity.edc.ext.brokerserver.TestAsset.getAssetJsonLd;
+import static de.sovity.edc.ext.brokerserver.TestAsset.setDataOfferAssetMetadata;
 import static de.sovity.edc.ext.brokerserver.TestUtils.brokerServerClient;
 import static de.sovity.edc.ext.brokerserver.TestUtils.createConfiguration;
 import static groovy.json.JsonOutput.toJson;
@@ -55,12 +54,9 @@ class ConnectorApiTest {
     @RegisterExtension
     private static final TestDatabase TEST_DATABASE = TestDatabaseFactory.getTestDatabase();
 
-    AssetJsonLdUtils assetJsonLdUtils = new AssetJsonLdUtils();
-
     @BeforeEach
     void setUp(EdcExtension extension) {
-        extension.setConfiguration(createConfiguration(TEST_DATABASE, Map.of(
-        )));
+        extension.setConfiguration(createConfiguration(TEST_DATABASE, Map.of()));
     }
 
     @Test
@@ -68,15 +64,13 @@ class ConnectorApiTest {
         TEST_DATABASE.testTransaction(dsl -> {
             var today = OffsetDateTime.now().withNano(0);
 
+            var assetJsonLd = getAssetJsonLd("my-asset-1", Map.of(
+                Prop.Mds.DATA_CATEGORY, "my-category",
+                Prop.Dcterms.TITLE, "My Asset 1"
+            ));
+
             createConnector(dsl, today, "http://my-connector/dsp");
-            createDataOffer(dsl, today, "http://my-connector/dsp", Json.createObjectBuilder()
-                .add(Prop.ID, "my-asset-1")
-                .add(Prop.Edc.PROPERTIES, Json.createObjectBuilder()
-                    .add(Prop.Mds.DATA_CATEGORY, "my-category")
-                    .add(Prop.Dcterms.TITLE, "My Asset 1")
-                )
-                .build()
-            );
+            createDataOffer(dsl, today, "http://my-connector/dsp", assetJsonLd);
 
             var result = brokerServerClient().brokerServerApi().connectorPage(new ConnectorPageQuery());
             assertThat(result.getConnectors()).hasSize(1);
@@ -87,6 +81,7 @@ class ConnectorApiTest {
             assertThat(connector.getCreatedAt()).isEqualTo(today.minusDays(1));
             assertThat(connector.getLastRefreshAttemptAt()).isEqualTo(today);
             assertThat(connector.getLastSuccessfulRefreshAt()).isEqualTo(today);
+            assertThat(connector.getNumDataOffers()).isEqualTo(1);
         });
     }
 
@@ -95,16 +90,14 @@ class ConnectorApiTest {
         TEST_DATABASE.testTransaction(dsl -> {
             var today = OffsetDateTime.now().withNano(0);
 
+            var assetJsonLd = getAssetJsonLd("my-asset-1", Map.of(
+                Prop.Mds.DATA_CATEGORY, "my-category",
+                Prop.Dcterms.TITLE, "My Asset 1"
+            ));
+
             createConnector(dsl, today, "http://my-connector/dsp");
             createConnector(dsl, today, "http://my-connector2/dsp");
-            createDataOffer(dsl, today, "http://my-connector/dsp", Json.createObjectBuilder()
-                .add(Prop.ID, "my-asset-1")
-                .add(Prop.Edc.PROPERTIES, Json.createObjectBuilder()
-                    .add(Prop.Mds.DATA_CATEGORY, "my-category")
-                    .add(Prop.Dcterms.TITLE, "My Asset 1")
-                )
-                .build()
-            );
+            createDataOffer(dsl, today, "http://my-connector/dsp", assetJsonLd);
 
             var connector = brokerServerClient().brokerServerApi().connectorDetailPage(new ConnectorDetailPageQuery("http://my-connector/dsp"));
             assertThat(connector.getParticipantId()).isEqualTo("my-participant-id");
@@ -144,9 +137,7 @@ class ConnectorApiTest {
 
     private void createDataOffer(DSLContext dsl, OffsetDateTime today, String connectorEndpoint, JsonObject assetJsonLd) {
         var dataOffer = dsl.newRecord(Tables.DATA_OFFER);
-        dataOffer.setAssetId(assetJsonLdUtils.getId(assetJsonLd));
-        dataOffer.setAssetTitle(assetJsonLdUtils.getTitle(assetJsonLd));
-        dataOffer.setAssetJsonLd(JSONB.jsonb(JsonUtils.toJson(assetJsonLd)));
+        setDataOfferAssetMetadata(dataOffer, assetJsonLd);
         dataOffer.setConnectorEndpoint(connectorEndpoint);
         dataOffer.setCreatedAt(today.minusDays(5));
         dataOffer.setUpdatedAt(today);
@@ -155,7 +146,7 @@ class ConnectorApiTest {
         var contractOffer = dsl.newRecord(Tables.CONTRACT_OFFER);
         contractOffer.setContractOfferId("my-contract-offer-1");
         contractOffer.setConnectorEndpoint(connectorEndpoint);
-        contractOffer.setAssetId(assetJsonLdUtils.getId(assetJsonLd));
+        contractOffer.setAssetId(dataOffer.getAssetId());
         contractOffer.setCreatedAt(today.minusDays(5));
         contractOffer.setUpdatedAt(today);
         contractOffer.setPolicy(JSONB.jsonb(policyToJson(dummyPolicy())));

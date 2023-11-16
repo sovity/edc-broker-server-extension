@@ -21,7 +21,12 @@ import lombok.RequiredArgsConstructor;
 import org.jooq.JSONB;
 
 import java.time.OffsetDateTime;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 /**
  * Creates or updates {@link DataOfferRecord} DB Rows.
@@ -55,25 +60,137 @@ public class DataOfferRecordUpdater {
      * @param changed          whether the data offer should be marked as updated simply because the contract offers changed
      * @return whether any fields were updated
      */
-    public boolean updateDataOffer(DataOfferRecord dataOffer, FetchedDataOffer fetchedDataOffer, boolean changed) {
-        if (!Objects.equals(fetchedDataOffer.getAssetTitle(), dataOffer.getAssetTitle())) {
-            Objects.requireNonNull(fetchedDataOffer.getAssetTitle(),
-                    "Fetched data offer's asset title should have been set as id if name isn't present");
-            dataOffer.setAssetTitle(fetchedDataOffer.getAssetTitle());
-            changed = true;
+    public boolean updateDataOffer(
+            DataOfferRecord dataOffer,
+            FetchedDataOffer fetchedDataOffer,
+            boolean changed
+    ) {
+        changed |= updateField(
+            dataOffer,
+            fetchedDataOffer,
+            FetchedDataOffer::getAssetTitle,
+            DataOfferRecord::getAssetTitle,
+            dataOffer::setAssetTitle
+        );
+
+        changed |= updateField(
+            dataOffer,
+            fetchedDataOffer,
+            FetchedDataOffer::getDescription,
+            DataOfferRecord::getDescription,
+            dataOffer::setDescription
+        );
+
+        changed |= updateField(
+            dataOffer,
+            fetchedDataOffer,
+            FetchedDataOffer::getCuratorOrganizationName,
+            DataOfferRecord::getCuratorOrganizationName,
+            dataOffer::setCuratorOrganizationName
+        );
+
+        changed |= updateField(
+            dataOffer,
+            fetchedDataOffer,
+            FetchedDataOffer::getDataCategory,
+            DataOfferRecord::getDataCategory,
+            dataOffer::setDataCategory
+        );
+
+        changed |= updateField(
+            dataOffer,
+            fetchedDataOffer,
+            FetchedDataOffer::getDataSubcategory,
+            DataOfferRecord::getDataSubcategory,
+            dataOffer::setDataSubcategory
+        );
+
+        changed |= updateField(
+            dataOffer,
+            fetchedDataOffer,
+            FetchedDataOffer::getDataModel,
+            DataOfferRecord::getDataModel,
+            dataOffer::setDataModel
+        );
+
+        changed |= updateField(
+            dataOffer,
+            fetchedDataOffer,
+            FetchedDataOffer::getTransportMode,
+            DataOfferRecord::getTransportMode,
+            dataOffer::setTransportMode
+        );
+
+        changed |= updateField(
+            dataOffer,
+            fetchedDataOffer,
+            FetchedDataOffer::getGeoReferenceMethod,
+            DataOfferRecord::getGeoReferenceMethod,
+            dataOffer::setGeoReferenceMethod
+        );
+
+        changed |= updateKeywords(dataOffer, fetchedDataOffer);
+
+        changed |= updateAssetJsonLd(dataOffer, fetchedDataOffer, changed);
+
+        if (changed) {
+            dataOffer.setUpdatedAt(OffsetDateTime.now());
         }
 
+        return changed;
+    }
+
+    private boolean updateField(
+            DataOfferRecord dataOffer,
+            FetchedDataOffer fetchedDataOffer,
+            Function<FetchedDataOffer, String> fetchedField,
+            Function<DataOfferRecord, String> existingField,
+            Consumer<String> setter
+    ) {
+        var fetched = fetchedField.apply(fetchedDataOffer);
+        var existing = existingField.apply(dataOffer);
+        if (Objects.equals(fetched, existing)) {
+            return false;
+        }
+
+        setter.accept(fetched);
+        return true;
+    }
+
+    private boolean updateKeywords(
+            DataOfferRecord dataOffer,
+            FetchedDataOffer fetchedDataOffer
+    ) {
+        List<String> fetched = fetchedDataOffer.getKeywords();
+        if (fetched == null) {
+            fetched = List.of();
+        }
+
+        String[] existing = dataOffer.getKeywords();
+        if (existing == null) {
+            existing = new String[0];
+        }
+
+        if (Objects.equals(new HashSet<>(fetched), new HashSet<>(Arrays.asList(existing)))) {
+            return false;
+        }
+
+        dataOffer.setKeywords(fetched.toArray(new String[0]));
+        dataOffer.setKeywordsCommaJoined(String.join(",", fetched));
+        return false;
+    }
+
+    private boolean updateAssetJsonLd(
+            DataOfferRecord dataOffer,
+            FetchedDataOffer fetchedDataOffer,
+            boolean changed
+    ) {
         String existingAssetProps = JsonbUtils.getDataOrNull(dataOffer.getAssetJsonLd());
         var fetchedAssetProps = fetchedDataOffer.getAssetJsonLd();
         if (!Objects.equals(fetchedAssetProps, existingAssetProps)) {
             dataOffer.setAssetJsonLd(JSONB.jsonb(fetchedAssetProps));
             changed = true;
         }
-
-        if (changed) {
-            dataOffer.setUpdatedAt(OffsetDateTime.now());
-        }
-
         return changed;
     }
 }

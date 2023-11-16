@@ -58,7 +58,7 @@ public class ConnectorListApiService {
         dto.setLastRefreshAttemptAt(connector.getLastRefreshAttemptAt());
         dto.setLastSuccessfulRefreshAt(connector.getLastSuccessfulRefreshAt());
         dto.setOnlineStatus(connectorOnlineStatusMapper.getOnlineStatus(connector.getOnlineStatus()));
-        dto.setNumContractOffers(connector.getNumDataOffers());
+        dto.setNumDataOffers(connector.getNumDataOffers());
         return dto;
     }
 

@@ -35,7 +35,6 @@ public class CatalogFetcher {
     @SneakyThrows
     public FetchedCatalog fetchCatalog(String connectorEndpoint) {
         var dspCatalog = dspCatalogService.fetchDataOffers(connectorEndpoint);
-
         return fetchedCatalogBuilder.buildFetchedCatalog(dspCatalog);
     }
 }
