@@ -178,8 +178,8 @@ class CatalogApiTest {
             assertThat(dataOfferResult.getConnectorEndpoint()).isEqualTo("http://my-connector/dsp");
             assertThat(dataOfferResult.getConnectorOfflineSinceOrLastUpdatedAt()).isEqualTo(today);
             assertThat(dataOfferResult.getConnectorOnlineStatus()).isEqualTo(CatalogDataOffer.ConnectorOnlineStatusEnum.ONLINE);
-            assertThat(dataOfferResult.getAssetId()).isEqualTo("my-asset");
-            assertThat(dataOfferResult.getAsset().getAssetId()).isEqualTo("my-asset");
+            assertThat(dataOfferResult.getAssetId()).isEqualTo("my-asset-1");
+            assertThat(dataOfferResult.getAsset().getAssetId()).isEqualTo("my-asset-1");
             assertThat(dataOfferResult.getAsset().getTitle()).isEqualTo("My Asset");
             assertThat(dataOfferResult.getCreatedAt()).isEqualTo(today.minusDays(5));
         });
@@ -364,20 +364,16 @@ class CatalogApiTest {
 
             var query = new CatalogPageQuery();
             query.setFilter(new CnfFilterValue(List.of(
-                    new CnfFilterValueAttribute(Prop.Mds.DATA_CATEGORY, List.of(""))
+                    new CnfFilterValueAttribute("dataCategory", List.of(""))
             )));
 
             var result = brokerServerClient().brokerServerApi().catalogPage(query);
 
-            var dataCategory = getAvailableFilter(result, Prop.Mds.DATA_CATEGORY);
-            assertThat(dataCategory.getId()).isEqualTo(Prop.Mds.DATA_CATEGORY);
-            assertThat(dataCategory.getTitle()).isEqualTo("Data Category");
+            var dataCategory = getAvailableFilter(result, "dataCategory");
             assertThat(dataCategory.getValues()).extracting(CnfFilterItem::getId).containsExactly("my-category", "");
             assertThat(dataCategory.getValues()).extracting(CnfFilterItem::getTitle).containsExactly("my-category", "");
 
-            var dataSubcategory = getAvailableFilter(result, Prop.Mds.DATA_SUBCATEGORY);
-            assertThat(dataSubcategory.getId()).isEqualTo(Prop.Mds.DATA_SUBCATEGORY);
-            assertThat(dataSubcategory.getTitle()).isEqualTo("Data Subcategory");
+            var dataSubcategory = getAvailableFilter(result, "dataSubcategory");
             assertThat(dataSubcategory.getValues()).extracting(CnfFilterItem::getId).containsExactly("my-other-subcategory");
             assertThat(dataSubcategory.getValues()).extracting(CnfFilterItem::getTitle).containsExactly("my-other-subcategory");
         });

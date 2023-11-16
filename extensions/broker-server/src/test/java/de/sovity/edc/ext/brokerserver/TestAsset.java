@@ -40,7 +40,7 @@ public class TestAsset {
     }
 
     /**
-     * Sets both the assetJsonLd and the other extracted fields.
+     * Sets assetJsonLd and other extracted fields.
      * <p>
      * This method keeps our tests consistent if we change the extracted fields.
      *
