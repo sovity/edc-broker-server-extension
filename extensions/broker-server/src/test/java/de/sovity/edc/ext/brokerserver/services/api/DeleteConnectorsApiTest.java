@@ -110,7 +110,7 @@ class DeleteConnectorsApiTest {
         var assetId = "my-asset";
 
         var dataOffer = dsl.newRecord(Tables.DATA_OFFER);
-        setDataOfferAssetMetadata(dataOffer, getAssetJsonLd("my-asset"));
+        setDataOfferAssetMetadata(dataOffer, getAssetJsonLd("my-asset"), "my-participant-id");
         dataOffer.setConnectorEndpoint(endpoint);
         dataOffer.setCreatedAt(OffsetDateTime.now());
         dataOffer.setUpdatedAt(OffsetDateTime.now());

@@ -110,7 +110,7 @@ class DataOfferCountApiTest {
         var assetJsonLd = getAssetJsonLd("my-asset-%d".formatted(iDataOffer));
 
         var dataOffer = dsl.newRecord(Tables.DATA_OFFER);
-        setDataOfferAssetMetadata(dataOffer, assetJsonLd);
+        setDataOfferAssetMetadata(dataOffer, assetJsonLd, "my-participant-id");
         dataOffer.setConnectorEndpoint(connectorEndpoint);
         dataOffer.setCreatedAt(today.minusDays(5));
         dataOffer.setUpdatedAt(today);

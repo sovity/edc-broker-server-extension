@@ -46,14 +46,15 @@ public class TestAsset {
      *
      * @param dataOfferRecord data offer record to be updated
      * @param assetJsonLd     asset json ld
+     * @param participantId   required because the organization name will default to the participant id if unset
      */
-    public static void setDataOfferAssetMetadata(DataOfferRecord dataOfferRecord, JsonObject assetJsonLd) {
+    public static void setDataOfferAssetMetadata(DataOfferRecord dataOfferRecord, JsonObject assetJsonLd, String participantId) {
         // We trickily use the real code to update all the extracted values from the asset JSON-LD
         var fetchedCatalogBuilder = BrokerServerExtensionContext.instance.fetchedCatalogBuilder();
         var dataOfferRecordUpdater = BrokerServerExtensionContext.instance.dataOfferRecordUpdater();
 
         var fetchedDataOffer = new FetchedDataOffer();
-        fetchedCatalogBuilder.setAssetMetadata(fetchedDataOffer, assetJsonLd);
+        fetchedCatalogBuilder.setAssetMetadata(fetchedDataOffer, assetJsonLd, participantId);
 
         dataOfferRecord.setAssetId(fetchedDataOffer.getAssetId());
         dataOfferRecordUpdater.updateDataOffer(dataOfferRecord, fetchedDataOffer, false);

@@ -33,23 +33,25 @@ public class FetchedCatalogBuilder {
     private final AssetMapper assetMapper;
 
     public FetchedCatalog buildFetchedCatalog(DspCatalog catalog) {
+        var participantId = catalog.getParticipantId();
+
         var fetchedDataOffers = catalog.getDataOffers().stream()
-                .map(this::buildFetchedDataOffer)
+                .map(dspDataOffer -> buildFetchedDataOffer(dspDataOffer, participantId))
                 .toList();
 
         var fetchedCatalog = new FetchedCatalog();
-        fetchedCatalog.setParticipantId(catalog.getParticipantId());
+        fetchedCatalog.setParticipantId(participantId);
         fetchedCatalog.setDataOffers(fetchedDataOffers);
 
         return fetchedCatalog;
     }
 
     @NotNull
-    private FetchedDataOffer buildFetchedDataOffer(DspDataOffer dspDataOffer) {
+    private FetchedDataOffer buildFetchedDataOffer(DspDataOffer dspDataOffer, String participantId) {
         var assetJsonLd = assetMapper.buildAssetJsonLdFromDatasetProperties(dspDataOffer.getAssetPropertiesJsonLd());
 
         var fetchedDataOffer = new FetchedDataOffer();
-        setAssetMetadata(fetchedDataOffer, assetJsonLd);
+        setAssetMetadata(fetchedDataOffer, assetJsonLd, participantId);
         fetchedDataOffer.setContractOffers(buildFetchedContractOffers(dspDataOffer.getContractOffers()));
         return fetchedDataOffer;
     }
@@ -75,14 +77,14 @@ public class FetchedCatalogBuilder {
      * @param fetchedDataOffer fetchedDataOffer
      * @param assetJsonLd assetJsonLd
      */
-    public void setAssetMetadata(FetchedDataOffer fetchedDataOffer, JsonObject assetJsonLd) {
-        var uiAsset = assetMapper.buildUiAsset(assetJsonLd, "http://irrelevant-here", "irrelevant-here");
+    public void setAssetMetadata(FetchedDataOffer fetchedDataOffer, JsonObject assetJsonLd, String participantId) {
+        var uiAsset = assetMapper.buildUiAsset(assetJsonLd, "http://if-you-see-this-this-is-a-bug", participantId);
         fetchedDataOffer.setAssetId(uiAsset.getAssetId());
-        fetchedDataOffer.setAssetTitle(uiAsset.getTitle());
         fetchedDataOffer.setAssetJsonLd(JsonUtils.toJson(assetJsonLd));
 
         // Most of these fields are extracted so our DB does not need to
-        // semantically interpret JSON-LD when searching and filtering
+        // semantically interpret JSON-LD when sorting, searching and filtering
+        fetchedDataOffer.setAssetTitle(uiAsset.getTitle());
         fetchedDataOffer.setDescription(uiAsset.getDescription());
         fetchedDataOffer.setCuratorOrganizationName(uiAsset.getCreatorOrganizationName());
 
@@ -90,6 +92,7 @@ public class FetchedCatalogBuilder {
         fetchedDataOffer.setDataSubcategory(uiAsset.getDataSubcategory());
         fetchedDataOffer.setDataModel(uiAsset.getDataModel());
         fetchedDataOffer.setGeoReferenceMethod(uiAsset.getGeoReferenceMethod());
+        fetchedDataOffer.setTransportMode(uiAsset.getTransportMode());
         fetchedDataOffer.setKeywords(uiAsset.getKeywords());
     }
 }

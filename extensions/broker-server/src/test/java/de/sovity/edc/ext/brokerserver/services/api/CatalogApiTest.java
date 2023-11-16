@@ -64,8 +64,6 @@ class CatalogApiTest {
     @RegisterExtension
     private static final TestDatabase TEST_DATABASE = TestDatabaseFactory.getTestDatabase();
 
-    AssetJsonLdUtils assetJsonLdUtils = new AssetJsonLdUtils();
-
     @BeforeEach
     void setUp(EdcExtension extension) {
         extension.setConfiguration(createConfiguration(TEST_DATABASE, Map.of(
@@ -218,7 +216,12 @@ class CatalogApiTest {
             var assetJsonLd1 = getAssetJsonLd("my-asset-1", Map.of(
                 Prop.Mds.DATA_CATEGORY, "my-category-1",
                 Prop.Mds.TRANSPORT_MODE, "MY-TRANSPORT-MODE-1",
-                Prop.Mds.DATA_SUBCATEGORY, "MY-SUBCATEGORY-2"
+                Prop.Mds.DATA_SUBCATEGORY, "MY-SUBCATEGORY-2",
+                Prop.Mds.DATA_MODEL, "my-data-model",
+                Prop.Mds.GEO_REFERENCE_METHOD, "my-geo-ref",
+                Prop.Dcterms.CREATOR, Map.of(
+                    Prop.Foaf.NAME, "my-org"
+                )
             ));
 
             var assetJsonLd2 = getAssetJsonLd("my-asset-2", Map.of(
@@ -250,11 +253,12 @@ class CatalogApiTest {
                     .extracting(CnfFilterAttribute::getId)
                     .containsExactly(
                             "dataSpace",
-                            Prop.Mds.DATA_CATEGORY,
-                            Prop.Mds.DATA_SUBCATEGORY,
-                            Prop.Mds.DATA_MODEL,
-                            Prop.Mds.TRANSPORT_MODE,
-                            Prop.Mds.GEO_REFERENCE_METHOD,
+                            "dataCategory",
+                            "dataSubcategory",
+                            "dataModel",
+                            "transportMode",
+                            "geoReferenceMethod",
+                            "curatorOrganizationName",
                             "connectorEndpoint"
                     );
 
@@ -267,26 +271,39 @@ class CatalogApiTest {
                             "Data Model",
                             "Transport Mode",
                             "Geo Reference Method",
+                            "Organization Name",
                             "Connector"
                     );
 
-            var dataCategory = getAvailableFilter(result, Prop.Mds.DATA_CATEGORY);
-            assertThat(dataCategory.getTitle()).isEqualTo("Data Category");
+            var dataSpace = getAvailableFilter(result, "dataSpace");
+            assertThat(dataSpace.getValues()).extracting(CnfFilterItem::getId).containsExactly("MDS");
+            assertThat(dataSpace.getValues()).extracting(CnfFilterItem::getTitle).containsExactly("MDS");
+
+            var dataCategory = getAvailableFilter(result, "dataCategory");
             assertThat(dataCategory.getValues()).extracting(CnfFilterItem::getId).containsExactly("my-category-1");
             assertThat(dataCategory.getValues()).extracting(CnfFilterItem::getTitle).containsExactly("my-category-1");
 
-            var transportMode = getAvailableFilter(result, Prop.Mds.TRANSPORT_MODE);
-            assertThat(transportMode.getTitle()).isEqualTo("Transport Mode");
-            assertThat(transportMode.getValues()).extracting(CnfFilterItem::getId).containsExactly("MY-TRANSPORT-MODE-1", "my-transport-mode-2", "");
-            assertThat(transportMode.getValues()).extracting(CnfFilterItem::getTitle).containsExactly("MY-TRANSPORT-MODE-1", "my-transport-mode-2", "");
-
-            var dataSubcategory = getAvailableFilter(result, Prop.Mds.DATA_SUBCATEGORY);
-            assertThat(dataSubcategory.getTitle()).isEqualTo("Data Subcategory");
+            var dataSubcategory = getAvailableFilter(result, "dataSubcategory");
             assertThat(dataSubcategory.getValues()).extracting(CnfFilterItem::getId).containsExactly("my-subcategory-1", "MY-SUBCATEGORY-2", "");
             assertThat(dataSubcategory.getValues()).extracting(CnfFilterItem::getTitle).containsExactly("my-subcategory-1", "MY-SUBCATEGORY-2", "");
 
+            var dataModel = getAvailableFilter(result, "dataModel");
+            assertThat(dataModel.getValues()).extracting(CnfFilterItem::getId).containsExactly("my-data-model", "");
+            assertThat(dataModel.getValues()).extracting(CnfFilterItem::getTitle).containsExactly("my-data-model", "");
+
+            var transportMode = getAvailableFilter(result, "transportMode");
+            assertThat(transportMode.getValues()).extracting(CnfFilterItem::getId).containsExactly("MY-TRANSPORT-MODE-1", "my-transport-mode-2", "");
+            assertThat(transportMode.getValues()).extracting(CnfFilterItem::getTitle).containsExactly("MY-TRANSPORT-MODE-1", "my-transport-mode-2", "");
+
+            var geoReferenceMethod = getAvailableFilter(result, "geoReferenceMethod");
+            assertThat(geoReferenceMethod.getValues()).extracting(CnfFilterItem::getId).containsExactly("my-geo-ref", "");
+            assertThat(geoReferenceMethod.getValues()).extracting(CnfFilterItem::getTitle).containsExactly("my-geo-ref", "");
+
+            var curatorOrganizationName = getAvailableFilter(result, "curatorOrganizationName");
+            assertThat(curatorOrganizationName.getValues()).extracting(CnfFilterItem::getId).containsExactly("my-org", "my-participant-id"); // second value comes from tests mocking
+            assertThat(curatorOrganizationName.getValues()).extracting(CnfFilterItem::getTitle).containsExactly("my-org", "my-participant-id");
+
             var connectorEndpoint = getAvailableFilter(result, "connectorEndpoint");
-            assertThat(connectorEndpoint.getTitle()).isEqualTo("Connector");
             assertThat(connectorEndpoint.getValues()).extracting(CnfFilterItem::getId).containsExactly("http://my-connector/dsp");
             assertThat(connectorEndpoint.getValues()).extracting(CnfFilterItem::getTitle).containsExactly("http://my-connector/dsp");
         });
@@ -451,7 +468,7 @@ class CatalogApiTest {
 
     private void createDataOffer(DSLContext dsl, OffsetDateTime today, String connectorEndpoint, JsonObject assetJsonLd) {
         var dataOffer = dsl.newRecord(Tables.DATA_OFFER);
-        setDataOfferAssetMetadata(dataOffer, assetJsonLd);
+        setDataOfferAssetMetadata(dataOffer, assetJsonLd, "my-participant-id");
         dataOffer.setConnectorEndpoint(connectorEndpoint);
         dataOffer.setCreatedAt(today.minusDays(5));
         dataOffer.setUpdatedAt(today);
@@ -460,7 +477,7 @@ class CatalogApiTest {
         var contractOffer = dsl.newRecord(Tables.CONTRACT_OFFER);
         contractOffer.setContractOfferId("my-contract-offer-1");
         contractOffer.setConnectorEndpoint(connectorEndpoint);
-        contractOffer.setAssetId(assetJsonLdUtils.getId(assetJsonLd));
+        contractOffer.setAssetId(dataOffer.getAssetId());
         contractOffer.setCreatedAt(today.minusDays(5));
         contractOffer.setUpdatedAt(today);
         contractOffer.setPolicy(JSONB.jsonb(policyToJson(dummyPolicy())));

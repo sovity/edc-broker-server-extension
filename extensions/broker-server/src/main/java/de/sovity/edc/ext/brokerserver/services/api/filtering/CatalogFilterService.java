@@ -58,28 +58,34 @@ public class CatalogFilterService {
     private List<CatalogFilterAttributeDefinition> getAvailableFilters() {
         return List.of(
             catalogFilterAttributeDefinitionService.buildDataSpaceFilter(),
-            catalogFilterAttributeDefinitionService.fromDataOfferField(
-                Tables.DATA_OFFER.DATA_CATEGORY,
+            catalogFilterAttributeDefinitionService.forField(
+                fields -> fields.getDataOfferTable().DATA_CATEGORY,
+                "dataCategory",
                 "Data Category"
             ),
-            catalogFilterAttributeDefinitionService.fromDataOfferField(
-                Tables.DATA_OFFER.DATA_SUBCATEGORY,
+            catalogFilterAttributeDefinitionService.forField(
+                fields -> fields.getDataOfferTable().DATA_SUBCATEGORY,
+                "dataSubcategory",
                 "Data Subcategory"
             ),
-            catalogFilterAttributeDefinitionService.fromDataOfferField(
-                Tables.DATA_OFFER.DATA_MODEL,
+            catalogFilterAttributeDefinitionService.forField(
+                fields -> fields.getDataOfferTable().DATA_MODEL,
+                "dataModel",
                 "Data Model"
             ),
-            catalogFilterAttributeDefinitionService.fromDataOfferField(
-                Tables.DATA_OFFER.TRANSPORT_MODE,
+            catalogFilterAttributeDefinitionService.forField(
+                fields -> fields.getDataOfferTable().TRANSPORT_MODE,
+                "transportMode",
                 "Transport Mode"
             ),
-            catalogFilterAttributeDefinitionService.fromDataOfferField(
-                Tables.DATA_OFFER.GEO_REFERENCE_METHOD,
+            catalogFilterAttributeDefinitionService.forField(
+                fields -> fields.getDataOfferTable().GEO_REFERENCE_METHOD,
+                "geoReferenceMethod",
                 "Geo Reference Method"
             ),
-            catalogFilterAttributeDefinitionService.fromDataOfferField(
-                Tables.DATA_OFFER.CURATOR_ORGANIZATION_NAME,
+            catalogFilterAttributeDefinitionService.forField(
+                fields -> fields.getDataOfferTable().CURATOR_ORGANIZATION_NAME,
+                "curatorOrganizationName",
                 "Organization Name"
             ),
             catalogFilterAttributeDefinitionService.buildConnectorEndpointFilter()
