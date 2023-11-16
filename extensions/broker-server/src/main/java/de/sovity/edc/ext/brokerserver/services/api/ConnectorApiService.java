@@ -65,7 +65,7 @@ public class ConnectorApiService {
         var result = new ConnectorDetailPageResult();
         result.setCreatedAt(connector.getCreatedAt());
         result.setEndpoint(connector.getEndpoint());
-        result.setId(connector.getId());
+        result.setParticipantId(connector.getParticipantId());
         result.setLastRefreshAttemptAt(connector.getLastRefreshAttemptAt());
         result.setLastSuccessfulRefreshAt(connector.getLastSuccessfulRefreshAt());
         result.setNumContractOffers(connector.getNumContractOffers());
@@ -80,7 +80,7 @@ public class ConnectorApiService {
 
     private ConnectorListEntry buildConnectorListEntry(ConnectorListEntryRs connector) {
         var dto = new ConnectorListEntry();
-        dto.setId(connector.getConnectorId());
+        dto.setParticipantId(connector.getParticipantId());
         dto.setEndpoint(connector.getEndpoint());
         dto.setCreatedAt(connector.getCreatedAt());
         dto.setLastRefreshAttemptAt(connector.getLastRefreshAttemptAt());
@@ -92,7 +92,7 @@ public class ConnectorApiService {
 
     private ConnectorDetailPageResult buildConnectorDetailPageEntry(ConnectorDetailsRs connector) {
         var dto = new ConnectorDetailPageResult();
-        dto.setId(connector.getConnectorId());
+        dto.setParticipantId(connector.getParticipantId());
         dto.setEndpoint(connector.getEndpoint());
         dto.setCreatedAt(connector.getCreatedAt());
         dto.setLastRefreshAttemptAt(connector.getLastRefreshAttemptAt());

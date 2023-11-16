@@ -34,7 +34,7 @@ public class CatalogQueryContractOfferFetcher {
      * @return {@link Field} of {@link ContractOfferRs}s
      */
     public Field<List<ContractOfferRs>> getContractOffers(DataOffer d) {
-        var co = Tables.DATA_OFFER_CONTRACT_OFFER;
+        var co = Tables.CONTRACT_OFFER;
 
         var query = DSL.select(
                 co.CONTRACT_OFFER_ID,

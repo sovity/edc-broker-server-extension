@@ -91,7 +91,7 @@ class DataOfferCountApiTest {
 
     private void createConnector(DSLContext dsl, OffsetDateTime today, int iConnector) {
         var connector = dsl.newRecord(Tables.CONNECTOR);
-        connector.setConnectorId("https://my-connector");
+        connector.setParticipantId("my-connector");
         connector.setEndpoint(getEndpoint(iConnector));
         connector.setOnlineStatus(ConnectorOnlineStatus.ONLINE);
         connector.setCreatedAt(today.minusDays(1));
@@ -114,14 +114,14 @@ class DataOfferCountApiTest {
 
         var dataOffer = dsl.newRecord(Tables.DATA_OFFER);
         dataOffer.setAssetId(assetJsonLdUtils.getId(assetJsonLd));
-        dataOffer.setAssetName(assetJsonLdUtils.getTitle(assetJsonLd));
-        dataOffer.setAssetProperties(JSONB.jsonb(JsonUtils.toJson(assetJsonLd)));
+        dataOffer.setAssetTitle(assetJsonLdUtils.getTitle(assetJsonLd));
+        dataOffer.setAssetJsonLd(JSONB.jsonb(JsonUtils.toJson(assetJsonLd)));
         dataOffer.setConnectorEndpoint(connectorEndpoint);
         dataOffer.setCreatedAt(today.minusDays(5));
         dataOffer.setUpdatedAt(today);
         dataOffer.insert();
 
-        var contractOffer = dsl.newRecord(Tables.DATA_OFFER_CONTRACT_OFFER);
+        var contractOffer = dsl.newRecord(Tables.CONTRACT_OFFER);
         contractOffer.setContractOfferId("my-contract-offer-1");
         contractOffer.setConnectorEndpoint(connectorEndpoint);
         contractOffer.setAssetId(assetJsonLdUtils.getId(assetJsonLd));

@@ -18,7 +18,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import de.sovity.edc.ext.brokerserver.dao.ConnectorQueries;
-import de.sovity.edc.ext.brokerserver.dao.DataOfferContractOfferQueries;
+import de.sovity.edc.ext.brokerserver.dao.ContractOfferQueries;
 import de.sovity.edc.ext.brokerserver.dao.DataOfferQueries;
 import de.sovity.edc.ext.brokerserver.dao.pages.catalog.CatalogQueryAvailableFilterFetcher;
 import de.sovity.edc.ext.brokerserver.dao.pages.catalog.CatalogQueryContractOfferFetcher;
@@ -152,10 +152,10 @@ public class BrokerServerExtensionContextBuilder {
         var brokerExecutionTimeLogger = new BrokerExecutionTimeLogger();
         var contractOfferRecordUpdater = new ContractOfferRecordUpdater();
         var dataOfferRecordUpdater = new DataOfferRecordUpdater();
-        var dataOfferContractOfferQueries = new DataOfferContractOfferQueries();
+        var contractOfferQueries = new ContractOfferQueries();
         var dataOfferLimitsEnforcer = new DataOfferLimitsEnforcer(brokerServerSettings, brokerEventLogger);
         var dataOfferPatchBuilder = new DataOfferPatchBuilder(
-                dataOfferContractOfferQueries,
+                contractOfferQueries,
                 dataOfferQueries,
                 dataOfferRecordUpdater,
                 contractOfferRecordUpdater

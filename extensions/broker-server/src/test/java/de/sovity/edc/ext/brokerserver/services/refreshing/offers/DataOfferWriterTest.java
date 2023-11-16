@@ -139,7 +139,7 @@ class DataOfferWriterTest {
     }
 
     private void assertAssetPropertiesEqual(DataOfferWriterTestDataHelper testData, DataOfferRecord actual, Do expected) {
-        var actualAssetJson = actual.getAssetProperties().data();
+        var actualAssetJson = actual.getAssetJsonLd().data();
         var expectedAssetJson = testData.dummyAssetJson(expected);
         assertThat(actualAssetJson).isEqualTo(expectedAssetJson);
     }

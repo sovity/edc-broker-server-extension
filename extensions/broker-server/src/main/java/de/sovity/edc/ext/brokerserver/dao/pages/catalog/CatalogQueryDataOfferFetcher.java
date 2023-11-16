@@ -56,7 +56,7 @@ public class CatalogQueryDataOfferFetcher {
 
         var select = DSL.select(
                 fields.getAssetId().as("assetId"),
-                d.ASSET_PROPERTIES.cast(String.class).as("assetJsonLd"),
+                d.ASSET_JSON_LD.cast(String.class).as("assetJsonLd"),
                 d.CREATED_AT,
                 d.UPDATED_AT,
                 catalogQueryContractOfferFetcher.getContractOffers(d).as("contractOffers"),

@@ -82,7 +82,7 @@ class ConnectorApiTest {
             assertThat(result.getConnectors()).hasSize(1);
 
             var connector = result.getConnectors().get(0);
-            assertThat(connector.getId()).isEqualTo("http://my-connector/dsp");
+            assertThat(connector.getParticipantId()).isEqualTo("my-participant-id");
             assertThat(connector.getEndpoint()).isEqualTo("http://my-connector/dsp");
             assertThat(connector.getCreatedAt()).isEqualTo(today.minusDays(1));
             assertThat(connector.getLastRefreshAttemptAt()).isEqualTo(today);
@@ -107,7 +107,7 @@ class ConnectorApiTest {
             );
 
             var connector = brokerServerClient().brokerServerApi().connectorDetailPage(new ConnectorDetailPageQuery("http://my-connector/dsp"));
-            assertThat(connector.getId()).isEqualTo("http://my-connector/dsp");
+            assertThat(connector.getParticipantId()).isEqualTo("my-participant-id");
             assertThat(connector.getEndpoint()).isEqualTo("http://my-connector/dsp");
             assertThat(connector.getCreatedAt()).isEqualTo(today.minusDays(1));
             assertThat(connector.getLastRefreshAttemptAt()).isEqualTo(today);
@@ -118,7 +118,7 @@ class ConnectorApiTest {
 
     private void createConnector(DSLContext dsl, OffsetDateTime today, String connectorEndpoint) {
         var connector = dsl.newRecord(Tables.CONNECTOR);
-        connector.setConnectorId(connectorEndpoint);
+        connector.setParticipantId("my-participant-id");
         connector.setEndpoint(connectorEndpoint);
         connector.setOnlineStatus(ConnectorOnlineStatus.ONLINE);
         connector.setCreatedAt(today.minusDays(1));
@@ -145,14 +145,14 @@ class ConnectorApiTest {
     private void createDataOffer(DSLContext dsl, OffsetDateTime today, String connectorEndpoint, JsonObject assetJsonLd) {
         var dataOffer = dsl.newRecord(Tables.DATA_OFFER);
         dataOffer.setAssetId(assetJsonLdUtils.getId(assetJsonLd));
-        dataOffer.setAssetName(assetJsonLdUtils.getTitle(assetJsonLd));
-        dataOffer.setAssetProperties(JSONB.jsonb(JsonUtils.toJson(assetJsonLd)));
+        dataOffer.setAssetTitle(assetJsonLdUtils.getTitle(assetJsonLd));
+        dataOffer.setAssetJsonLd(JSONB.jsonb(JsonUtils.toJson(assetJsonLd)));
         dataOffer.setConnectorEndpoint(connectorEndpoint);
         dataOffer.setCreatedAt(today.minusDays(5));
         dataOffer.setUpdatedAt(today);
         dataOffer.insert();
 
-        var contractOffer = dsl.newRecord(Tables.DATA_OFFER_CONTRACT_OFFER);
+        var contractOffer = dsl.newRecord(Tables.CONTRACT_OFFER);
         contractOffer.setContractOfferId("my-contract-offer-1");
         contractOffer.setConnectorEndpoint(connectorEndpoint);
         contractOffer.setAssetId(assetJsonLdUtils.getId(assetJsonLd));

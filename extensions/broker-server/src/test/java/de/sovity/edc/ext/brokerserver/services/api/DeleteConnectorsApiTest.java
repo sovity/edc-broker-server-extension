@@ -71,7 +71,7 @@ class DeleteConnectorsApiTest {
 
             var connectorsBefore = List.of(firstConnector, otherConnector);
             assertContainsEndpoints(dsl, Tables.BROKER_EXECUTION_TIME_MEASUREMENT.CONNECTOR_ENDPOINT, connectorsBefore);
-            assertContainsEndpoints(dsl, Tables.DATA_OFFER_CONTRACT_OFFER.CONNECTOR_ENDPOINT, connectorsBefore);
+            assertContainsEndpoints(dsl, Tables.CONTRACT_OFFER.CONNECTOR_ENDPOINT, connectorsBefore);
             assertContainsEndpoints(dsl, Tables.DATA_OFFER.CONNECTOR_ENDPOINT, connectorsBefore);
             assertContainsEndpoints(dsl, Tables.DATA_OFFER_VIEW_COUNT.CONNECTOR_ENDPOINT, connectorsBefore);
             assertContainsEndpoints(dsl, Tables.CONNECTOR.ENDPOINT, connectorsBefore);
@@ -86,7 +86,7 @@ class DeleteConnectorsApiTest {
 
             var connectorsAfter = List.of(otherConnector);
             assertContainsEndpoints(dsl, Tables.BROKER_EXECUTION_TIME_MEASUREMENT.CONNECTOR_ENDPOINT, connectorsAfter);
-            assertContainsEndpoints(dsl, Tables.DATA_OFFER_CONTRACT_OFFER.CONNECTOR_ENDPOINT, connectorsAfter);
+            assertContainsEndpoints(dsl, Tables.CONTRACT_OFFER.CONNECTOR_ENDPOINT, connectorsAfter);
             assertContainsEndpoints(dsl, Tables.DATA_OFFER.CONNECTOR_ENDPOINT, connectorsAfter);
             assertContainsEndpoints(dsl, Tables.DATA_OFFER_VIEW_COUNT.CONNECTOR_ENDPOINT, connectorsAfter);
             assertContainsEndpoints(dsl, Tables.CONNECTOR.ENDPOINT, connectorsAfter);
@@ -109,14 +109,14 @@ class DeleteConnectorsApiTest {
 
         var dataOffer = dsl.newRecord(Tables.DATA_OFFER);
         dataOffer.setAssetId(assetId);
-        dataOffer.setAssetName("My Asset");
-        dataOffer.setAssetProperties(JSONB.valueOf("{}"));
+        dataOffer.setAssetTitle("My Asset");
+        dataOffer.setAssetJsonLd(JSONB.valueOf("{}"));
         dataOffer.setConnectorEndpoint(endpoint);
         dataOffer.setCreatedAt(OffsetDateTime.now());
         dataOffer.setUpdatedAt(OffsetDateTime.now());
         dataOffer.insert();
 
-        var contractOffer = dsl.newRecord(Tables.DATA_OFFER_CONTRACT_OFFER);
+        var contractOffer = dsl.newRecord(Tables.CONTRACT_OFFER);
         contractOffer.setAssetId(assetId);
         contractOffer.setConnectorEndpoint(endpoint);
         contractOffer.setContractOfferId("my-asset-co");

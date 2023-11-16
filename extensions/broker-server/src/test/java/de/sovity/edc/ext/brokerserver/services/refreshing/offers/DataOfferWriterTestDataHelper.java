@@ -15,7 +15,7 @@
 package de.sovity.edc.ext.brokerserver.services.refreshing.offers;
 
 import de.sovity.edc.ext.brokerserver.dao.ConnectorQueries;
-import de.sovity.edc.ext.brokerserver.db.jooq.tables.records.DataOfferContractOfferRecord;
+import de.sovity.edc.ext.brokerserver.db.jooq.tables.records.ContractOfferRecord;
 import de.sovity.edc.ext.brokerserver.db.jooq.tables.records.DataOfferRecord;
 import de.sovity.edc.ext.brokerserver.services.ConnectorCreator;
 import de.sovity.edc.ext.brokerserver.services.refreshing.offers.model.FetchedContractOffer;
@@ -38,7 +38,7 @@ import static de.sovity.edc.ext.brokerserver.services.refreshing.offers.DataOffe
 class DataOfferWriterTestDataHelper {
     String connectorEndpoint = "https://example.com/dsp";
     OffsetDateTime old = OffsetDateTime.now().withNano(0).withSecond(0).withMinute(0).withHour(0).minusDays(100);
-    List<DataOfferContractOfferRecord> existingContractOffers = new ArrayList<>();
+    List<ContractOfferRecord> existingContractOffers = new ArrayList<>();
     List<DataOfferRecord> existingDataOffers = new ArrayList<>();
     List<FetchedDataOffer> fetchedDataOffers = new ArrayList<>();
 
@@ -75,8 +75,8 @@ class DataOfferWriterTestDataHelper {
         dsl.batchInsert(existingContractOffers).execute();
     }
 
-    private DataOfferContractOfferRecord dummyContractOffer(Do dataOffer, Co contractOffer) {
-        var contractOfferRecord = new DataOfferContractOfferRecord();
+    private ContractOfferRecord dummyContractOffer(Do dataOffer, Co contractOffer) {
+        var contractOfferRecord = new ContractOfferRecord();
         contractOfferRecord.setConnectorEndpoint(connectorEndpoint);
         contractOfferRecord.setAssetId(dataOffer.getAssetId());
         contractOfferRecord.setContractOfferId(contractOffer.getId());
@@ -87,13 +87,13 @@ class DataOfferWriterTestDataHelper {
     }
 
     private DataOfferRecord dummyDataOffer(Do dataOffer) {
-        var assetName = Optional.of(dataOffer.getAssetName()).orElse(dataOffer.getAssetId());
+        var assetName = Optional.of(dataOffer.getAssetTitle()).orElse(dataOffer.getAssetId());
 
         var dataOfferRecord = new DataOfferRecord();
         dataOfferRecord.setConnectorEndpoint(connectorEndpoint);
         dataOfferRecord.setAssetId(dataOffer.getAssetId());
-        dataOfferRecord.setAssetName(assetName);
-        dataOfferRecord.setAssetProperties(JSONB.valueOf(dummyAssetJson(dataOffer)));
+        dataOfferRecord.setAssetTitle(assetName);
+        dataOfferRecord.setAssetJsonLd(JSONB.valueOf(dummyAssetJson(dataOffer)));
         dataOfferRecord.setCreatedAt(old);
         dataOfferRecord.setUpdatedAt(old);
         return dataOfferRecord;
@@ -102,7 +102,7 @@ class DataOfferWriterTestDataHelper {
     private FetchedDataOffer dummyFetchedDataOffer(Do dataOffer) {
         var fetchedDataOffer = new FetchedDataOffer();
         fetchedDataOffer.setAssetId(dataOffer.getAssetId());
-        fetchedDataOffer.setAssetTitle(dataOffer.getAssetName());
+        fetchedDataOffer.setAssetTitle(dataOffer.getAssetTitle());
         fetchedDataOffer.setAssetJsonLd(dummyAssetJson(dataOffer));
 
         var contractOffersMapped = dataOffer.getContractOffers().stream().map(this::dummyFetchedContractOffer).collect(Collectors.toList());
@@ -114,7 +114,7 @@ class DataOfferWriterTestDataHelper {
     public String dummyAssetJson(Do dataOffer) {
         return "{\"%s\": \"%s\", \"%s\": \"%s\"}".formatted(
             Prop.ID, dataOffer.getAssetId(),
-            Prop.Dcterms.TITLE, dataOffer.getAssetName()
+            Prop.Dcterms.TITLE, dataOffer.getAssetTitle()
         );
     }
 

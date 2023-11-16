@@ -43,7 +43,7 @@ public class CatalogQueryFields {
 
     // Asset Properties from JSON to be used in sorting / filtering
     Field<String> assetId;
-    Field<String> assetName;
+    Field<String> assetTitle;
     Field<String> assetDescription;
     Field<String> assetKeywords;
     Field<String> dataSpace;
@@ -65,7 +65,7 @@ public class CatalogQueryFields {
         this.dataOfferViewCountTable = dataOfferViewCountTable;
         this.dataSpaceConfig = dataSpaceConfig;
         assetId = dataOfferTable.ASSET_ID;
-        assetName = dataOfferTable.ASSET_NAME;
+        assetTitle = dataOfferTable.ASSET_TITLE;
         assetDescription = getAssetProperty(Prop.Dcterms.DESCRIPTION);
         assetKeywords = getAssetProperty(Prop.Dcat.KEYWORDS);
         offlineSinceOrLastUpdatedAt = DSL.coalesce(
@@ -95,7 +95,7 @@ public class CatalogQueryFields {
     }
 
     public Field<String> getAssetProperty(String name) {
-        return JsonbDSL.fieldByKeyText(dataOfferTable.ASSET_PROPERTIES, name);
+        return JsonbDSL.fieldByKeyText(dataOfferTable.ASSET_JSON_LD, name);
     }
 
     public CatalogQueryFields withSuffix(String additionalSuffix) {

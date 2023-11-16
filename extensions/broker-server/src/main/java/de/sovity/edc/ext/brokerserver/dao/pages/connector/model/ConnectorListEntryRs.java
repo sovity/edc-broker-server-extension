@@ -27,7 +27,7 @@ import java.time.OffsetDateTime;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ConnectorListEntryRs {
     String endpoint;
-    String connectorId;
+    String participantId;
     OffsetDateTime createdAt;
     OffsetDateTime lastSuccessfulRefreshAt;
     OffsetDateTime lastRefreshAttemptAt;

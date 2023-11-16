@@ -30,8 +30,8 @@ import java.time.OffsetDateTime;
 @AllArgsConstructor
 @Schema(description = "Connector Detail Page Data")
 public class ConnectorDetailPageResult {
-    @Schema(description = "Connector ID", example = "https://my-test.connector", requiredMode = Schema.RequiredMode.REQUIRED)
-    private String id;
+    @Schema(description = "Connector Participant ID", example = "https://my-test.connector", requiredMode = Schema.RequiredMode.REQUIRED)
+    private String participantId;
 
     @Schema(description = "Connector Endpoint", example = "https://my-test.connector/control/dsp", requiredMode = Schema.RequiredMode.REQUIRED)
     private String endpoint;
