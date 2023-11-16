@@ -13,11 +13,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 #### Major
 
+- Migrated to Eclipse EDC 0.2.1
+- Migrated to edc-extensions 5.0.0
+- Migrated Assets to JSON-LD
+
 #### Minor
+
+- New Filter: Organization Name
+- Search now hits Organization Name
 
 #### Patch
 
 ### Deployment Migration Notes
+
+- All connectors need to be re-crawled for detailed asset metadata and participant IDs to work
 
 ## [v1.2.0] - 2023-10-30
 
