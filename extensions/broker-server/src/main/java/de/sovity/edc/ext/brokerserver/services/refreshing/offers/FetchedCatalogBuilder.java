@@ -23,8 +23,6 @@ import de.sovity.edc.utils.JsonUtils;
 import de.sovity.edc.utils.catalog.model.DspCatalog;
 import de.sovity.edc.utils.catalog.model.DspContractOffer;
 import de.sovity.edc.utils.catalog.model.DspDataOffer;
-import de.sovity.edc.utils.jsonld.JsonLdUtils;
-import de.sovity.edc.utils.jsonld.vocab.Prop;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 

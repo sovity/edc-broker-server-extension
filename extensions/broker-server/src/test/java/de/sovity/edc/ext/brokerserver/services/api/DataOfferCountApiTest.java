@@ -108,14 +108,14 @@ class DataOfferCountApiTest {
 
     private void createDataOffer(DSLContext dsl, OffsetDateTime today, int iConnector, int iDataOffer) {
         var connectorEndpoint = getEndpoint(iConnector);
-        var assetPropertiesJson =  Json.createObjectBuilder()
+        var assetJsonLd =  Json.createObjectBuilder()
             .add(Prop.ID, "my-asset-%d".formatted(iDataOffer))
             .build();
 
         var dataOffer = dsl.newRecord(Tables.DATA_OFFER);
-        dataOffer.setAssetId(assetJsonLdUtils.getId(assetPropertiesJson));
-        dataOffer.setAssetName(assetJsonLdUtils.getTitle(assetPropertiesJson));
-        dataOffer.setAssetProperties(JSONB.jsonb(JsonUtils.toJson(assetPropertiesJson)));
+        dataOffer.setAssetId(assetJsonLdUtils.getId(assetJsonLd));
+        dataOffer.setAssetName(assetJsonLdUtils.getTitle(assetJsonLd));
+        dataOffer.setAssetProperties(JSONB.jsonb(JsonUtils.toJson(assetJsonLd)));
         dataOffer.setConnectorEndpoint(connectorEndpoint);
         dataOffer.setCreatedAt(today.minusDays(5));
         dataOffer.setUpdatedAt(today);
@@ -124,7 +124,7 @@ class DataOfferCountApiTest {
         var contractOffer = dsl.newRecord(Tables.DATA_OFFER_CONTRACT_OFFER);
         contractOffer.setContractOfferId("my-contract-offer-1");
         contractOffer.setConnectorEndpoint(connectorEndpoint);
-        contractOffer.setAssetId(assetJsonLdUtils.getId(assetPropertiesJson));
+        contractOffer.setAssetId(assetJsonLdUtils.getId(assetJsonLd));
         contractOffer.setCreatedAt(today.minusDays(5));
         contractOffer.setUpdatedAt(today);
         contractOffer.setPolicy(JSONB.jsonb(policyToJson(dummyPolicy())));

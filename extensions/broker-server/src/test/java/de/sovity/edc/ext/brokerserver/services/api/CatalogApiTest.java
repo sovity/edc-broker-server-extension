@@ -85,12 +85,16 @@ class CatalogApiTest {
             createConnector(dsl, today, "http://my-connector2/dsp"); // Dataspace: Example1
             createDataOffer(dsl, today, "http://my-connector/dsp", Json.createObjectBuilder()
                 .add(Prop.ID, "my-asset")
-                .add(Prop.Dcterms.TITLE, "My Asset")
+                .add(Prop.Edc.PROPERTIES, Json.createObjectBuilder()
+                    .add(Prop.Dcterms.TITLE, "My Asset")
+                )
                 .build()
             ); // Dataspace: MDS
             createDataOffer(dsl, today, "http://my-connector2/dsp", Json.createObjectBuilder()
                 .add(Prop.ID, "my-asset")
-                .add(Prop.Dcterms.TITLE, "My Asset")
+                .add(Prop.Edc.PROPERTIES, Json.createObjectBuilder()
+                    .add(Prop.Dcterms.TITLE, "My Asset")
+                )
                 .build()
             ); // Dataspace: Example1
 
@@ -117,12 +121,16 @@ class CatalogApiTest {
             createConnector(dsl, today, "http://my-connector2/dsp");
             createDataOffer(dsl, today, "http://my-connector/dsp", Json.createObjectBuilder()
                 .add(Prop.ID, "my-asset")
-                .add(Prop.Dcterms.TITLE, "My Asset")
+                .add(Prop.Edc.PROPERTIES, Json.createObjectBuilder()
+                    .add(Prop.Dcterms.TITLE, "My Asset")
+                )
                 .build()
             );
             createDataOffer(dsl, today, "http://my-connector2/dsp", Json.createObjectBuilder()
                 .add(Prop.ID, "my-asset")
-                .add(Prop.Dcterms.TITLE, "My Asset")
+                .add(Prop.Edc.PROPERTIES, Json.createObjectBuilder()
+                    .add(Prop.Dcterms.TITLE, "My Asset")
+                )
                 .build()
             );
 
@@ -147,26 +155,34 @@ class CatalogApiTest {
             createConnector(dsl, today, "http://my-connector3/dsp"); // Dataspace: Example2
             createDataOffer(dsl, today, "http://my-connector/dsp", Json.createObjectBuilder()
                 .add(Prop.ID, "my-asset")
-                .add(Prop.Dcterms.TITLE, "My Asset")
-                .add(Prop.Dcterms.LANGUAGE, "de")
+                .add(Prop.Edc.PROPERTIES, Json.createObjectBuilder()
+                    .add(Prop.Dcterms.TITLE, "My Asset")
+                    .add(Prop.Dcterms.LANGUAGE, "de")
+                )
                 .build()
             ); // Dataspace: MDS
             createDataOffer(dsl, today, "http://my-connector2/dsp", Json.createObjectBuilder()
                 .add(Prop.ID, "my-asset")
-                .add(Prop.Dcterms.TITLE, "My Asset")
-                .add(Prop.Dcterms.LANGUAGE, "en")
+                .add(Prop.Edc.PROPERTIES, Json.createObjectBuilder()
+                    .add(Prop.Dcterms.TITLE, "My Asset")
+                    .add(Prop.Dcterms.LANGUAGE, "en")
+                )
                 .build()
             ); // Dataspace: Example1
             createDataOffer(dsl, today, "http://my-connector2/dsp", Json.createObjectBuilder()
                 .add(Prop.ID, "my-asset2")
-                .add(Prop.Dcterms.TITLE, "My Asset")
-                .add(Prop.Dcterms.LANGUAGE, "fr")
+                .add(Prop.Edc.PROPERTIES, Json.createObjectBuilder()
+                    .add(Prop.Dcterms.TITLE, "My Asset")
+                    .add(Prop.Dcterms.LANGUAGE, "fr")
+                )
                 .build()
             ); // Dataspace: Example1
             createDataOffer(dsl, today, "http://my-connector3/dsp", Json.createObjectBuilder()
                 .add(Prop.ID, "my-asset3")
-                .add(Prop.Dcterms.TITLE, "My Asset")
-                .add(Prop.Dcterms.LANGUAGE, "fr")
+                .add(Prop.Edc.PROPERTIES, Json.createObjectBuilder()
+                    .add(Prop.Dcterms.TITLE, "My Asset")
+                    .add(Prop.Dcterms.LANGUAGE, "fr")
+                )
                 .build()
             ); // Dataspace: Example2
 
@@ -192,7 +208,9 @@ class CatalogApiTest {
             createConnector(dsl, today, "http://my-connector/dsp");
             createDataOffer(dsl, today, "http://my-connector/dsp", Json.createObjectBuilder()
                 .add(Prop.ID, "my-asset")
-                .add(Prop.Dcterms.TITLE, "My Asset")
+                .add(Prop.Edc.PROPERTIES, Json.createObjectBuilder()
+                    .add(Prop.Dcterms.TITLE, "My Asset")
+                )
                 .build()
             );
 
@@ -240,29 +258,37 @@ class CatalogApiTest {
             createConnector(dsl, today, "http://my-connector/dsp");
             createDataOffer(dsl, today, "http://my-connector/dsp", Json.createObjectBuilder()
                 .add(Prop.ID, "my-asset-1")
-                .add(Prop.Mds.DATA_CATEGORY, "my-category-1")
-                .add(Prop.Mds.TRANSPORT_MODE, "MY-TRANSPORT-MODE-1")
-                .add(Prop.Mds.DATA_SUBCATEGORY, "MY-SUBCATEGORY-2")
+                .add(Prop.Edc.PROPERTIES, Json.createObjectBuilder()
+                    .add(Prop.Mds.DATA_CATEGORY, "my-category-1")
+                    .add(Prop.Mds.TRANSPORT_MODE, "MY-TRANSPORT-MODE-1")
+                    .add(Prop.Mds.DATA_SUBCATEGORY, "MY-SUBCATEGORY-2")
+                )
                 .build()
             );
             createDataOffer(dsl, today, "http://my-connector/dsp", Json.createObjectBuilder()
                 .add(Prop.ID, "my-asset-2")
-                .add(Prop.Mds.DATA_CATEGORY, "my-category-1")
-                .add(Prop.Mds.TRANSPORT_MODE, "my-transport-mode-2")
-                .add(Prop.Mds.DATA_SUBCATEGORY, "MY-SUBCATEGORY-2")
+                .add(Prop.Edc.PROPERTIES, Json.createObjectBuilder()
+                    .add(Prop.Mds.DATA_CATEGORY, "my-category-1")
+                    .add(Prop.Mds.TRANSPORT_MODE, "my-transport-mode-2")
+                    .add(Prop.Mds.DATA_SUBCATEGORY, "MY-SUBCATEGORY-2")
+                )
                 .build()
             );
             createDataOffer(dsl, today, "http://my-connector/dsp", Json.createObjectBuilder()
                 .add(Prop.ID, "my-asset-3")
-                .add(Prop.Mds.DATA_CATEGORY, "my-category-1")
-                .add(Prop.Mds.TRANSPORT_MODE, "MY-TRANSPORT-MODE-1")
-                .add(Prop.Mds.DATA_SUBCATEGORY, "my-subcategory-1")
+                .add(Prop.Edc.PROPERTIES, Json.createObjectBuilder()
+                    .add(Prop.Mds.DATA_CATEGORY, "my-category-1")
+                    .add(Prop.Mds.TRANSPORT_MODE, "MY-TRANSPORT-MODE-1")
+                    .add(Prop.Mds.DATA_SUBCATEGORY, "my-subcategory-1")
+                )
                 .build()
             );
             createDataOffer(dsl, today, "http://my-connector/dsp", Json.createObjectBuilder()
                 .add(Prop.ID, "my-asset-4")
-                .add(Prop.Mds.DATA_CATEGORY, "my-category-1")
-                .add(Prop.Mds.TRANSPORT_MODE, "")
+                .add(Prop.Edc.PROPERTIES, Json.createObjectBuilder()
+                    .add(Prop.Mds.DATA_CATEGORY, "my-category-1")
+                    .add(Prop.Mds.TRANSPORT_MODE, "")
+                )
                 .build()
             );
 
@@ -361,13 +387,17 @@ class CatalogApiTest {
             createConnector(dsl, today, "http://my-connector/dsp");
             createDataOffer(dsl, today, "http://my-connector/dsp", Json.createObjectBuilder()
                 .add(Prop.ID, "my-asset-1")
-                .add(Prop.Mds.DATA_CATEGORY, "my-category")
-                .add(Prop.Mds.DATA_SUBCATEGORY, "my-subcategory")
+                .add(Prop.Edc.PROPERTIES, Json.createObjectBuilder()
+                    .add(Prop.Mds.DATA_CATEGORY, "my-category")
+                    .add(Prop.Mds.DATA_SUBCATEGORY, "my-subcategory")
+                )
                 .build()
             );
             createDataOffer(dsl, today, "http://my-connector/dsp", Json.createObjectBuilder()
                 .add(Prop.ID, "my-asset-2")
-                .add(Prop.Mds.DATA_SUBCATEGORY, "my-other-subcategory")
+                .add(Prop.Edc.PROPERTIES, Json.createObjectBuilder()
+                    .add(Prop.Mds.DATA_SUBCATEGORY, "my-other-subcategory")
+                )
                 .build()
             );
 

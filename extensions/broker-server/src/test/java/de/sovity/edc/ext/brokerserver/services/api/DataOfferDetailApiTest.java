@@ -69,30 +69,38 @@ class DataOfferDetailApiTest {
             createConnector(dsl, today, "http://my-connector2/dsp");
             createDataOffer(dsl, today, "http://my-connector2/dsp", Json.createObjectBuilder()
                 .add(Prop.ID, "my-asset-2")
-                .add(Prop.Mds.DATA_CATEGORY, "my-category-2")
-                .add(Prop.Dcterms.TITLE, "My Asset 2")
+                .add(Prop.Edc.PROPERTIES, Json.createObjectBuilder()
+                    .add(Prop.Mds.DATA_CATEGORY, "my-category-2")
+                    .add(Prop.Dcterms.TITLE, "My Asset 2")
+                )
                 .build()
             );
 
             createConnector(dsl, today, "http://my-connector/dsp");
             createDataOffer(dsl, today, "http://my-connector/dsp", Json.createObjectBuilder()
                 .add(Prop.ID, "my-asset-1")
-                .add(Prop.Mds.DATA_CATEGORY, "my-category")
-                .add(Prop.Dcterms.TITLE, "My Asset 1")
+                .add(Prop.Edc.PROPERTIES, Json.createObjectBuilder()
+                    .add(Prop.Mds.DATA_CATEGORY, "my-category")
+                    .add(Prop.Dcterms.TITLE, "My Asset 1")
+                )
                 .build()
             );
 
             //create view for dataoffer
             createDataOfferView(dsl, today, "http://my-connector/dsp", Json.createObjectBuilder()
                 .add(Prop.ID, "my-asset-1")
-                .add(Prop.Mds.DATA_CATEGORY, "my-category")
-                .add(Prop.Dcterms.TITLE, "My Asset 1")
+                .add(Prop.Edc.PROPERTIES, Json.createObjectBuilder()
+                    .add(Prop.Mds.DATA_CATEGORY, "my-category")
+                    .add(Prop.Dcterms.TITLE, "My Asset 1")
+                )
                 .build()
             );
             createDataOfferView(dsl, today, "http://my-connector/dsp", Json.createObjectBuilder()
                 .add(Prop.ID, "my-asset-1")
-                .add(Prop.Mds.DATA_CATEGORY, "my-category")
-                .add(Prop.Dcterms.TITLE, "My Asset 1")
+                .add(Prop.Edc.PROPERTIES, Json.createObjectBuilder()
+                    .add(Prop.Mds.DATA_CATEGORY, "my-category")
+                    .add(Prop.Dcterms.TITLE, "My Asset 1")
+                )
                 .build()
             );
 
@@ -129,11 +137,11 @@ class DataOfferDetailApiTest {
         connector.insert();
     }
 
-    private void createDataOffer(DSLContext dsl, OffsetDateTime today, String connectorEndpoint, JsonObject assetPropertiesJson) {
+    private void createDataOffer(DSLContext dsl, OffsetDateTime today, String connectorEndpoint, JsonObject assetJsonLd) {
         var dataOffer = dsl.newRecord(Tables.DATA_OFFER);
-        dataOffer.setAssetId(assetJsonLdUtils.getId(assetPropertiesJson));
-        dataOffer.setAssetName(assetJsonLdUtils.getTitle(assetPropertiesJson));
-        dataOffer.setAssetProperties(JSONB.jsonb(JsonUtils.toJson(assetPropertiesJson)));
+        dataOffer.setAssetId(assetJsonLdUtils.getId(assetJsonLd));
+        dataOffer.setAssetName(assetJsonLdUtils.getTitle(assetJsonLd));
+        dataOffer.setAssetProperties(JSONB.jsonb(JsonUtils.toJson(assetJsonLd)));
         dataOffer.setConnectorEndpoint(connectorEndpoint);
         dataOffer.setCreatedAt(today.minusDays(5));
         dataOffer.setUpdatedAt(today);
@@ -142,7 +150,7 @@ class DataOfferDetailApiTest {
         var contractOffer = dsl.newRecord(Tables.DATA_OFFER_CONTRACT_OFFER);
         contractOffer.setContractOfferId("my-contract-offer-1");
         contractOffer.setConnectorEndpoint(connectorEndpoint);
-        contractOffer.setAssetId(assetJsonLdUtils.getId(assetPropertiesJson));
+        contractOffer.setAssetId(assetJsonLdUtils.getId(assetJsonLd));
         contractOffer.setCreatedAt(today.minusDays(5));
         contractOffer.setUpdatedAt(today);
         contractOffer.setPolicy(createAfterYesterdayPolicyJson());
