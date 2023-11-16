@@ -56,7 +56,7 @@ class DataOfferWriterTest {
             testData.fetched(unchanged);
 
             var fieldChangedExisting = Do.forName("fieldChanged");
-            var fieldChangedFetched = fieldChangedExisting.withAssetName("changed");
+            var fieldChangedFetched = fieldChangedExisting.withAssetTitle("changed");
             testData.existing(fieldChangedExisting);
             testData.fetched(fieldChangedFetched);
 
