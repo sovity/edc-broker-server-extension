@@ -101,7 +101,7 @@ public class CatalogFilterService {
     }
 
     public CnfFilter buildAvailableFilters(String filterValuesJson) {
-        var filterValues = JsonDeserializationUtils.deserializeStringArray2(filterValuesJson);
+        var filterValues = JsonDeserializationUtils.read2dStringList(filterValuesJson);
         var filterAttributes = zipAvailableFilters(getAvailableFilters(), filterValues)
                 .map(availableFilter -> new CnfFilterAttribute(
                         availableFilter.definition().name(),

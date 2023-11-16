@@ -33,7 +33,7 @@ public class JsonDeserializationUtils {
     };
 
     @SneakyThrows
-    public static List<List<String>> deserializeStringArray2(String json) {
+    public static List<List<String>> read2dStringList(String json) {
         return OBJECT_MAPPER.readValue(json, TYPE_STRING_LIST_2);
     }
 }
