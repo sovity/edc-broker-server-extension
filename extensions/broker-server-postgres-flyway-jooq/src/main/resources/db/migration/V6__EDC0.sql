@@ -60,6 +60,24 @@ begin
 end;
 $$ language plpgsql;
 
+-- Utility Function: Drops fkey constraints that have auto-generated names. Different Postgresql versions generated different names.
+create or replace function pg_temp.drop_constraints_containing_fkey(table_name text)
+    returns void as
+$$
+declare
+    i record;
+begin
+    for i in (select conname
+              from pg_catalog.pg_constraint con
+                       inner join pg_catalog.pg_class rel on rel.oid = con.conrelid
+                       inner join pg_catalog.pg_namespace nsp on nsp.oid = connamespace
+              where rel.relname = table_name and conname like '%fkey%')
+        loop
+            execute format('alter table %s drop constraint %s', table_name, i.conname);
+        end loop;
+end;
+$$ language plpgsql;
+
 
 -- Remove Connector Tables
 -- All connector tables should be empty
@@ -78,12 +96,8 @@ drop table edc_transfer_process cascade;
 
 
 -- Drop constraints
-alter table data_offer
-    drop constraint data_offer_connector_endpoint_fkey;
-alter table data_offer_contract_offer
-    drop constraint data_offer_contract_offer_connector_endpoint_fkey;
-alter table data_offer_contract_offer
-    drop constraint data_offer_contract_offer_connector_endpoint_fkey1;
+select pg_temp.drop_constraints_containing_fkey('data_offer');
+select pg_temp.drop_constraints_containing_fkey('data_offer_contract_offer');
 
 -- Migrate Connector Endpoints
 update broker_event_log
