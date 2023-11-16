@@ -26,7 +26,8 @@ import de.sovity.edc.ext.brokerserver.dao.pages.catalog.CatalogQueryDataOfferFet
 import de.sovity.edc.ext.brokerserver.dao.pages.catalog.CatalogQueryFilterService;
 import de.sovity.edc.ext.brokerserver.dao.pages.catalog.CatalogQueryService;
 import de.sovity.edc.ext.brokerserver.dao.pages.catalog.CatalogQuerySortingService;
-import de.sovity.edc.ext.brokerserver.dao.pages.connector.ConnectorPageQueryService;
+import de.sovity.edc.ext.brokerserver.dao.pages.connector.ConnectorDetailQueryService;
+import de.sovity.edc.ext.brokerserver.dao.pages.connector.ConnectorListQueryService;
 import de.sovity.edc.ext.brokerserver.dao.pages.dataoffer.DataOfferDetailPageQueryService;
 import de.sovity.edc.ext.brokerserver.dao.pages.dataoffer.ViewCountLogger;
 import de.sovity.edc.ext.brokerserver.db.DataSourceFactory;
@@ -39,6 +40,9 @@ import de.sovity.edc.ext.brokerserver.services.KnownConnectorsInitializer;
 import de.sovity.edc.ext.brokerserver.services.OfflineConnectorKiller;
 import de.sovity.edc.ext.brokerserver.services.api.CatalogApiService;
 import de.sovity.edc.ext.brokerserver.services.api.ConnectorApiService;
+import de.sovity.edc.ext.brokerserver.services.api.ConnectorDetailApiService;
+import de.sovity.edc.ext.brokerserver.services.api.ConnectorListApiService;
+import de.sovity.edc.ext.brokerserver.services.api.ConnectorOnlineStatusMapper;
 import de.sovity.edc.ext.brokerserver.services.api.ConnectorService;
 import de.sovity.edc.ext.brokerserver.services.api.DataOfferCountApiService;
 import de.sovity.edc.ext.brokerserver.services.api.DataOfferDetailApiService;
@@ -140,13 +144,13 @@ public class BrokerServerExtensionContextBuilder {
                 catalogQueryAvailableFilterFetcher,
                 brokerServerSettings
         );
-        var connectorPageQueryService = new ConnectorPageQueryService();
+        var connectorListQueryService = new ConnectorListQueryService();
+        var connectorDetailQueryService = new ConnectorDetailQueryService();
         var dataOfferDetailPageQueryService = new DataOfferDetailPageQueryService(
                 catalogQueryContractOfferFetcher, brokerServerSettings);
 
 
         // Services
-        var objectMapper = typeManager.getMapper();
         var objectMapperJsonLd = getJsonLdObjectMapper(typeManager);
         var brokerEventLogger = new BrokerEventLogger();
         var brokerExecutionTimeLogger = new BrokerExecutionTimeLogger();
@@ -244,6 +248,7 @@ public class BrokerServerExtensionContextBuilder {
                 policyMapper,
                 assetMapper
         );
+        var connectorOnlineStatusMapper = new ConnectorOnlineStatusMapper();
 
         // Schedules
         List<CronJobRef<?>> jobs = List.of(
@@ -270,9 +275,7 @@ public class BrokerServerExtensionContextBuilder {
                 brokerServerSettings
         );
         var connectorApiService = new ConnectorApiService(
-                connectorPageQueryService,
                 connectorService,
-                paginationMetadataUtils,
                 brokerEventLogger
         );
         var dataOfferDetailApiService = new DataOfferDetailApiService(
@@ -281,9 +284,13 @@ public class BrokerServerExtensionContextBuilder {
                 dataOfferMappingUtils
         );
         var dataOfferCountApiService = new DataOfferCountApiService();
+        var connectorDetailApiService = new ConnectorDetailApiService(connectorDetailQueryService, connectorOnlineStatusMapper);
+        var connectorListApiService = new ConnectorListApiService(connectorListQueryService, connectorOnlineStatusMapper, paginationMetadataUtils);
         var brokerServerResource = new BrokerServerResourceImpl(
                 dslContextFactory,
                 connectorApiService,
+                connectorListApiService,
+                connectorDetailApiService,
                 catalogApiService,
                 dataOfferDetailApiService,
                 adminApiKeyValidator,
