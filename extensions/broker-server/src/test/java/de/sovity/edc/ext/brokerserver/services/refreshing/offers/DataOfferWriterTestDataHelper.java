@@ -14,13 +14,13 @@
 
 package de.sovity.edc.ext.brokerserver.services.refreshing.offers;
 
-import de.sovity.edc.ext.brokerserver.dao.AssetProperty;
 import de.sovity.edc.ext.brokerserver.dao.ConnectorQueries;
 import de.sovity.edc.ext.brokerserver.db.jooq.tables.records.DataOfferContractOfferRecord;
 import de.sovity.edc.ext.brokerserver.db.jooq.tables.records.DataOfferRecord;
 import de.sovity.edc.ext.brokerserver.services.ConnectorCreator;
 import de.sovity.edc.ext.brokerserver.services.refreshing.offers.model.FetchedContractOffer;
 import de.sovity.edc.ext.brokerserver.services.refreshing.offers.model.FetchedDataOffer;
+import de.sovity.edc.utils.jsonld.vocab.Prop;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 import org.jooq.DSLContext;
@@ -36,7 +36,7 @@ import static de.sovity.edc.ext.brokerserver.services.refreshing.offers.DataOffe
 import static de.sovity.edc.ext.brokerserver.services.refreshing.offers.DataOfferWriterTestDataModels.Do;
 
 class DataOfferWriterTestDataHelper {
-    String connectorEndpoint = "https://example.com/ids/data";
+    String connectorEndpoint = "https://example.com/dsp";
     OffsetDateTime old = OffsetDateTime.now().withNano(0).withSecond(0).withMinute(0).withHour(0).minusDays(100);
     List<DataOfferContractOfferRecord> existingContractOffers = new ArrayList<>();
     List<DataOfferRecord> existingDataOffers = new ArrayList<>();
@@ -103,7 +103,7 @@ class DataOfferWriterTestDataHelper {
         var fetchedDataOffer = new FetchedDataOffer();
         fetchedDataOffer.setAssetId(dataOffer.getAssetId());
         fetchedDataOffer.setAssetTitle(dataOffer.getAssetName());
-        fetchedDataOffer.setAssetPropertiesJsonLd(dummyAssetJson(dataOffer));
+        fetchedDataOffer.setAssetJsonLd(dummyAssetJson(dataOffer));
 
         var contractOffersMapped = dataOffer.getContractOffers().stream().map(this::dummyFetchedContractOffer).collect(Collectors.toList());
         fetchedDataOffer.setContractOffers(contractOffersMapped);
@@ -113,8 +113,8 @@ class DataOfferWriterTestDataHelper {
 
     public String dummyAssetJson(Do dataOffer) {
         return "{\"%s\": \"%s\", \"%s\": \"%s\"}".formatted(
-            AssetProperty.ASSET_ID, dataOffer.getAssetId(),
-            AssetProperty.ASSET_NAME, dataOffer.getAssetName()
+            Prop.ID, dataOffer.getAssetId(),
+            Prop.Dcterms.TITLE, dataOffer.getAssetName()
         );
     }
 

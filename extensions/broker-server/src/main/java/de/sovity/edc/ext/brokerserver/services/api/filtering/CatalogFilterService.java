@@ -77,7 +77,8 @@ public class CatalogFilterService {
                 catalogFilterAttributeDefinitionService.fromAssetProperty(
                     Prop.Mds.GEO_REFERENCE_METHOD,
                         "Geo Reference Method"
-                )
+                ),
+                catalogFilterAttributeDefinitionService.buildConnectorEndpointFilter()
         );
     }
 

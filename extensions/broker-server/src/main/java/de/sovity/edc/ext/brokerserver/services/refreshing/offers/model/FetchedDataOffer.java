@@ -30,6 +30,6 @@ import java.util.List;
 public class FetchedDataOffer {
     String assetId;
     String assetTitle;
-    String assetPropertiesJsonLd;
+    String assetJsonLd;
     List<FetchedContractOffer> contractOffers;
 }

@@ -19,11 +19,52 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Deployment Migration Notes
 
+## [v1.2.0] - 2023-10-30
+
+### Overview
+
+Adapt to requirements of the Authority Portal - Release v2.0.0.
+
+### Detailed Changes
+
+#### Minor
+
+- Added an endpoint for getting the data offer amounts for connectors.
+- Added a Connector filter to the Catalog Page.
+
+### Deployment Migration Notes
+
+#### Compatible Versions
+
+- Broker Backend Docker Image: `ghcr.io/sovity/broker-server-ce:1.2.0`
+- Broker UI Docker Image: `ghcr.io/sovity/edc-ui:0.0.1-milestone-8-sovity13`
+- Sovity EDC CE: [`4.2.0`](https://github.com/sovity/edc-extensions/tree/v4.2.0/connector)
+
+## [v1.1.1] - 2023-10-11
+
+### Overview
+
+Bugfix release for the asset properties issue.
+
+### Detailed Changes
+
+#### Patch
+
+- Fixed a bug causing some string asset properties getting quotes around them.
+
+### Deployment Migration Notes
+
+#### Compatible Versions
+
+- Broker Backend Docker Image: `ghcr.io/sovity/broker-server-ce:1.1.1`
+- Broker UI Docker Image: `ghcr.io/sovity/edc-ui:0.0.1-milestone-8-sovity13`
+- Sovity EDC CE: [`4.2.0`](https://github.com/sovity/edc-extensions/tree/v4.2.0/connector)
+
 ## [v1.1.0] - 2023-09-29
 
 ### Overview
 
-Bugfix release for the asset proprties issue. Also contains the connector delete endpoint.
+Bugfix release for the asset properties issue. Also contains the connector delete endpoint.
 
 ### Detailed Changes
 
@@ -44,7 +85,7 @@ Bugfix release for the asset proprties issue. Also contains the connector delete
         --url 'http://localhost:11002/backend/api/v1/management/wrapper/broker/connectors?adminApiKey=DefaultBrokerServerAdminApiKey' \
         --header 'Content-Type: application/json' \
         --header 'X-Api-Key: ApiKeyDefaultValue' \
-        --data '["https://some-connector-to-delete/api/v1/ids/data", "https://some-other-connector-to-delete/api/v1/ids/data"]'
+        --data '["https://some-connector-to-delete/api/dsp", "https://some-other-connector-to-delete/api/dsp"]'
     ```
 
 #### Compatible Versions
@@ -160,7 +201,7 @@ Bugfix / Feature Release for the Broker MvP with MS8: Connectors can now be adde
         --url 'http://localhost:11002/backend/api/v1/management/wrapper/broker/connectors?adminApiKey=DefaultBrokerServerAdminApiKey' \
         --header 'Content-Type: application/json' \
         --header 'X-Api-Key: ApiKeyDefaultValue' \
-        --data '["https://some-new-connector/api/v1/ids/data", "https://some-other-new-connector/api/v1/ids/data"]'
+        --data '["https://some-new-connector/api/dsp", "https://some-other-new-connector/api/dsp"]'
     ```
    
 #### Compatible Versions
@@ -207,7 +248,7 @@ Broker MvP using Core EDC MS8.
 1. There are new **required** configuration properties:
     ```yaml
     # List of Data Space Names for special Connectors (default: '')
-    EDC_BROKER_SERVER_KNOWN_DATASPACE_CONNECTORS: "Mobilithek=https://some-connector/ids/data,OtherDataspace=https://some-other-connector/ids/data"
+    EDC_BROKER_SERVER_KNOWN_DATASPACE_CONNECTORS: "Mobilithek=https://some-connector/dsp,OtherDataspace=https://some-other-connector/dsp"
     ```
 2. There are new **optional** configuration properties available for overriding:
     ```yaml

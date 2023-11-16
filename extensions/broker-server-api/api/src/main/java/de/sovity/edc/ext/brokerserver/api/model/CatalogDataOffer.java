@@ -35,7 +35,7 @@ public class CatalogDataOffer {
     @Schema(description = "ID of asset", requiredMode = Schema.RequiredMode.REQUIRED)
     private String assetId;
 
-    @Schema(description = "Connector Endpoint", example = "https://my-test.connector/control/ids/data", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(description = "Connector Endpoint", example = "https://my-test.connector/control/dsp", requiredMode = Schema.RequiredMode.REQUIRED)
     private String connectorEndpoint;
 
     @Schema(description = "Connector Online Status", requiredMode = Schema.RequiredMode.REQUIRED)

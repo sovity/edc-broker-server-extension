@@ -34,7 +34,6 @@ import org.eclipse.edc.junit.annotations.ApiTest;
 import org.eclipse.edc.junit.extensions.EdcExtension;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
 import java.util.List;
@@ -46,7 +45,6 @@ import static de.sovity.edc.ext.brokerserver.TestUtils.createConfiguration;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ApiTest
-@ExtendWith(EdcExtension.class)
 class ConnectorUpdaterTest {
 
     @RegisterExtension
@@ -123,10 +121,8 @@ class ConnectorUpdaterTest {
                     .containsExactlyEntriesOf(Map.of("http://unknown/a", "x"));
             assertThat(dataOffer.getAsset().getAdditionalJsonProperties())
                     .containsExactlyEntriesOf(Map.of("http://unknown/b", "{\"http://unknown/c\":\"y\"}"));
-            assertThat(dataOffer.getAsset().getPrivateProperties())
-                    .containsExactlyEntriesOf(Map.of("http://unknown/a-private", "x-private"));
-            assertThat(dataOffer.getAsset().getPrivateJsonProperties())
-                    .containsExactlyEntriesOf(Map.of("http://unknown/b-private", "{\"http://unknown/c-private\":\"y\"}"));
+            assertThat(dataOffer.getAsset().getPrivateProperties()).isEmpty();
+            assertThat(dataOffer.getAsset().getPrivateJsonProperties()).isEmpty();
             var policy = contractOffer.getContractPolicy();
             assertThat(policy.getConstraints()).hasSize(1);
             AssertionUtils.assertEqualUsingJson(policy.getConstraints().get(0), createAfterYesterdayConstraint());

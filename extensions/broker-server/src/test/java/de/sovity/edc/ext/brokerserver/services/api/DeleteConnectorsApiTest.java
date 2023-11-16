@@ -30,7 +30,6 @@ import org.eclipse.edc.junit.extensions.EdcExtension;
 import org.jooq.DSLContext;
 import org.jooq.JSONB;
 import org.jooq.Record;
-import org.jooq.Record1;
 import org.jooq.TableField;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -33,7 +33,7 @@ public class ConnectorDetailPageResult {
     @Schema(description = "Connector ID", example = "https://my-test.connector", requiredMode = Schema.RequiredMode.REQUIRED)
     private String id;
 
-    @Schema(description = "Connector Endpoint", example = "https://my-test.connector/control/ids/data", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(description = "Connector Endpoint", example = "https://my-test.connector/control/dsp", requiredMode = Schema.RequiredMode.REQUIRED)
     private String endpoint;
 
     @Schema(description = "Creation date in Broker", requiredMode = Schema.RequiredMode.REQUIRED)

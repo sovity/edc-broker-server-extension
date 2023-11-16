@@ -23,8 +23,6 @@ import de.sovity.edc.utils.JsonUtils;
 import de.sovity.edc.utils.catalog.model.DspCatalog;
 import de.sovity.edc.utils.catalog.model.DspContractOffer;
 import de.sovity.edc.utils.catalog.model.DspDataOffer;
-import de.sovity.edc.utils.jsonld.JsonLdUtils;
-import de.sovity.edc.utils.jsonld.vocab.Prop;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
@@ -50,12 +48,11 @@ public class FetchedCatalogBuilder {
     @NotNull
     private FetchedDataOffer buildFetchedDataOffer(DspDataOffer dspDataOffer) {
         var assetJsonLd = assetMapper.buildAssetJsonLdFromDatasetProperties(dspDataOffer.getAssetPropertiesJsonLd());
-        var assetPropertiesJsonLd = JsonLdUtils.object(assetJsonLd, Prop.Edc.PROPERTIES);
 
         var fetchedDataOffer = new FetchedDataOffer();
         fetchedDataOffer.setAssetId(assetJsonLdUtils.getId(assetJsonLd));
         fetchedDataOffer.setAssetTitle(assetJsonLdUtils.getTitle(assetJsonLd));
-        fetchedDataOffer.setAssetPropertiesJsonLd(JsonUtils.toJson(assetPropertiesJsonLd));
+        fetchedDataOffer.setAssetJsonLd(JsonUtils.toJson(assetJsonLd));
         fetchedDataOffer.setContractOffers(buildFetchedContractOffers(dspDataOffer.getContractOffers()));
         return fetchedDataOffer;
     }

@@ -64,7 +64,7 @@ public class DataOfferRecordUpdater {
         }
 
         String existingAssetProps = JsonbUtils.getDataOrNull(dataOffer.getAssetProperties());
-        var fetchedAssetProps = fetchedDataOffer.getAssetPropertiesJsonLd();
+        var fetchedAssetProps = fetchedDataOffer.getAssetJsonLd();
         if (!Objects.equals(fetchedAssetProps, existingAssetProps)) {
             dataOffer.setAssetProperties(JSONB.jsonb(fetchedAssetProps));
             changed = true;

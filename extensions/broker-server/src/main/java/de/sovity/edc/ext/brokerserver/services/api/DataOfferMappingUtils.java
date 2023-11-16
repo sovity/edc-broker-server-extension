@@ -26,8 +26,8 @@ public class DataOfferMappingUtils {
     private final PolicyMapper policyMapper;
     private final AssetMapper assetMapper;
 
-    public UiAsset buildUiAsset(String datasetProperties, String endpoint, String participantId) {
-        var asset = assetMapper.buildAssetFromDatasetProperties(JsonUtils.parseJsonObj(datasetProperties));
+    public UiAsset buildUiAsset(String assetJsonLd, String endpoint, String participantId) {
+        var asset = assetMapper.buildAsset(JsonUtils.parseJsonObj(assetJsonLd));
         return assetMapper.buildUiAsset(asset, endpoint, participantId);
     }
 
