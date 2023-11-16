@@ -40,6 +40,7 @@ import de.sovity.edc.ext.brokerserver.services.OfflineConnectorKiller;
 import de.sovity.edc.ext.brokerserver.services.api.CatalogApiService;
 import de.sovity.edc.ext.brokerserver.services.api.ConnectorApiService;
 import de.sovity.edc.ext.brokerserver.services.api.ConnectorService;
+import de.sovity.edc.ext.brokerserver.services.api.DataOfferCountApiService;
 import de.sovity.edc.ext.brokerserver.services.api.DataOfferDetailApiService;
 import de.sovity.edc.ext.brokerserver.services.api.DataOfferMappingUtils;
 import de.sovity.edc.ext.brokerserver.services.api.PaginationMetadataUtils;
@@ -272,12 +273,14 @@ public class BrokerServerExtensionContextBuilder {
                 viewCountLogger,
                 dataOfferMappingUtils
         );
+        var dataOfferCountApiService = new DataOfferCountApiService();
         var brokerServerResource = new BrokerServerResourceImpl(
                 dslContextFactory,
                 connectorApiService,
                 catalogApiService,
                 dataOfferDetailApiService,
-                adminApiKeyValidator
+                adminApiKeyValidator,
+                dataOfferCountApiService
         );
 
         return new BrokerServerExtensionContext(
