@@ -19,11 +19,11 @@ import de.sovity.edc.ext.brokerserver.api.model.CnfFilterAttribute;
 import de.sovity.edc.ext.brokerserver.api.model.CnfFilterItem;
 import de.sovity.edc.ext.brokerserver.api.model.CnfFilterValue;
 import de.sovity.edc.ext.brokerserver.api.model.CnfFilterValueAttribute;
-import de.sovity.edc.ext.brokerserver.dao.AssetProperty;
 import de.sovity.edc.ext.brokerserver.dao.pages.catalog.models.CatalogQueryFilter;
 import de.sovity.edc.ext.brokerserver.dao.pages.catalog.models.CatalogQuerySelectedFilterQuery;
 import de.sovity.edc.ext.brokerserver.dao.utils.JsonDeserializationUtils;
 import de.sovity.edc.ext.brokerserver.utils.CollectionUtils2;
+import de.sovity.edc.utils.jsonld.vocab.Prop;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.Validate;
 
@@ -59,23 +59,23 @@ public class CatalogFilterService {
         return List.of(
                 catalogFilterAttributeDefinitionService.buildDataSpaceFilter(),
                 catalogFilterAttributeDefinitionService.fromAssetProperty(
-                        AssetProperty.DATA_CATEGORY,
+                        Prop.Mds.DATA_CATEGORY,
                         "Data Category"
                 ),
                 catalogFilterAttributeDefinitionService.fromAssetProperty(
-                        AssetProperty.DATA_SUBCATEGORY,
+                    Prop.Mds.DATA_SUBCATEGORY,
                         "Data Subcategory"
                 ),
                 catalogFilterAttributeDefinitionService.fromAssetProperty(
-                        AssetProperty.DATA_MODEL,
+                    Prop.Mds.DATA_MODEL,
                         "Data Model"
                 ),
                 catalogFilterAttributeDefinitionService.fromAssetProperty(
-                        AssetProperty.TRANSPORT_MODE,
+                    Prop.Mds.TRANSPORT_MODE,
                         "Transport Mode"
                 ),
                 catalogFilterAttributeDefinitionService.fromAssetProperty(
-                        AssetProperty.GEO_REFERENCE_METHOD,
+                    Prop.Mds.GEO_REFERENCE_METHOD,
                         "Geo Reference Method"
                 )
         );

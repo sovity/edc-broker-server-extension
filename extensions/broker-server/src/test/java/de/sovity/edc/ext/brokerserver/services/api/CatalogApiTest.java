@@ -84,14 +84,16 @@ class CatalogApiTest {
 
             createConnector(dsl, today, "http://my-connector/ids/data"); // Dataspace: MDS
             createConnector(dsl, today, "http://my-connector2/ids/data"); // Dataspace: Example1
-            createDataOffer(dsl, today, "http://my-connector/ids/data", Map.of(
-                    AssetProperty.ASSET_ID, "urn:artifact:my-asset",
-                    AssetProperty.ASSET_NAME, "my-asset"
-            )); // Dataspace: MDS
-            createDataOffer(dsl, today, "http://my-connector2/ids/data", Map.of(
-                    AssetProperty.ASSET_ID, "urn:artifact:my-asset",
-                    AssetProperty.ASSET_NAME, "my-asset"
-            )); // Dataspace: Example1
+            createDataOffer(dsl, today, "http://my-connector/ids/data", Json.createObjectBuilder()
+                .add(Prop.ID, "my-asset")
+                .add(Prop.Dcterms.TITLE, "My Asset")
+                .build()
+            ); // Dataspace: MDS
+            createDataOffer(dsl, today, "http://my-connector2/ids/data", Json.createObjectBuilder()
+                .add(Prop.ID, "my-asset")
+                .add(Prop.Dcterms.TITLE, "My Asset")
+                .build()
+            ); // Dataspace: Example1
 
             var query = new CatalogPageQuery();
             query.setFilter(new CnfFilterValue(List.of(
@@ -115,26 +117,30 @@ class CatalogApiTest {
             createConnector(dsl, today, "http://my-connector/ids/data"); // Dataspace: MDS
             createConnector(dsl, today, "http://my-connector2/ids/data"); // Dataspace: Example1
             createConnector(dsl, today, "http://my-connector3/ids/data"); // Dataspace: Example2
-            createDataOffer(dsl, today, "http://my-connector/ids/data", Map.of(
-                    AssetProperty.ASSET_ID, "urn:artifact:my-asset",
-                    AssetProperty.ASSET_NAME, "my-asset",
-                    AssetProperty.LANGUAGE, "de"
-            )); // Dataspace: MDS
-            createDataOffer(dsl, today, "http://my-connector2/ids/data", Map.of(
-                    AssetProperty.ASSET_ID, "urn:artifact:my-asset",
-                    AssetProperty.ASSET_NAME, "my-asset",
-                    AssetProperty.LANGUAGE, "en"
-            )); // Dataspace: Example1
-            createDataOffer(dsl, today, "http://my-connector2/ids/data", Map.of(
-                    AssetProperty.ASSET_ID, "urn:artifact:my-asset2",
-                    AssetProperty.ASSET_NAME, "my-asset",
-                    AssetProperty.LANGUAGE, "fr"
-            )); // Dataspace: Example1
-            createDataOffer(dsl, today, "http://my-connector3/ids/data", Map.of(
-                    AssetProperty.ASSET_ID, "urn:artifact:my-asset3",
-                    AssetProperty.ASSET_NAME, "my-asset",
-                    AssetProperty.LANGUAGE, "fr"
-            )); // Dataspace: Example2
+            createDataOffer(dsl, today, "http://my-connector/ids/data", Json.createObjectBuilder()
+                .add(Prop.ID, "my-asset")
+                .add(Prop.Dcterms.TITLE, "My Asset")
+                .add(Prop.Dcterms.LANGUAGE, "de")
+                .build()
+            ); // Dataspace: MDS
+            createDataOffer(dsl, today, "http://my-connector2/ids/data", Json.createObjectBuilder()
+                .add(Prop.ID, "my-asset")
+                .add(Prop.Dcterms.TITLE, "My Asset")
+                .add(Prop.Dcterms.LANGUAGE, "en")
+                .build()
+            ); // Dataspace: Example1
+            createDataOffer(dsl, today, "http://my-connector2/ids/data", Json.createObjectBuilder()
+                .add(Prop.ID, "my-asset2")
+                .add(Prop.Dcterms.TITLE, "My Asset")
+                .add(Prop.Dcterms.LANGUAGE, "fr")
+                .build()
+            ); // Dataspace: Example1
+            createDataOffer(dsl, today, "http://my-connector3/ids/data", Json.createObjectBuilder()
+                .add(Prop.ID, "my-asset3")
+                .add(Prop.Dcterms.TITLE, "My Asset")
+                .add(Prop.Dcterms.LANGUAGE, "fr")
+                .build()
+            ); // Dataspace: Example2
 
             // get all available filter values
             var result = brokerServerClient().brokerServerApi().catalogPage(new CatalogPageQuery());
@@ -151,7 +157,6 @@ class CatalogApiTest {
 
     @Test
     void testDataOfferDetails() {
-        // TODO: copy other test, change endpoint to detail endpoint
         TEST_DATABASE.testTransaction(dsl -> {
             // arrange
             var today = OffsetDateTime.now().withNano(0);
@@ -205,30 +210,33 @@ class CatalogApiTest {
             var today = OffsetDateTime.now().withNano(0);
 
             createConnector(dsl, today, "http://my-connector/ids/data");
-            createDataOffer(dsl, today, "http://my-connector/ids/data", Map.of(
-                    AssetProperty.ASSET_ID, "urn:artifact:my-asset-1",
-                    AssetProperty.DATA_CATEGORY, "my-category-1",
-                    AssetProperty.TRANSPORT_MODE, "MY-TRANSPORT-MODE-1",
-                    AssetProperty.DATA_SUBCATEGORY, "MY-SUBCATEGORY-2"
-            ));
-            createDataOffer(dsl, today, "http://my-connector/ids/data", Map.of(
-                    AssetProperty.ASSET_ID, "urn:artifact:my-asset-2",
-                    AssetProperty.DATA_CATEGORY, "my-category-1",
-                    AssetProperty.TRANSPORT_MODE, "my-transport-mode-2",
-                    AssetProperty.DATA_SUBCATEGORY, "MY-SUBCATEGORY-2"
-            ));
-            createDataOffer(dsl, today, "http://my-connector/ids/data", Map.of(
-                    AssetProperty.ASSET_ID, "urn:artifact:my-asset-3",
-                    AssetProperty.DATA_CATEGORY, "my-category-1",
-                    AssetProperty.TRANSPORT_MODE, "MY-TRANSPORT-MODE-1",
-                    AssetProperty.DATA_SUBCATEGORY, "my-subcategory-1"
-            ));
-            createDataOffer(dsl, today, "http://my-connector/ids/data", Map.of(
-                    AssetProperty.ASSET_ID, "urn:artifact:my-asset-4",
-                    AssetProperty.DATA_CATEGORY, "my-category-1",
-                    AssetProperty.TRANSPORT_MODE, ""
-            ));
-
+            createDataOffer(dsl, today, "http://my-connector/ids/data", Json.createObjectBuilder()
+                .add(Prop.ID, "my-asset-1")
+                .add(Prop.Mds.DATA_CATEGORY, "my-category-1")
+                .add(Prop.Mds.TRANSPORT_MODE, "MY-TRANSPORT-MODE-1")
+                .add(Prop.Mds.DATA_SUBCATEGORY, "MY-SUBCATEGORY-2")
+                .build()
+            );
+            createDataOffer(dsl, today, "http://my-connector/ids/data", Json.createObjectBuilder()
+                .add(Prop.ID, "my-asset-2")
+                .add(Prop.Mds.DATA_CATEGORY, "my-category-1")
+                .add(Prop.Mds.TRANSPORT_MODE, "my-transport-mode-2")
+                .add(Prop.Mds.DATA_SUBCATEGORY, "MY-SUBCATEGORY-2")
+                .build()
+            );
+            createDataOffer(dsl, today, "http://my-connector/ids/data", Json.createObjectBuilder()
+                .add(Prop.ID, "my-asset-3")
+                .add(Prop.Mds.DATA_CATEGORY, "my-category-1")
+                .add(Prop.Mds.TRANSPORT_MODE, "MY-TRANSPORT-MODE-1")
+                .add(Prop.Mds.DATA_SUBCATEGORY, "my-subcategory-1")
+                .build()
+            );
+            createDataOffer(dsl, today, "http://my-connector/ids/data", Json.createObjectBuilder()
+                .add(Prop.ID, "my-asset-4")
+                .add(Prop.Mds.DATA_CATEGORY, "my-category-1")
+                .add(Prop.Mds.TRANSPORT_MODE, "")
+                .build()
+            );
 
             var result = brokerServerClient().brokerServerApi().catalogPage(new CatalogPageQuery());
 
@@ -236,11 +244,11 @@ class CatalogApiTest {
                     .extracting(CnfFilterAttribute::getId)
                     .containsExactly(
                             "dataSpace",
-                            AssetProperty.DATA_CATEGORY,
-                            AssetProperty.DATA_SUBCATEGORY,
-                            AssetProperty.DATA_MODEL,
-                            AssetProperty.TRANSPORT_MODE,
-                            AssetProperty.GEO_REFERENCE_METHOD
+                        Prop.Mds.DATA_CATEGORY,
+                        Prop.Mds.DATA_SUBCATEGORY,
+                        Prop.Mds.DATA_MODEL,
+                        Prop.Mds.TRANSPORT_MODE,
+                        Prop.Mds.GEO_REFERENCE_METHOD
                     );
 
             assertThat(result.getAvailableFilters().getFields())
@@ -254,17 +262,17 @@ class CatalogApiTest {
                             "Geo Reference Method"
                     );
 
-            var dataCategory = getAvailableFilter(result, AssetProperty.DATA_CATEGORY);
+            var dataCategory = getAvailableFilter(result, Prop.Mds.DATA_CATEGORY);
             assertThat(dataCategory.getTitle()).isEqualTo("Data Category");
             assertThat(dataCategory.getValues()).extracting(CnfFilterItem::getId).containsExactly("my-category-1");
             assertThat(dataCategory.getValues()).extracting(CnfFilterItem::getTitle).containsExactly("my-category-1");
 
-            var transportMode = getAvailableFilter(result, AssetProperty.TRANSPORT_MODE);
+            var transportMode = getAvailableFilter(result, Prop.Mds.TRANSPORT_MODE);
             assertThat(transportMode.getTitle()).isEqualTo("Transport Mode");
             assertThat(transportMode.getValues()).extracting(CnfFilterItem::getId).containsExactly("MY-TRANSPORT-MODE-1", "my-transport-mode-2", "");
             assertThat(transportMode.getValues()).extracting(CnfFilterItem::getTitle).containsExactly("MY-TRANSPORT-MODE-1", "my-transport-mode-2", "");
 
-            var dataSubcategory = getAvailableFilter(result, AssetProperty.DATA_SUBCATEGORY);
+            var dataSubcategory = getAvailableFilter(result, Prop.Mds.DATA_SUBCATEGORY);
             assertThat(dataSubcategory.getTitle()).isEqualTo("Data Subcategory");
             assertThat(dataSubcategory.getValues()).extracting(CnfFilterItem::getId).containsExactly("my-subcategory-1", "MY-SUBCATEGORY-2", "");
             assertThat(dataSubcategory.getValues()).extracting(CnfFilterItem::getTitle).containsExactly("my-subcategory-1", "MY-SUBCATEGORY-2", "");
@@ -284,10 +292,11 @@ class CatalogApiTest {
             var today = OffsetDateTime.now().withNano(0);
 
             createConnector(dsl, today, "http://my-connector/ids/data");
-            createDataOffer(dsl, today, "http://my-connector/ids/data", Map.of(
-                    AssetProperty.ASSET_ID, "123",
-                    AssetProperty.ASSET_NAME, "Hello"
-            ));
+            createDataOffer(dsl, today, "http://my-connector/ids/data", Json.createObjectBuilder()
+                .add(Prop.ID, "123")
+                .add(Prop.Dcterms.TITLE, "Hello")
+                .build()
+            );
 
 
             // act
@@ -313,32 +322,33 @@ class CatalogApiTest {
             var today = OffsetDateTime.now().withNano(0);
 
             createConnector(dsl, today, "http://my-connector/ids/data");
-            createDataOffer(dsl, today, "http://my-connector/ids/data", Map.of(
-                    AssetProperty.ASSET_ID, "urn:artifact:my-asset-1",
-                    AssetProperty.DATA_CATEGORY, "my-category",
-                    AssetProperty.DATA_SUBCATEGORY, "my-subcategory"
-            ));
-            createDataOffer(dsl, today, "http://my-connector/ids/data", Map.of(
-                    AssetProperty.ASSET_ID, "urn:artifact:my-asset-2",
-                    AssetProperty.DATA_SUBCATEGORY, "my-other-subcategory"
-            ));
-
+            createDataOffer(dsl, today, "http://my-connector/ids/data", Json.createObjectBuilder()
+                .add(Prop.ID, "my-asset-1")
+                .add(Prop.Mds.DATA_CATEGORY, "my-category")
+                .add(Prop.Mds.DATA_SUBCATEGORY, "my-subcategory")
+                .build()
+            );
+            createDataOffer(dsl, today, "http://my-connector/ids/data", Json.createObjectBuilder()
+                .add(Prop.ID, "my-asset-2")
+                .add(Prop.Mds.DATA_SUBCATEGORY, "my-other-subcategory")
+                .build()
+            );
 
             var query = new CatalogPageQuery();
             query.setFilter(new CnfFilterValue(List.of(
-                    new CnfFilterValueAttribute(AssetProperty.DATA_CATEGORY, List.of(""))
+                    new CnfFilterValueAttribute(Prop.Mds.DATA_CATEGORY, List.of(""))
             )));
 
             var result = brokerServerClient().brokerServerApi().catalogPage(query);
 
-            var dataCategory = getAvailableFilter(result, AssetProperty.DATA_CATEGORY);
-            assertThat(dataCategory.getId()).isEqualTo(AssetProperty.DATA_CATEGORY);
+            var dataCategory = getAvailableFilter(result, Prop.Mds.DATA_CATEGORY);
+            assertThat(dataCategory.getId()).isEqualTo(Prop.Mds.DATA_CATEGORY);
             assertThat(dataCategory.getTitle()).isEqualTo("Data Category");
             assertThat(dataCategory.getValues()).extracting(CnfFilterItem::getId).containsExactly("my-category", "");
             assertThat(dataCategory.getValues()).extracting(CnfFilterItem::getTitle).containsExactly("my-category", "");
 
-            var dataSubcategory = getAvailableFilter(result, AssetProperty.DATA_SUBCATEGORY);
-            assertThat(dataSubcategory.getId()).isEqualTo(AssetProperty.DATA_SUBCATEGORY);
+            var dataSubcategory = getAvailableFilter(result, Prop.Mds.DATA_SUBCATEGORY);
+            assertThat(dataSubcategory.getId()).isEqualTo(Prop.Mds.DATA_SUBCATEGORY);
             assertThat(dataSubcategory.getTitle()).isEqualTo("Data Subcategory");
             assertThat(dataSubcategory.getValues()).extracting(CnfFilterItem::getId).containsExactly("my-other-subcategory");
             assertThat(dataSubcategory.getValues()).extracting(CnfFilterItem::getTitle).containsExactly("my-other-subcategory");
@@ -352,13 +362,14 @@ class CatalogApiTest {
             var today = OffsetDateTime.now().withNano(0);
 
             createConnector(dsl, today, "http://my-connector/ids/data");
-            range(0, 15).forEach(i -> createDataOffer(dsl, today, "http://my-connector/ids/data", Map.of(
-                    AssetProperty.ASSET_ID, "urn:artifact:my-asset-%d".formatted(i)
-            )));
-            range(0, 15).forEach(i -> createDataOffer(dsl, today, "http://my-connector/ids/data", Map.of(
-                    AssetProperty.ASSET_ID, "urn:artifact:some-other-asset-%d".formatted(i)
-            )));
-
+            range(0, 15).forEach(i -> createDataOffer(dsl, today, "http://my-connector/ids/data", Json.createObjectBuilder()
+                .add(Prop.ID, "my-asset-%d".formatted(i))
+                .build()
+            ));
+            range(0, 15).forEach(i -> createDataOffer(dsl, today, "http://my-connector/ids/data", Json.createObjectBuilder()
+                .add(Prop.ID, "some-other-asset-%d".formatted(i))
+                .build()
+            ));
 
             var query = new CatalogPageQuery();
             query.setSearchQuery("my-asset");
@@ -383,12 +394,14 @@ class CatalogApiTest {
             var today = OffsetDateTime.now().withNano(0);
 
             createConnector(dsl, today, "http://my-connector/ids/data");
-            range(0, 15).forEach(i -> createDataOffer(dsl, today, "http://my-connector/ids/data", Map.of(
-                    AssetProperty.ASSET_ID, "urn:artifact:my-asset-%d".formatted(i)
-            )));
-            range(0, 15).forEach(i -> createDataOffer(dsl, today, "http://my-connector/ids/data", Map.of(
-                    AssetProperty.ASSET_ID, "urn:artifact:some-other-asset-%d".formatted(i)
-            )));
+            range(0, 15).forEach(i -> createDataOffer(dsl, today, "http://my-connector/ids/data", Json.createObjectBuilder()
+                .add(Prop.ID, "my-asset-%d".formatted(i))
+                .build()
+            ));
+            range(0, 15).forEach(i -> createDataOffer(dsl, today, "http://my-connector/ids/data", Json.createObjectBuilder()
+                .add(Prop.ID, "some-other-asset-%d".formatted(i))
+                .build()
+            ));
 
 
             var query = new CatalogPageQuery();
@@ -417,9 +430,9 @@ class CatalogApiTest {
 
             var endpoint = "http://my-connector/ids/data";
             createConnector(dsl, today, endpoint);
-            createDataOffer(dsl, today, endpoint, Map.of(AssetProperty.ASSET_ID, "urn:artifact:asset-1"));
-            createDataOffer(dsl, today, endpoint, Map.of(AssetProperty.ASSET_ID, "urn:artifact:asset-2"));
-            createDataOffer(dsl, today, endpoint, Map.of(AssetProperty.ASSET_ID, "urn:artifact:asset-3"));
+            createDataOffer(dsl, today, endpoint, Json.createObjectBuilder().add(Prop.ID, "asset-1").build());
+            createDataOffer(dsl, today, endpoint, Json.createObjectBuilder().add(Prop.ID, "asset-2").build());
+            createDataOffer(dsl, today, endpoint, Json.createObjectBuilder().add(Prop.ID, "asset-3").build());
 
             range(0, 3).forEach(i -> dataOfferDetails(endpoint, "urn:artifact:asset-1"));
             range(0, 5).forEach(i -> dataOfferDetails(endpoint, "urn:artifact:asset-2"));

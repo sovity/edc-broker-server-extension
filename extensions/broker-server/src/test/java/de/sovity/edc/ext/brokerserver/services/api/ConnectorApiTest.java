@@ -27,6 +27,7 @@ import de.sovity.edc.ext.brokerserver.db.jooq.enums.ConnectorOnlineStatus;
 import de.sovity.edc.ext.brokerserver.db.jooq.enums.MeasurementErrorStatus;
 import de.sovity.edc.ext.brokerserver.db.jooq.enums.MeasurementType;
 import de.sovity.edc.ext.brokerserver.db.jooq.tables.records.ConnectorRecord;
+import de.sovity.edc.utils.jsonld.vocab.Prop;
 import lombok.SneakyThrows;
 import org.eclipse.edc.junit.annotations.ApiTest;
 import org.eclipse.edc.junit.extensions.EdcExtension;
@@ -67,7 +68,7 @@ class ConnectorApiTest {
             createConnector(dsl, today, "http://my-connector/ids/data");
             createDataOffer(dsl, today, Map.of(
                 AssetProperty.ASSET_ID, "urn:artifact:my-asset-1",
-                AssetProperty.DATA_CATEGORY, "my-category",
+                    Prop.Mds.DATA_CATEGORY, "my-category",
                 AssetProperty.ASSET_NAME, "My Asset 1"
             ), "http://my-connector/ids/data");
 
@@ -92,7 +93,7 @@ class ConnectorApiTest {
             createConnector(dsl, today, "http://my-connector2/ids/data");
             createDataOffer(dsl, today, Map.of(
                 AssetProperty.ASSET_ID, "urn:artifact:my-asset-1",
-                AssetProperty.DATA_CATEGORY, "my-category",
+                    Prop.Mds.DATA_CATEGORY, "my-category",
                 AssetProperty.ASSET_NAME, "My Asset 1"
             ), "http://my-connector/ids/data");
 

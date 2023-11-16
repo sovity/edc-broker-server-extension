@@ -24,10 +24,10 @@ import de.sovity.edc.ext.brokerserver.db.jooq.Tables;
 import de.sovity.edc.ext.brokerserver.db.jooq.enums.ConnectorContractOffersExceeded;
 import de.sovity.edc.ext.brokerserver.db.jooq.enums.ConnectorDataOffersExceeded;
 import de.sovity.edc.ext.brokerserver.db.jooq.enums.ConnectorOnlineStatus;
+import de.sovity.edc.utils.jsonld.vocab.Prop;
 import lombok.SneakyThrows;
 import org.eclipse.edc.junit.annotations.ApiTest;
 import org.eclipse.edc.junit.extensions.EdcExtension;
-import org.eclipse.edc.policy.model.Policy;
 import org.jooq.DSLContext;
 import org.jooq.JSONB;
 import org.junit.jupiter.api.BeforeEach;
@@ -38,10 +38,11 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 import java.time.OffsetDateTime;
 import java.util.Map;
 
-import static de.sovity.edc.ext.brokerserver.AssertionUtils.assertEqualJson;
-import static de.sovity.edc.ext.brokerserver.TestUtils.createConfiguration;
+import static de.sovity.edc.ext.brokerserver.AssertionUtils.assertEqualUsingJson;
+import static de.sovity.edc.ext.brokerserver.TestPolicy.createAfterYesterdayConstraint;
+import static de.sovity.edc.ext.brokerserver.TestPolicy.createAfterYesterdayPolicyJson;
 import static de.sovity.edc.ext.brokerserver.TestUtils.brokerServerClient;
-import static groovy.json.JsonOutput.toJson;
+import static de.sovity.edc.ext.brokerserver.TestUtils.createConfiguration;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ApiTest
@@ -64,28 +65,28 @@ class DataOfferDetailApiTest {
 
             createConnector(dsl, today, "http://my-connector2/ids/data");
             createDataOffer(dsl, today, Map.of(
-                AssetProperty.ASSET_ID, "urn:artifact:my-asset-2",
-                AssetProperty.DATA_CATEGORY, "my-category2",
-                AssetProperty.ASSET_NAME, "My Asset 2"
+                    AssetProperty.ASSET_ID, "urn:artifact:my-asset-2",
+                    Prop.Mds.DATA_CATEGORY, "my-category2",
+                    AssetProperty.ASSET_NAME, "My Asset 2"
             ), "http://my-connector2/ids/data");
 
             createConnector(dsl, today, "http://my-connector/ids/data");
             createDataOffer(dsl, today, Map.of(
-                AssetProperty.ASSET_ID, "urn:artifact:my-asset-1",
-                AssetProperty.DATA_CATEGORY, "my-category",
-                AssetProperty.ASSET_NAME, "My Asset 1"
+                    AssetProperty.ASSET_ID, "urn:artifact:my-asset-1",
+                    Prop.Mds.DATA_CATEGORY, "my-category",
+                    AssetProperty.ASSET_NAME, "My Asset 1"
             ), "http://my-connector/ids/data");
 
             //create view for dataoffer
             createDataOfferView(dsl, today, Map.of(
-                AssetProperty.ASSET_ID, "urn:artifact:my-asset-1",
-                AssetProperty.DATA_CATEGORY, "my-category",
-                AssetProperty.ASSET_NAME, "My Asset 1"
+                    AssetProperty.ASSET_ID, "urn:artifact:my-asset-1",
+                    Prop.Mds.DATA_CATEGORY, "my-category",
+                    AssetProperty.ASSET_NAME, "My Asset 1"
             ), "http://my-connector/ids/data");
             createDataOfferView(dsl, today, Map.of(
-                AssetProperty.ASSET_ID, "urn:artifact:my-asset-1",
-                AssetProperty.DATA_CATEGORY, "my-category",
-                AssetProperty.ASSET_NAME, "My Asset 1"
+                    AssetProperty.ASSET_ID, "urn:artifact:my-asset-1",
+                    Prop.Mds.DATA_CATEGORY, "my-category",
+                    AssetProperty.ASSET_NAME, "My Asset 1"
             ), "http://my-connector/ids/data");
 
             var actual = brokerServerClient().brokerServerApi().dataOfferDetailPage(new DataOfferDetailPageQuery("http://my-connector/ids/data", "urn:artifact:my-asset-1"));
@@ -94,16 +95,14 @@ class DataOfferDetailApiTest {
             assertThat(actual.getConnectorOfflineSinceOrLastUpdatedAt()).isEqualTo(today);
             assertThat(actual.getConnectorOnlineStatus()).isEqualTo(DataOfferDetailPageResult.ConnectorOnlineStatusEnum.ONLINE);
             assertThat(actual.getCreatedAt()).isEqualTo(today.minusDays(5));
-            assertThat(actual.getProperties()).isEqualTo(Map.of(
-                AssetProperty.ASSET_ID, "urn:artifact:my-asset-1",
-                AssetProperty.DATA_CATEGORY, "my-category",
-                AssetProperty.ASSET_NAME, "My Asset 1"
-            ));
+            assertThat(actual.getAsset().getAssetId()).isEqualTo("my-asset-1");
+            assertThat(actual.getAsset().getDataCategory()).isEqualTo("my-category");
+            assertThat(actual.getAsset().getTitle()).isEqualTo("My Asset 1");
             assertThat(actual.getUpdatedAt()).isEqualTo(today);
             assertThat(actual.getContractOffers()).hasSize(1);
             var contractOffer = actual.getContractOffers().get(0);
             assertThat(contractOffer.getContractOfferId()).isEqualTo("my-contract-offer-1");
-            assertEqualJson(contractOffer.getContractPolicy().getLegacyPolicy(), policyToJson(dummyPolicy()));
+            assertEqualUsingJson(contractOffer.getContractPolicy().getConstraints().get(0), createAfterYesterdayConstraint());
             assertThat(contractOffer.getCreatedAt()).isEqualTo(today.minusDays(5));
             assertThat(contractOffer.getUpdatedAt()).isEqualTo(today);
             assertThat(actual.getViewCount()).isEqualTo(2);
@@ -139,7 +138,7 @@ class DataOfferDetailApiTest {
         contractOffer.setAssetId(assetProperties.get(AssetProperty.ASSET_ID));
         contractOffer.setCreatedAt(today.minusDays(5));
         contractOffer.setUpdatedAt(today);
-        contractOffer.setPolicy(JSONB.jsonb(policyToJson(dummyPolicy())));
+        contractOffer.setPolicy(createAfterYesterdayPolicyJson());
         contractOffer.insert();
     }
 
@@ -149,16 +148,6 @@ class DataOfferDetailApiTest {
         view.setConnectorEndpoint(connectorEndpoint);
         view.setDate(date);
         view.insert();
-    }
-
-    private Policy dummyPolicy() {
-        return Policy.Builder.newInstance()
-            .assignee("Example Assignee")
-            .build();
-    }
-
-    private String policyToJson(Policy policy) {
-        return toJson(policy);
     }
 
     @SneakyThrows

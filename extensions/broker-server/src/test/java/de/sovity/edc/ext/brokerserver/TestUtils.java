@@ -16,7 +16,6 @@ package de.sovity.edc.ext.brokerserver;
 
 import de.sovity.edc.ext.brokerserver.client.BrokerServerClient;
 import de.sovity.edc.ext.brokerserver.client.gen.ApiException;
-import de.sovity.edc.ext.brokerserver.client.gen.JSON;
 import de.sovity.edc.ext.brokerserver.db.PostgresFlywayExtension;
 import de.sovity.edc.ext.brokerserver.db.TestDatabase;
 import org.assertj.core.api.ThrowableAssert;
@@ -117,9 +116,5 @@ public class TestUtils {
                     var apiException = (ApiException) ex;
                     assertThat(apiException.getCode()).isEqualTo(401);
                 });
-    }
-
-    public static void assertEqualsUsingJson(Object expected, Object actual) {
-        assertThat(JSON.serialize(expected)).isEqualTo(JSON.serialize(actual));
     }
 }

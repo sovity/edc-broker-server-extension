@@ -16,17 +16,13 @@ package de.sovity.edc.ext.brokerserver.services.refreshing;
 
 import de.sovity.edc.client.EdcClient;
 import de.sovity.edc.client.gen.model.ContractDefinitionRequest;
-import de.sovity.edc.client.gen.model.OperatorDto;
 import de.sovity.edc.client.gen.model.PolicyDefinitionCreateRequest;
 import de.sovity.edc.client.gen.model.UiAssetCreateRequest;
 import de.sovity.edc.client.gen.model.UiCriterion;
 import de.sovity.edc.client.gen.model.UiCriterionLiteral;
 import de.sovity.edc.client.gen.model.UiCriterionLiteralType;
 import de.sovity.edc.client.gen.model.UiCriterionOperator;
-import de.sovity.edc.client.gen.model.UiPolicyConstraint;
-import de.sovity.edc.client.gen.model.UiPolicyCreateRequest;
-import de.sovity.edc.client.gen.model.UiPolicyLiteral;
-import de.sovity.edc.client.gen.model.UiPolicyLiteralType;
+import de.sovity.edc.ext.brokerserver.AssertionUtils;
 import de.sovity.edc.ext.brokerserver.BrokerServerExtensionContext;
 import de.sovity.edc.ext.brokerserver.TestUtils;
 import de.sovity.edc.ext.brokerserver.client.BrokerServerClient;
@@ -41,10 +37,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
-import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Map;
 
+import static de.sovity.edc.ext.brokerserver.TestPolicy.createAfterYesterdayConstraint;
+import static de.sovity.edc.ext.brokerserver.TestPolicy.createAfterYesterdayPolicyEdcGen;
 import static de.sovity.edc.ext.brokerserver.TestUtils.createConfiguration;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -123,57 +120,42 @@ class ConnectorUpdaterTest {
             assertThat(asset.getHttpDatasourceHintsProxyQueryParams()).isFalse();
             assertThat(asset.getHttpDatasourceHintsProxyBody()).isFalse();
             assertThat(asset.getAdditionalProperties())
-                .containsExactlyEntriesOf(Map.of("http://unknown/a", "x"));
+                    .containsExactlyEntriesOf(Map.of("http://unknown/a", "x"));
             assertThat(dataOffer.getAsset().getAdditionalJsonProperties())
-                .containsExactlyEntriesOf(Map.of("http://unknown/b", "{\"http://unknown/c\":\"y\"}"));
+                    .containsExactlyEntriesOf(Map.of("http://unknown/b", "{\"http://unknown/c\":\"y\"}"));
             assertThat(dataOffer.getAsset().getPrivateProperties())
-                .containsExactlyEntriesOf(Map.of("http://unknown/a-private", "x-private"));
+                    .containsExactlyEntriesOf(Map.of("http://unknown/a-private", "x-private"));
             assertThat(dataOffer.getAsset().getPrivateJsonProperties())
-                .containsExactlyEntriesOf(Map.of("http://unknown/b-private", "{\"http://unknown/c-private\":\"y\"}"));
+                    .containsExactlyEntriesOf(Map.of("http://unknown/b-private", "{\"http://unknown/c-private\":\"y\"}"));
             var policy = contractOffer.getContractPolicy();
             assertThat(policy.getConstraints()).hasSize(1);
-            TestUtils.assertEqualsUsingJson(policy.getConstraints().get(0), createAfterYesterdayConstraint());
+            AssertionUtils.assertEqualUsingJson(policy.getConstraints().get(0), createAfterYesterdayConstraint());
         });
     }
 
     private String createPolicyDefinition() {
-        var afterYesterday = createAfterYesterdayConstraint();
-
         var policyDefinition = PolicyDefinitionCreateRequest.builder()
-            .policyDefinitionId("policy-1")
-            .policy(UiPolicyCreateRequest.builder()
-                .constraints(List.of(afterYesterday))
-                .build())
-            .build();
+                .policyDefinitionId("policy-1")
+                .policy(createAfterYesterdayPolicyEdcGen())
+                .build();
 
         return providerClient.uiApi().createPolicyDefinition(policyDefinition).getId();
     }
 
-    private UiPolicyConstraint createAfterYesterdayConstraint() {
-        return UiPolicyConstraint.builder()
-            .left("POLICY_EVALUATION_TIME")
-            .operator(OperatorDto.GT)
-            .right(UiPolicyLiteral.builder()
-                .type(UiPolicyLiteralType.STRING)
-                .value(OffsetDateTime.now().minusDays(1).toString())
-                .build())
-            .build();
-    }
-
     public void createContractDefinition(String policyId, String assetId) {
         providerClient.uiApi().createContractDefinition(ContractDefinitionRequest.builder()
-            .contractDefinitionId("cd-1")
-            .accessPolicyId(policyId)
-            .contractPolicyId(policyId)
-            .assetSelector(List.of(UiCriterion.builder()
-                .operandLeft(Prop.Edc.ID)
-                .operator(UiCriterionOperator.EQ)
-                .operandRight(UiCriterionLiteral.builder()
-                    .type(UiCriterionLiteralType.VALUE)
-                    .value(assetId)
-                    .build())
-                .build()))
-            .build());
+                .contractDefinitionId("cd-1")
+                .accessPolicyId(policyId)
+                .contractPolicyId(policyId)
+                .assetSelector(List.of(UiCriterion.builder()
+                    .operandLeft(Prop.Edc.ID)
+                    .operator(UiCriterionOperator.EQ)
+                    .operandRight(UiCriterionLiteral.builder()
+                        .type(UiCriterionLiteralType.VALUE)
+                        .value(assetId)
+                        .build())
+                    .build()))
+                .build());
     }
 
     private String createAsset() {

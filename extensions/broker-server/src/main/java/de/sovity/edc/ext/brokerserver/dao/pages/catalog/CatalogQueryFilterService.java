@@ -14,12 +14,12 @@
 
 package de.sovity.edc.ext.brokerserver.dao.pages.catalog;
 
-import de.sovity.edc.ext.brokerserver.dao.AssetProperty;
 import de.sovity.edc.ext.brokerserver.dao.pages.catalog.models.CatalogQueryFilter;
 import de.sovity.edc.ext.brokerserver.dao.utils.SearchUtils;
 import de.sovity.edc.ext.brokerserver.db.jooq.enums.ConnectorOnlineStatus;
 import de.sovity.edc.ext.brokerserver.db.jooq.tables.Connector;
 import de.sovity.edc.ext.brokerserver.services.config.BrokerServerSettings;
+import de.sovity.edc.utils.jsonld.vocab.Prop;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.jooq.Condition;
@@ -39,8 +39,8 @@ public class CatalogQueryFilterService {
         conditions.add(SearchUtils.simpleSearch(searchQuery, List.of(
                 fields.getAssetId(),
                 fields.getAssetName(),
-                fields.getAssetProperty(AssetProperty.DATA_CATEGORY),
-                fields.getAssetProperty(AssetProperty.DATA_SUBCATEGORY),
+                fields.getAssetProperty(Prop.Mds.DATA_CATEGORY),
+                fields.getAssetProperty(Prop.Mds.DATA_SUBCATEGORY),
                 fields.getAssetDescription(),
                 fields.getAssetKeywords(),
                 fields.getConnectorTable().ENDPOINT

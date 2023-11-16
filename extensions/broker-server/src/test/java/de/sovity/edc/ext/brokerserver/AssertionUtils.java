@@ -14,16 +14,23 @@
 
 package de.sovity.edc.ext.brokerserver;
 
+import de.sovity.edc.ext.brokerserver.client.gen.JSON;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class AssertionUtils {
     @SneakyThrows
     public static void assertEqualJson(String expected, String actual) {
         JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
+    }
+
+    public static void assertEqualUsingJson(Object expected, Object actual) {
+        assertThat(JSON.serialize(expected)).isEqualTo(JSON.serialize(actual));
     }
 }

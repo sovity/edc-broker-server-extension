@@ -15,11 +15,11 @@
 package de.sovity.edc.ext.brokerserver.dao.pages.catalog;
 
 import com.github.t9t.jooq.json.JsonbDSL;
-import de.sovity.edc.ext.brokerserver.dao.AssetProperty;
 import de.sovity.edc.ext.brokerserver.db.jooq.tables.Connector;
 import de.sovity.edc.ext.brokerserver.db.jooq.tables.DataOffer;
 import de.sovity.edc.ext.brokerserver.db.jooq.tables.DataOfferViewCount;
 import de.sovity.edc.ext.brokerserver.services.config.DataSpaceConfig;
+import de.sovity.edc.utils.jsonld.vocab.Prop;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.experimental.FieldDefaults;
@@ -66,8 +66,8 @@ public class CatalogQueryFields {
         this.dataSpaceConfig = dataSpaceConfig;
         assetId = dataOfferTable.ASSET_ID;
         assetName = dataOfferTable.ASSET_NAME;
-        assetDescription = getAssetProperty(AssetProperty.DESCRIPTION);
-        assetKeywords = getAssetProperty(AssetProperty.KEYWORDS);
+        assetDescription = getAssetProperty(Prop.Dcterms.DESCRIPTION);
+        assetKeywords = getAssetProperty(Prop.Dcat.KEYWORDS);
         offlineSinceOrLastUpdatedAt = DSL.coalesce(
                 connectorTable.LAST_SUCCESSFUL_REFRESH_AT,
                 connectorTable.CREATED_AT

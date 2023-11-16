@@ -284,7 +284,8 @@ public class BrokerServerExtensionContextBuilder {
                 brokerServerResource,
                 brokerServerInitializer,
                 connectorUpdater,
-                connectorCreator
+                connectorCreator,
+                policyMapper
         );
     }
 
