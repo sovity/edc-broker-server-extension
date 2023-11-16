@@ -30,6 +30,7 @@ import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
+import static de.sovity.edc.ext.brokerserver.AssertionUtils.assertEqualJson;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class DataOfferWriterTest {
@@ -141,7 +142,7 @@ class DataOfferWriterTest {
     private void assertAssetPropertiesEqual(DataOfferWriterTestDataHelper testData, DataOfferRecord actual, Do expected) {
         var actualAssetJson = actual.getAssetJsonLd().data();
         var expectedAssetJson = testData.dummyAssetJson(expected);
-        assertThat(actualAssetJson).isEqualTo(expectedAssetJson);
+        assertEqualJson(actualAssetJson, expectedAssetJson);
     }
 
     private void assertPolicyEquals(

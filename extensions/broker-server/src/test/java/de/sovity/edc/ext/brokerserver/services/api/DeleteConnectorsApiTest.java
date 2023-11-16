@@ -14,6 +14,7 @@
 
 package de.sovity.edc.ext.brokerserver.services.api;
 
+import de.sovity.edc.ext.brokerserver.TestPolicy;
 import de.sovity.edc.ext.brokerserver.TestUtils;
 import de.sovity.edc.ext.brokerserver.client.BrokerServerClient;
 import de.sovity.edc.ext.brokerserver.client.gen.model.ConnectorListEntry;
@@ -28,7 +29,6 @@ import de.sovity.edc.ext.brokerserver.db.jooq.enums.MeasurementType;
 import org.eclipse.edc.junit.annotations.ApiTest;
 import org.eclipse.edc.junit.extensions.EdcExtension;
 import org.jooq.DSLContext;
-import org.jooq.JSONB;
 import org.jooq.Record;
 import org.jooq.TableField;
 import org.junit.jupiter.api.BeforeEach;
@@ -121,7 +121,7 @@ class DeleteConnectorsApiTest {
         contractOffer.setConnectorEndpoint(endpoint);
         contractOffer.setContractOfferId("my-asset-co");
         contractOffer.setCreatedAt(OffsetDateTime.now());
-        contractOffer.setPolicy(JSONB.valueOf("{}"));
+        contractOffer.setPolicy(TestPolicy.createAfterYesterdayPolicyJson());
         contractOffer.setUpdatedAt(OffsetDateTime.now());
         contractOffer.insert();
 

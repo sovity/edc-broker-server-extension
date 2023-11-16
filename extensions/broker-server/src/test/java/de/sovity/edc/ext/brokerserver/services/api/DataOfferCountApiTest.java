@@ -14,6 +14,7 @@
 
 package de.sovity.edc.ext.brokerserver.services.api;
 
+import de.sovity.edc.ext.brokerserver.TestPolicy;
 import de.sovity.edc.ext.brokerserver.db.TestDatabase;
 import de.sovity.edc.ext.brokerserver.db.TestDatabaseFactory;
 import de.sovity.edc.ext.brokerserver.db.jooq.Tables;
@@ -25,7 +26,6 @@ import org.eclipse.edc.junit.annotations.ApiTest;
 import org.eclipse.edc.junit.extensions.EdcExtension;
 import org.eclipse.edc.policy.model.Policy;
 import org.jooq.DSLContext;
-import org.jooq.JSONB;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -48,8 +48,6 @@ class DataOfferCountApiTest {
 
     @RegisterExtension
     private static final TestDatabase TEST_DATABASE = TestDatabaseFactory.getTestDatabase();
-
-    AssetJsonLdUtils assetJsonLdUtils = new AssetJsonLdUtils();
 
     @BeforeEach
     void setUp(EdcExtension extension) {
@@ -119,10 +117,10 @@ class DataOfferCountApiTest {
         var contractOffer = dsl.newRecord(Tables.CONTRACT_OFFER);
         contractOffer.setContractOfferId("my-contract-offer-1");
         contractOffer.setConnectorEndpoint(connectorEndpoint);
-        contractOffer.setAssetId(assetJsonLdUtils.getId(assetJsonLd));
+        contractOffer.setAssetId(dataOffer.getAssetId());
         contractOffer.setCreatedAt(today.minusDays(5));
         contractOffer.setUpdatedAt(today);
-        contractOffer.setPolicy(JSONB.jsonb(policyToJson(dummyPolicy())));
+        contractOffer.setPolicy(TestPolicy.createAfterYesterdayPolicyJson());
         contractOffer.insert();
     }
 

@@ -17,6 +17,7 @@ package de.sovity.edc.ext.brokerserver.services.refreshing.offers;
 import de.sovity.edc.ext.brokerserver.dao.utils.JsonbUtils;
 import de.sovity.edc.ext.brokerserver.db.jooq.tables.records.DataOfferRecord;
 import de.sovity.edc.ext.brokerserver.services.refreshing.offers.model.FetchedDataOffer;
+import de.sovity.edc.ext.brokerserver.utils.JsonUtils2;
 import lombok.RequiredArgsConstructor;
 import org.jooq.JSONB;
 
@@ -131,7 +132,7 @@ public class DataOfferRecordUpdater {
 
         changed |= updateKeywords(dataOffer, fetchedDataOffer);
 
-        changed |= updateAssetJsonLd(dataOffer, fetchedDataOffer, changed);
+        changed |= updateAssetJsonLd(dataOffer, fetchedDataOffer);
 
         if (changed) {
             dataOffer.setUpdatedAt(OffsetDateTime.now());
@@ -186,20 +187,20 @@ public class DataOfferRecordUpdater {
 
         dataOffer.setKeywords(fetched.toArray(new String[0]));
         dataOffer.setKeywordsCommaJoined(String.join(",", fetched));
-        return false;
+        return true;
     }
 
     private boolean updateAssetJsonLd(
             DataOfferRecord dataOffer,
-            FetchedDataOffer fetchedDataOffer,
-            boolean changed
+            FetchedDataOffer fetchedDataOffer
     ) {
-        String existingAssetProps = JsonbUtils.getDataOrNull(dataOffer.getAssetJsonLd());
-        var fetchedAssetProps = fetchedDataOffer.getAssetJsonLd();
-        if (!Objects.equals(fetchedAssetProps, existingAssetProps)) {
-            dataOffer.setAssetJsonLd(JSONB.jsonb(fetchedAssetProps));
-            changed = true;
+        String existing = JsonbUtils.getDataOrNull(dataOffer.getAssetJsonLd());
+        var fetched = fetchedDataOffer.getAssetJsonLd();
+        if (JsonUtils2.isEqualJson(fetched, existing)) {
+            return false;
         }
-        return changed;
+
+        dataOffer.setAssetJsonLd(JSONB.jsonb(fetched));
+        return true;
     }
 }

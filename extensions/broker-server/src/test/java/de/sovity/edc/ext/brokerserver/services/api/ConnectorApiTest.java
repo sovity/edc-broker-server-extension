@@ -14,6 +14,7 @@
 
 package de.sovity.edc.ext.brokerserver.services.api;
 
+import de.sovity.edc.ext.brokerserver.TestPolicy;
 import de.sovity.edc.ext.brokerserver.client.gen.model.ConnectorDetailPageQuery;
 import de.sovity.edc.ext.brokerserver.client.gen.model.ConnectorPageQuery;
 import de.sovity.edc.ext.brokerserver.db.TestDatabase;
@@ -29,9 +30,7 @@ import de.sovity.edc.utils.jsonld.vocab.Prop;
 import jakarta.json.JsonObject;
 import org.eclipse.edc.junit.annotations.ApiTest;
 import org.eclipse.edc.junit.extensions.EdcExtension;
-import org.eclipse.edc.policy.model.Policy;
 import org.jooq.DSLContext;
-import org.jooq.JSONB;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -44,7 +43,6 @@ import static de.sovity.edc.ext.brokerserver.TestAsset.getAssetJsonLd;
 import static de.sovity.edc.ext.brokerserver.TestAsset.setDataOfferAssetMetadata;
 import static de.sovity.edc.ext.brokerserver.TestUtils.brokerServerClient;
 import static de.sovity.edc.ext.brokerserver.TestUtils.createConfiguration;
-import static groovy.json.JsonOutput.toJson;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ApiTest
@@ -149,17 +147,7 @@ class ConnectorApiTest {
         contractOffer.setAssetId(dataOffer.getAssetId());
         contractOffer.setCreatedAt(today.minusDays(5));
         contractOffer.setUpdatedAt(today);
-        contractOffer.setPolicy(JSONB.jsonb(policyToJson(dummyPolicy())));
+        contractOffer.setPolicy(TestPolicy.createAfterYesterdayPolicyJson());
         contractOffer.insert();
-    }
-
-    private Policy dummyPolicy() {
-        return Policy.Builder.newInstance()
-            .assignee("Example Assignee")
-            .build();
-    }
-
-    private String policyToJson(Policy policy) {
-        return toJson(policy);
     }
 }

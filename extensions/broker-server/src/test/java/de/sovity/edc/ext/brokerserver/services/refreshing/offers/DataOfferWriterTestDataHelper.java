@@ -20,6 +20,7 @@ import de.sovity.edc.ext.brokerserver.db.jooq.tables.records.DataOfferRecord;
 import de.sovity.edc.ext.brokerserver.services.ConnectorCreator;
 import de.sovity.edc.ext.brokerserver.services.refreshing.offers.model.FetchedContractOffer;
 import de.sovity.edc.ext.brokerserver.services.refreshing.offers.model.FetchedDataOffer;
+import de.sovity.edc.utils.JsonUtils;
 import de.sovity.edc.utils.jsonld.vocab.Prop;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
@@ -29,9 +30,11 @@ import org.jooq.JSONB;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static de.sovity.edc.ext.brokerserver.TestAsset.getAssetJsonLd;
 import static de.sovity.edc.ext.brokerserver.services.refreshing.offers.DataOfferWriterTestDataModels.Co;
 import static de.sovity.edc.ext.brokerserver.services.refreshing.offers.DataOfferWriterTestDataModels.Do;
 
@@ -112,10 +115,8 @@ class DataOfferWriterTestDataHelper {
     }
 
     public String dummyAssetJson(Do dataOffer) {
-        return "{\"%s\": \"%s\", \"%s\": \"%s\"}".formatted(
-            Prop.ID, dataOffer.getAssetId(),
-            Prop.Dcterms.TITLE, dataOffer.getAssetTitle()
-        );
+        var assetJsonLd = getAssetJsonLd(dataOffer.getAssetId(), Map.of(Prop.Dcterms.TITLE, dataOffer.getAssetTitle()));
+        return JsonUtils.toJson(assetJsonLd);
     }
 
     public String dummyPolicyJson(String policyValue) {

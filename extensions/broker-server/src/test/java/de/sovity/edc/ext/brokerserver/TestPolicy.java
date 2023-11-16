@@ -20,12 +20,11 @@ import de.sovity.edc.ext.wrapper.api.common.model.UiPolicyConstraint;
 import de.sovity.edc.ext.wrapper.api.common.model.UiPolicyCreateRequest;
 import de.sovity.edc.ext.wrapper.api.common.model.UiPolicyLiteral;
 import de.sovity.edc.ext.wrapper.api.common.model.UiPolicyLiteralType;
+import de.sovity.edc.utils.JsonUtils;
 import org.jooq.JSONB;
 
 import java.time.OffsetDateTime;
 import java.util.List;
-
-import static groovy.json.JsonOutput.toJson;
 
 public class TestPolicy {
     private static OffsetDateTime today = OffsetDateTime.now();
@@ -66,6 +65,6 @@ public class TestPolicy {
     public static JSONB getPolicyJsonLd(UiPolicyCreateRequest createRequest) {
         var policyMapper = BrokerServerExtensionContext.instance.policyMapper();
         var jsonLd = policyMapper.buildPolicyJsonLd(policyMapper.buildPolicy(createRequest));
-        return JSONB.jsonb(toJson(jsonLd));
+        return JSONB.jsonb(JsonUtils.toJson(jsonLd));
     }
 }
