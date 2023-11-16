@@ -82,7 +82,9 @@ import de.sovity.edc.ext.wrapper.api.common.mappers.utils.LiteralMapper;
 import de.sovity.edc.ext.wrapper.api.common.mappers.utils.PolicyValidator;
 import de.sovity.edc.ext.wrapper.api.common.mappers.utils.UiAssetMapper;
 import de.sovity.edc.utils.catalog.DspCatalogService;
+import de.sovity.edc.utils.catalog.mapper.DspDataOfferBuilder;
 import lombok.NoArgsConstructor;
+import org.eclipse.edc.connector.spi.catalog.CatalogService;
 import org.eclipse.edc.jsonld.spi.JsonLd;
 import org.eclipse.edc.runtime.metamodel.annotation.Inject;
 import org.eclipse.edc.spi.CoreConstants;
@@ -110,9 +112,9 @@ public class BrokerServerExtensionContextBuilder {
             Config config,
             Monitor monitor,
             TypeManager typeManager,
-            DspCatalogService dspCatalogService,
             TypeTransformerRegistry typeTransformerRegistry,
-            JsonLd jsonLd
+            JsonLd jsonLd,
+            CatalogService catalogService
     ) {
         var brokerServerSettingsFactory = new BrokerServerSettingsFactory(config, monitor);
         var brokerServerSettings = brokerServerSettingsFactory.buildBrokerServerSettings();
@@ -179,6 +181,11 @@ public class BrokerServerExtensionContextBuilder {
         var fetchedDataOfferBuilder = new FetchedCatalogBuilder(
                 assetMapper,
                 assetJsonLdUtils
+        );
+        var dspDataOfferBuilder = new DspDataOfferBuilder(jsonLd);
+        var dspCatalogService = new DspCatalogService(
+                catalogService,
+                dspDataOfferBuilder
         );
         var dataOfferFetcher = new CatalogFetcher(dspCatalogService, fetchedDataOfferBuilder);
         var connectorUpdateFailureWriter = new ConnectorUpdateFailureWriter(brokerEventLogger, monitor);

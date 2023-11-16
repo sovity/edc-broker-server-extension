@@ -39,7 +39,7 @@ public class DataOfferDetailApiService {
 
         var dataOffer = dataOfferDetailPageQueryService.queryDataOfferDetailsPage(dsl, query.getAssetId(), query.getConnectorEndpoint());
         var asset = dataOfferMappingUtils.buildUiAsset(
-            dataOffer.getAssetPropertiesJson(),
+            dataOffer.getAssetJsonLd(),
             dataOffer.getConnectorEndpoint(),
             dataOffer.getConnectorParticipantId()
         );

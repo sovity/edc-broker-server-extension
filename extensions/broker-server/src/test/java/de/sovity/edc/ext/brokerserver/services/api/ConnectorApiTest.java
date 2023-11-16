@@ -43,8 +43,8 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 import java.time.OffsetDateTime;
 import java.util.Map;
 
-import static de.sovity.edc.ext.brokerserver.TestUtils.createConfiguration;
 import static de.sovity.edc.ext.brokerserver.TestUtils.brokerServerClient;
+import static de.sovity.edc.ext.brokerserver.TestUtils.createConfiguration;
 import static groovy.json.JsonOutput.toJson;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -68,8 +68,8 @@ class ConnectorApiTest {
         TEST_DATABASE.testTransaction(dsl -> {
             var today = OffsetDateTime.now().withNano(0);
 
-            createConnector(dsl, today, "http://my-connector/ids/data");
-            createDataOffer(dsl, today, "http://my-connector/ids/data", Json.createObjectBuilder()
+            createConnector(dsl, today, "http://my-connector/dsp");
+            createDataOffer(dsl, today, "http://my-connector/dsp", Json.createObjectBuilder()
                 .add(Prop.ID, "my-asset-1")
                 .add(Prop.Mds.DATA_CATEGORY, "my-category")
                 .add(Prop.Dcterms.TITLE, "My Asset 1")
@@ -80,8 +80,8 @@ class ConnectorApiTest {
             assertThat(result.getConnectors()).hasSize(1);
 
             var connector = result.getConnectors().get(0);
-            assertThat(connector.getId()).isEqualTo("http://my-connector/ids/data");
-            assertThat(connector.getEndpoint()).isEqualTo("http://my-connector/ids/data");
+            assertThat(connector.getId()).isEqualTo("http://my-connector/dsp");
+            assertThat(connector.getEndpoint()).isEqualTo("http://my-connector/dsp");
             assertThat(connector.getCreatedAt()).isEqualTo(today.minusDays(1));
             assertThat(connector.getLastRefreshAttemptAt()).isEqualTo(today);
             assertThat(connector.getLastSuccessfulRefreshAt()).isEqualTo(today);
@@ -93,18 +93,18 @@ class ConnectorApiTest {
         TEST_DATABASE.testTransaction(dsl -> {
             var today = OffsetDateTime.now().withNano(0);
 
-            createConnector(dsl, today, "http://my-connector/ids/data");
-            createConnector(dsl, today, "http://my-connector2/ids/data");
-            createDataOffer(dsl, today, "http://my-connector/ids/data", Json.createObjectBuilder()
+            createConnector(dsl, today, "http://my-connector/dsp");
+            createConnector(dsl, today, "http://my-connector2/dsp");
+            createDataOffer(dsl, today, "http://my-connector/dsp", Json.createObjectBuilder()
                 .add(Prop.ID, "my-asset-1")
                 .add(Prop.Mds.DATA_CATEGORY, "my-category")
                 .add(Prop.Dcterms.TITLE, "My Asset 1")
                 .build()
             );
 
-            var connector = brokerServerClient().brokerServerApi().connectorDetailPage(new ConnectorDetailPageQuery("http://my-connector/ids/data"));
-            assertThat(connector.getId()).isEqualTo("http://my-connector/ids/data");
-            assertThat(connector.getEndpoint()).isEqualTo("http://my-connector/ids/data");
+            var connector = brokerServerClient().brokerServerApi().connectorDetailPage(new ConnectorDetailPageQuery("http://my-connector/dsp"));
+            assertThat(connector.getId()).isEqualTo("http://my-connector/dsp");
+            assertThat(connector.getEndpoint()).isEqualTo("http://my-connector/dsp");
             assertThat(connector.getCreatedAt()).isEqualTo(today.minusDays(1));
             assertThat(connector.getLastRefreshAttemptAt()).isEqualTo(today);
             assertThat(connector.getLastSuccessfulRefreshAt()).isEqualTo(today);

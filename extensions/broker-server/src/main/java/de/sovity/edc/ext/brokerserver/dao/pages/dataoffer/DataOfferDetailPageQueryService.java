@@ -41,7 +41,7 @@ public class DataOfferDetailPageQueryService {
 
         return dsl.select(
                         d.ASSET_ID,
-                        d.ASSET_PROPERTIES.cast(String.class).as("assetPropertiesJson"),
+                        d.ASSET_PROPERTIES.cast(String.class).as("assetJsonLd"),
                         d.CREATED_AT,
                         d.UPDATED_AT,
                         catalogQueryContractOfferFetcher.getContractOffers(fields.getDataOfferTable()).as("contractOffers"),

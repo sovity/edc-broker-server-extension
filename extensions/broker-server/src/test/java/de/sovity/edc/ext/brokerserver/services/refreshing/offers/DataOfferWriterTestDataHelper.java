@@ -36,7 +36,7 @@ import static de.sovity.edc.ext.brokerserver.services.refreshing.offers.DataOffe
 import static de.sovity.edc.ext.brokerserver.services.refreshing.offers.DataOfferWriterTestDataModels.Do;
 
 class DataOfferWriterTestDataHelper {
-    String connectorEndpoint = "https://example.com/ids/data";
+    String connectorEndpoint = "https://example.com/dsp";
     OffsetDateTime old = OffsetDateTime.now().withNano(0).withSecond(0).withMinute(0).withHour(0).minusDays(100);
     List<DataOfferContractOfferRecord> existingContractOffers = new ArrayList<>();
     List<DataOfferRecord> existingDataOffers = new ArrayList<>();
@@ -103,7 +103,7 @@ class DataOfferWriterTestDataHelper {
         var fetchedDataOffer = new FetchedDataOffer();
         fetchedDataOffer.setAssetId(dataOffer.getAssetId());
         fetchedDataOffer.setAssetTitle(dataOffer.getAssetName());
-        fetchedDataOffer.setAssetPropertiesJsonLd(dummyAssetJson(dataOffer));
+        fetchedDataOffer.setAssetJsonLd(dummyAssetJson(dataOffer));
 
         var contractOffersMapped = dataOffer.getContractOffers().stream().map(this::dummyFetchedContractOffer).collect(Collectors.toList());
         fetchedDataOffer.setContractOffers(contractOffersMapped);

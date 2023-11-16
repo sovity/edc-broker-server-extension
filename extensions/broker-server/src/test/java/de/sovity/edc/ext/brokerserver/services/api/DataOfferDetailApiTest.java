@@ -66,16 +66,16 @@ class DataOfferDetailApiTest {
         TEST_DATABASE.testTransaction(dsl -> {
             var today = OffsetDateTime.now().withNano(0);
 
-            createConnector(dsl, today, "http://my-connector2/ids/data");
-            createDataOffer(dsl, today, "http://my-connector2/ids/data", Json.createObjectBuilder()
+            createConnector(dsl, today, "http://my-connector2/dsp");
+            createDataOffer(dsl, today, "http://my-connector2/dsp", Json.createObjectBuilder()
                 .add(Prop.ID, "my-asset-2")
                 .add(Prop.Mds.DATA_CATEGORY, "my-category-2")
                 .add(Prop.Dcterms.TITLE, "My Asset 2")
                 .build()
             );
 
-            createConnector(dsl, today, "http://my-connector/ids/data");
-            createDataOffer(dsl, today, "http://my-connector/ids/data", Json.createObjectBuilder()
+            createConnector(dsl, today, "http://my-connector/dsp");
+            createDataOffer(dsl, today, "http://my-connector/dsp", Json.createObjectBuilder()
                 .add(Prop.ID, "my-asset-1")
                 .add(Prop.Mds.DATA_CATEGORY, "my-category")
                 .add(Prop.Dcterms.TITLE, "My Asset 1")
@@ -83,22 +83,22 @@ class DataOfferDetailApiTest {
             );
 
             //create view for dataoffer
-            createDataOfferView(dsl, today, "http://my-connector/ids/data", Json.createObjectBuilder()
+            createDataOfferView(dsl, today, "http://my-connector/dsp", Json.createObjectBuilder()
                 .add(Prop.ID, "my-asset-1")
                 .add(Prop.Mds.DATA_CATEGORY, "my-category")
                 .add(Prop.Dcterms.TITLE, "My Asset 1")
                 .build()
             );
-            createDataOfferView(dsl, today, "http://my-connector/ids/data", Json.createObjectBuilder()
+            createDataOfferView(dsl, today, "http://my-connector/dsp", Json.createObjectBuilder()
                 .add(Prop.ID, "my-asset-1")
                 .add(Prop.Mds.DATA_CATEGORY, "my-category")
                 .add(Prop.Dcterms.TITLE, "My Asset 1")
                 .build()
             );
 
-            var actual = brokerServerClient().brokerServerApi().dataOfferDetailPage(new DataOfferDetailPageQuery("http://my-connector/ids/data", "my-asset-1"));
+            var actual = brokerServerClient().brokerServerApi().dataOfferDetailPage(new DataOfferDetailPageQuery("http://my-connector/dsp", "my-asset-1"));
             assertThat(actual.getAssetId()).isEqualTo("my-asset-1");
-            assertThat(actual.getConnectorEndpoint()).isEqualTo("http://my-connector/ids/data");
+            assertThat(actual.getConnectorEndpoint()).isEqualTo("http://my-connector/dsp");
             assertThat(actual.getConnectorOfflineSinceOrLastUpdatedAt()).isEqualTo(today);
             assertThat(actual.getConnectorOnlineStatus()).isEqualTo(DataOfferDetailPageResult.ConnectorOnlineStatusEnum.ONLINE);
             assertThat(actual.getCreatedAt()).isEqualTo(today.minusDays(5));

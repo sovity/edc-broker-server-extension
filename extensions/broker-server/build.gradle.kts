@@ -43,6 +43,7 @@ dependencies {
     testImplementation("org.mockito:mockito-core:${mockitoVersion}")
     testImplementation("org.mockito:mockito-inline:${mockitoVersion}")
     testImplementation("${edcGroup}:control-plane-core:${edcVersion}")
+    testImplementation("${edcGroup}:data-plane-selector-core:${edcVersion}")
     testImplementation("${edcGroup}:junit:${edcVersion}")
     testImplementation("${edcGroup}:http:${edcVersion}")
     testImplementation("${edcGroup}:iam-mock:${edcVersion}")
