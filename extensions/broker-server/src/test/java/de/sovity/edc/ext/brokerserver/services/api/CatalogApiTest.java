@@ -69,7 +69,7 @@ class CatalogApiTest {
         extension.setConfiguration(createConfiguration(TEST_DATABASE, Map.of(
                 BrokerServerExtension.CATALOG_PAGE_PAGE_SIZE, "10",
                 BrokerServerExtension.DEFAULT_CONNECTOR_DATASPACE, "MDS",
-                BrokerServerExtension.KNOWN_DATASPACE_CONNECTORS, "Example1=http://my-connector2/dsp,Example2=http://my-connector3/dsp"
+                BrokerServerExtension.KNOWN_DATASPACE_CONNECTORS, "Example1=https://my-connector2/api/dsp,Example2=https://my-connector3/api/dsp"
         )));
     }
 
@@ -82,12 +82,12 @@ class CatalogApiTest {
             var assetJsonLd = getAssetJsonLd("my-asset", Map.of(Prop.Dcterms.TITLE, "My Asset"));
 
             // Dataspace: MDS
-            createConnector(dsl, today, "http://my-connector/dsp");
-            createDataOffer(dsl, today, "http://my-connector/dsp", assetJsonLd);
+            createConnector(dsl, today, "https://my-connector/api/dsp");
+            createDataOffer(dsl, today, "https://my-connector/api/dsp", assetJsonLd);
 
             // Dataspace: Example1
-            createConnector(dsl, today, "http://my-connector2/dsp");
-            createDataOffer(dsl, today, "http://my-connector2/dsp", assetJsonLd);
+            createConnector(dsl, today, "https://my-connector2/api/dsp");
+            createDataOffer(dsl, today, "https://my-connector2/api/dsp", assetJsonLd);
 
             var query = new CatalogPageQuery();
             query.setFilter(new CnfFilterValue(List.of(
@@ -98,7 +98,7 @@ class CatalogApiTest {
             assertThat(result.getDataOffers()).hasSize(1);
 
             var dataOfferResult = result.getDataOffers().get(0);
-            assertThat(dataOfferResult.getConnectorEndpoint()).isEqualTo("http://my-connector2/dsp");
+            assertThat(dataOfferResult.getConnectorEndpoint()).isEqualTo("https://my-connector2/api/dsp");
         });
     }
 
@@ -110,19 +110,19 @@ class CatalogApiTest {
 
             var assetJsonLd = getAssetJsonLd("my-asset", Map.of(Prop.Dcterms.TITLE, "My Asset"));
 
-            createConnector(dsl, today, "http://my-connector/dsp");
-            createDataOffer(dsl, today, "http://my-connector/dsp", assetJsonLd);
+            createConnector(dsl, today, "https://my-connector/api/dsp");
+            createDataOffer(dsl, today, "https://my-connector/api/dsp", assetJsonLd);
 
-            createConnector(dsl, today, "http://my-connector2/dsp");
-            createDataOffer(dsl, today, "http://my-connector2/dsp", assetJsonLd);
+            createConnector(dsl, today, "https://my-connector2/api/dsp");
+            createDataOffer(dsl, today, "https://my-connector2/api/dsp", assetJsonLd);
 
             var query = new CatalogPageQuery();
             query.setFilter(new CnfFilterValue(List.of(
-                    new CnfFilterValueAttribute("connectorEndpoint", List.of("http://my-connector/dsp"))
+                    new CnfFilterValueAttribute("connectorEndpoint", List.of("https://my-connector/api/dsp"))
             )));
 
             var result = brokerServerClient().brokerServerApi().catalogPage(query);
-            assertThat(result.getDataOffers()).extracting(CatalogDataOffer::getConnectorEndpoint).containsExactly("http://my-connector/dsp");
+            assertThat(result.getDataOffers()).extracting(CatalogDataOffer::getConnectorEndpoint).containsExactly("https://my-connector/api/dsp");
         });
     }
 
@@ -132,18 +132,18 @@ class CatalogApiTest {
             // arrange
             var today = OffsetDateTime.now().withNano(0);
 
-            createConnector(dsl, today, "http://my-connector/dsp"); // Dataspace: MDS
-            createConnector(dsl, today, "http://my-connector2/dsp"); // Dataspace: Example1
-            createConnector(dsl, today, "http://my-connector3/dsp"); // Dataspace: Example2
+            createConnector(dsl, today, "https://my-connector/api/dsp"); // Dataspace: MDS
+            createConnector(dsl, today, "https://my-connector2/api/dsp"); // Dataspace: Example1
+            createConnector(dsl, today, "https://my-connector3/api/dsp"); // Dataspace: Example2
 
             var assetJsonLd1 = getAssetJsonLd("my-asset-1");
             var assetJsonLd2 = getAssetJsonLd("my-asset-2");
             var assetJsonLd3 = getAssetJsonLd("my-asset-3");
 
-            createDataOffer(dsl, today, "http://my-connector/dsp", assetJsonLd1); // Dataspace: MDS
-            createDataOffer(dsl, today, "http://my-connector2/dsp", assetJsonLd1); // Dataspace: Example1
-            createDataOffer(dsl, today, "http://my-connector2/dsp", assetJsonLd2); // Dataspace: Example1
-            createDataOffer(dsl, today, "http://my-connector3/dsp", assetJsonLd3); // Dataspace: Example2
+            createDataOffer(dsl, today, "https://my-connector/api/dsp", assetJsonLd1); // Dataspace: MDS
+            createDataOffer(dsl, today, "https://my-connector2/api/dsp", assetJsonLd1); // Dataspace: Example1
+            createDataOffer(dsl, today, "https://my-connector2/api/dsp", assetJsonLd2); // Dataspace: Example1
+            createDataOffer(dsl, today, "https://my-connector3/api/dsp", assetJsonLd3); // Dataspace: Example2
 
             // get all available filter values
             var result = brokerServerClient().brokerServerApi().catalogPage(new CatalogPageQuery());
@@ -168,14 +168,14 @@ class CatalogApiTest {
                 Prop.Dcterms.TITLE, "My Asset"
             ));
 
-            createConnector(dsl, today, "http://my-connector/dsp");
-            createDataOffer(dsl, today, "http://my-connector/dsp", assetJsonLd);
+            createConnector(dsl, today, "https://my-connector/api/dsp");
+            createDataOffer(dsl, today, "https://my-connector/api/dsp", assetJsonLd);
 
             var result = brokerServerClient().brokerServerApi().catalogPage(new CatalogPageQuery());
             assertThat(result.getDataOffers()).hasSize(1);
 
             var dataOfferResult = result.getDataOffers().get(0);
-            assertThat(dataOfferResult.getConnectorEndpoint()).isEqualTo("http://my-connector/dsp");
+            assertThat(dataOfferResult.getConnectorEndpoint()).isEqualTo("https://my-connector/api/dsp");
             assertThat(dataOfferResult.getConnectorOfflineSinceOrLastUpdatedAt()).isEqualTo(today);
             assertThat(dataOfferResult.getConnectorOnlineStatus()).isEqualTo(CatalogDataOffer.ConnectorOnlineStatusEnum.ONLINE);
             assertThat(dataOfferResult.getAssetId()).isEqualTo("my-asset-1");
@@ -193,7 +193,7 @@ class CatalogApiTest {
         TEST_DATABASE.testTransaction(dsl -> {
             // arrange
             var today = OffsetDateTime.now().withNano(0);
-            createConnector(dsl, today, "http://my-connector/dsp");
+            createConnector(dsl, today, "https://my-connector/api/dsp");
 
             // act
             var result = brokerServerClient().brokerServerApi().catalogPage(new CatalogPageQuery());
@@ -241,11 +241,11 @@ class CatalogApiTest {
                 Prop.Mds.TRANSPORT_MODE, ""
             ));
 
-            createConnector(dsl, today, "http://my-connector/dsp");
-            createDataOffer(dsl, today, "http://my-connector/dsp", assetJsonLd1);
-            createDataOffer(dsl, today, "http://my-connector/dsp", assetJsonLd2);
-            createDataOffer(dsl, today, "http://my-connector/dsp", assetJsonLd3);
-            createDataOffer(dsl, today, "http://my-connector/dsp", assetJsonLd4);
+            createConnector(dsl, today, "https://my-connector/api/dsp");
+            createDataOffer(dsl, today, "https://my-connector/api/dsp", assetJsonLd1);
+            createDataOffer(dsl, today, "https://my-connector/api/dsp", assetJsonLd2);
+            createDataOffer(dsl, today, "https://my-connector/api/dsp", assetJsonLd3);
+            createDataOffer(dsl, today, "https://my-connector/api/dsp", assetJsonLd4);
 
             var result = brokerServerClient().brokerServerApi().catalogPage(new CatalogPageQuery());
 
@@ -304,8 +304,8 @@ class CatalogApiTest {
             assertThat(curatorOrganizationName.getValues()).extracting(CnfFilterItem::getTitle).containsExactly("my-org", "my-participant-id");
 
             var connectorEndpoint = getAvailableFilter(result, "connectorEndpoint");
-            assertThat(connectorEndpoint.getValues()).extracting(CnfFilterItem::getId).containsExactly("http://my-connector/dsp");
-            assertThat(connectorEndpoint.getValues()).extracting(CnfFilterItem::getTitle).containsExactly("http://my-connector/dsp");
+            assertThat(connectorEndpoint.getValues()).extracting(CnfFilterItem::getId).containsExactly("https://my-connector/api/dsp");
+            assertThat(connectorEndpoint.getValues()).extracting(CnfFilterItem::getTitle).containsExactly("https://my-connector/api/dsp");
         });
     }
 
@@ -323,8 +323,8 @@ class CatalogApiTest {
 
             var assetJsonLd = getAssetJsonLd("123", Map.of(Prop.Dcterms.TITLE, "Hello"));
 
-            createConnector(dsl, today, "http://my-connector/dsp");
-            createDataOffer(dsl, today, "http://my-connector/dsp", assetJsonLd);
+            createConnector(dsl, today, "https://my-connector/api/dsp");
+            createDataOffer(dsl, today, "https://my-connector/api/dsp", assetJsonLd);
 
 
             // act
@@ -358,9 +358,9 @@ class CatalogApiTest {
                 Prop.Mds.DATA_SUBCATEGORY, "my-other-subcategory"
             ));
 
-            createConnector(dsl, today, "http://my-connector/dsp");
-            createDataOffer(dsl, today, "http://my-connector/dsp", assetJsonLd1);
-            createDataOffer(dsl, today, "http://my-connector/dsp", assetJsonLd2);
+            createConnector(dsl, today, "https://my-connector/api/dsp");
+            createDataOffer(dsl, today, "https://my-connector/api/dsp", assetJsonLd1);
+            createDataOffer(dsl, today, "https://my-connector/api/dsp", assetJsonLd2);
 
             var query = new CatalogPageQuery();
             query.setFilter(new CnfFilterValue(List.of(
@@ -385,9 +385,9 @@ class CatalogApiTest {
             // arrange
             var today = OffsetDateTime.now().withNano(0);
 
-            createConnector(dsl, today, "http://my-connector/dsp");
-            range(0, 15).forEach(i -> createDataOffer(dsl, today, "http://my-connector/dsp", getAssetJsonLd("my-asset-%d".formatted(i))));
-            range(0, 15).forEach(i -> createDataOffer(dsl, today, "http://my-connector/dsp", getAssetJsonLd("some-other-asset-%d".formatted(i))));
+            createConnector(dsl, today, "https://my-connector/api/dsp");
+            range(0, 15).forEach(i -> createDataOffer(dsl, today, "https://my-connector/api/dsp", getAssetJsonLd("my-asset-%d".formatted(i))));
+            range(0, 15).forEach(i -> createDataOffer(dsl, today, "https://my-connector/api/dsp", getAssetJsonLd("some-other-asset-%d".formatted(i))));
 
             var query = new CatalogPageQuery();
             query.setSearchQuery("my-asset");
@@ -411,9 +411,9 @@ class CatalogApiTest {
             // arrange
             var today = OffsetDateTime.now().withNano(0);
 
-            createConnector(dsl, today, "http://my-connector/dsp");
-            range(0, 15).forEach(i -> createDataOffer(dsl, today, "http://my-connector/dsp", getAssetJsonLd("my-asset-%d".formatted(i))));
-            range(0, 15).forEach(i -> createDataOffer(dsl, today, "http://my-connector/dsp", getAssetJsonLd("some-other-asset-%d".formatted(i))));
+            createConnector(dsl, today, "https://my-connector/api/dsp");
+            range(0, 15).forEach(i -> createDataOffer(dsl, today, "https://my-connector/api/dsp", getAssetJsonLd("my-asset-%d".formatted(i))));
+            range(0, 15).forEach(i -> createDataOffer(dsl, today, "https://my-connector/api/dsp", getAssetJsonLd("some-other-asset-%d".formatted(i))));
 
 
             var query = new CatalogPageQuery();
@@ -440,7 +440,7 @@ class CatalogApiTest {
             // arrange
             var today = OffsetDateTime.now().withNano(0);
 
-            var endpoint = "http://my-connector/dsp";
+            var endpoint = "https://my-connector/api/dsp";
             createConnector(dsl, today, endpoint);
             createDataOffer(dsl, today, endpoint, getAssetJsonLd("asset-1"));
             createDataOffer(dsl, today, endpoint, getAssetJsonLd("asset-2"));

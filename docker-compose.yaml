@@ -20,7 +20,7 @@ services:
       MY_EDC_JDBC_USER: edc
       MY_EDC_JDBC_PASSWORD: edc
       EDC_BROKER_SERVER_KNOWN_CONNECTORS: "http://connector:11003/api/dsp"
-      EDC_BROKER_SERVER_KNOWN_DATASPACE_CONNECTORS: "Mobilithek=https://some-other-connector/dsp"
+      EDC_BROKER_SERVER_KNOWN_DATASPACE_CONNECTORS: "Mobilithek=https://some-other-connector/api/dsp"
 
       # Local Dev / Docker-Compose Config
       MY_EDC_PROTOCOL: "http://" # We don't have TLS in the docker container

@@ -1,4 +1,8 @@
-import {BrokerServerApi, Configuration, ConfigurationParameters,} from './generated';
+import {
+    BrokerServerApi,
+    Configuration,
+    ConfigurationParameters,
+} from './generated';
 
 /**
  * API Client for our sovity Broker Server Client

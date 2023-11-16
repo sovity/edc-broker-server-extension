@@ -39,7 +39,7 @@ import static de.sovity.edc.ext.brokerserver.services.refreshing.offers.DataOffe
 import static de.sovity.edc.ext.brokerserver.services.refreshing.offers.DataOfferWriterTestDataModels.Do;
 
 class DataOfferWriterTestDataHelper {
-    String connectorEndpoint = "https://example.com/dsp";
+    String connectorEndpoint = "https://example.com/api/dsp";
     OffsetDateTime old = OffsetDateTime.now().withNano(0).withSecond(0).withMinute(0).withHour(0).minusDays(100);
     List<ContractOfferRecord> existingContractOffers = new ArrayList<>();
     List<DataOfferRecord> existingDataOffers = new ArrayList<>();

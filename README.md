@@ -115,10 +115,10 @@ MY_EDC_JDBC_USER: edc
 MY_EDC_JDBC_PASSWORD: edc
 
 # Required: List of EDCs to fetch
-EDC_BROKER_SERVER_KNOWN_CONNECTORS: "https://connector-a/dsp,https://connector-b/dsp"
+EDC_BROKER_SERVER_KNOWN_CONNECTORS: "https://connector-a/api/dsp,https://connector-b/api/dsp"
 
 # List of Data Space Names for special Connectors (default: '')
-EDC_BROKER_SERVER_KNOWN_DATASPACE_CONNECTORS: "Mobilithek=https://some-connector/dsp,OtherDataspace=https://some-other-connector/dsp"
+EDC_BROKER_SERVER_KNOWN_DATASPACE_CONNECTORS: "Mobilithek=https://some-connector/api/dsp,OtherDataspace=https://some-other-connector/api/dsp"
 
 # Required: DAPS credentials
 EDC_OAUTH_TOKEN_URL: 'https://daps.test.mobility-dataspace.eu/token'

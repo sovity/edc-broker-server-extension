@@ -72,18 +72,18 @@ class DataOfferDetailApiTest {
                 Prop.Dcterms.TITLE, "My Asset 2"
             ));
 
-            createConnector(dsl, today, "http://my-connector/dsp");
-            createDataOffer(dsl, today, "http://my-connector/dsp", assetJsonLd1);
+            createConnector(dsl, today, "https://my-connector/api/dsp");
+            createDataOffer(dsl, today, "https://my-connector/api/dsp", assetJsonLd1);
 
-            createDataOfferView(dsl, today, "http://my-connector/dsp", "my-asset-1");
-            createDataOfferView(dsl, today, "http://my-connector/dsp", "my-asset-1");
+            createDataOfferView(dsl, today, "https://my-connector/api/dsp", "my-asset-1");
+            createDataOfferView(dsl, today, "https://my-connector/api/dsp", "my-asset-1");
 
-            createConnector(dsl, today, "http://my-connector2/dsp");
-            createDataOffer(dsl, today, "http://my-connector2/dsp", assetJsonLd2);
+            createConnector(dsl, today, "https://my-connector2/api/dsp");
+            createDataOffer(dsl, today, "https://my-connector2/api/dsp", assetJsonLd2);
 
-            var actual = brokerServerClient().brokerServerApi().dataOfferDetailPage(new DataOfferDetailPageQuery("http://my-connector/dsp", "my-asset-1"));
+            var actual = brokerServerClient().brokerServerApi().dataOfferDetailPage(new DataOfferDetailPageQuery("https://my-connector/api/dsp", "my-asset-1"));
             assertThat(actual.getAssetId()).isEqualTo("my-asset-1");
-            assertThat(actual.getConnectorEndpoint()).isEqualTo("http://my-connector/dsp");
+            assertThat(actual.getConnectorEndpoint()).isEqualTo("https://my-connector/api/dsp");
             assertThat(actual.getConnectorOfflineSinceOrLastUpdatedAt()).isEqualTo(today);
             assertThat(actual.getConnectorOnlineStatus()).isEqualTo(DataOfferDetailPageResult.ConnectorOnlineStatusEnum.ONLINE);
             assertThat(actual.getCreatedAt()).isEqualTo(today.minusDays(5));

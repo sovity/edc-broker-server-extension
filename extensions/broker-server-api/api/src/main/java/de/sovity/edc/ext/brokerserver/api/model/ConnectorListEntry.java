@@ -33,7 +33,7 @@ public class ConnectorListEntry {
     @Schema(description = "Connector Participant ID", example = "my-test-connector", requiredMode = Schema.RequiredMode.REQUIRED)
     private String participantId;
 
-    @Schema(description = "Connector Endpoint", example = "https://my-test.connector/control/dsp", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(description = "Connector Endpoint", example = "https://my-test.connector/api/dsp", requiredMode = Schema.RequiredMode.REQUIRED)
     private String endpoint;
 
     @Schema(description = "Creation date in Broker", requiredMode = Schema.RequiredMode.REQUIRED)

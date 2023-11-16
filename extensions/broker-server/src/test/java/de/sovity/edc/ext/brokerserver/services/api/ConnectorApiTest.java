@@ -67,15 +67,15 @@ class ConnectorApiTest {
                 Prop.Dcterms.TITLE, "My Asset 1"
             ));
 
-            createConnector(dsl, today, "http://my-connector/dsp");
-            createDataOffer(dsl, today, "http://my-connector/dsp", assetJsonLd);
+            createConnector(dsl, today, "https://my-connector/api/dsp");
+            createDataOffer(dsl, today, "https://my-connector/api/dsp", assetJsonLd);
 
             var result = brokerServerClient().brokerServerApi().connectorPage(new ConnectorPageQuery());
             assertThat(result.getConnectors()).hasSize(1);
 
             var connector = result.getConnectors().get(0);
             assertThat(connector.getParticipantId()).isEqualTo("my-participant-id");
-            assertThat(connector.getEndpoint()).isEqualTo("http://my-connector/dsp");
+            assertThat(connector.getEndpoint()).isEqualTo("https://my-connector/api/dsp");
             assertThat(connector.getCreatedAt()).isEqualTo(today.minusDays(1));
             assertThat(connector.getLastRefreshAttemptAt()).isEqualTo(today);
             assertThat(connector.getLastSuccessfulRefreshAt()).isEqualTo(today);
@@ -93,13 +93,13 @@ class ConnectorApiTest {
                 Prop.Dcterms.TITLE, "My Asset 1"
             ));
 
-            createConnector(dsl, today, "http://my-connector/dsp");
-            createConnector(dsl, today, "http://my-connector2/dsp");
-            createDataOffer(dsl, today, "http://my-connector/dsp", assetJsonLd);
+            createConnector(dsl, today, "https://my-connector/api/dsp");
+            createConnector(dsl, today, "https://my-connector2/api/dsp");
+            createDataOffer(dsl, today, "https://my-connector/api/dsp", assetJsonLd);
 
-            var connector = brokerServerClient().brokerServerApi().connectorDetailPage(new ConnectorDetailPageQuery("http://my-connector/dsp"));
+            var connector = brokerServerClient().brokerServerApi().connectorDetailPage(new ConnectorDetailPageQuery("https://my-connector/api/dsp"));
             assertThat(connector.getParticipantId()).isEqualTo("my-participant-id");
-            assertThat(connector.getEndpoint()).isEqualTo("http://my-connector/dsp");
+            assertThat(connector.getEndpoint()).isEqualTo("https://my-connector/api/dsp");
             assertThat(connector.getCreatedAt()).isEqualTo(today.minusDays(1));
             assertThat(connector.getLastRefreshAttemptAt()).isEqualTo(today);
             assertThat(connector.getLastSuccessfulRefreshAt()).isEqualTo(today);

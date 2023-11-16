@@ -257,7 +257,7 @@ Broker MvP using Core EDC MS8.
 1. There are new **required** configuration properties:
     ```yaml
     # List of Data Space Names for special Connectors (default: '')
-    EDC_BROKER_SERVER_KNOWN_DATASPACE_CONNECTORS: "Mobilithek=https://some-connector/dsp,OtherDataspace=https://some-other-connector/dsp"
+    EDC_BROKER_SERVER_KNOWN_DATASPACE_CONNECTORS: "Mobilithek=https://some-connector/api/dsp,OtherDataspace=https://some-other-connector/api/dsp"
     ```
 2. There are new **optional** configuration properties available for overriding:
     ```yaml

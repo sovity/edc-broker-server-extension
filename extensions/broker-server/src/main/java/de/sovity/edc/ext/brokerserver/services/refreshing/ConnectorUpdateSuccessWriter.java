@@ -25,6 +25,7 @@ import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 
 import java.time.OffsetDateTime;
+import java.util.Objects;
 
 @RequiredArgsConstructor
 public class ConnectorUpdateSuccessWriter {
@@ -66,7 +67,7 @@ public class ConnectorUpdateSuccessWriter {
 
         connector.setLastSuccessfulRefreshAt(now);
         connector.setLastRefreshAttemptAt(now);
-        if (!connector.getParticipantId().equals(participantId)) {
+        if (!Objects.equals(connector.getParticipantId(), participantId)) {
             connector.setParticipantId(participantId);
             changes.setParticipantIdChanged(participantId);
         }
