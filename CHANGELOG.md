@@ -99,7 +99,7 @@ Bugfix release for the asset properties issue. Also contains the connector delet
     curl --request DELETE \
         --url 'http://localhost:11002/backend/api/v1/management/wrapper/broker/connectors?adminApiKey=DefaultBrokerServerAdminApiKey' \
         --header 'Content-Type: application/json' \
-        --header 'X-Api-Key: ApiKeyDefaultValue' \
+        --header 'x-api-key: ApiKeyDefaultValue' \
         --data '["https://some-connector-to-delete/api/dsp", "https://some-other-connector-to-delete/api/dsp"]'
     ```
 
@@ -215,7 +215,7 @@ Bugfix / Feature Release for the Broker MvP with MS8: Connectors can now be adde
     curl --request PUT \
         --url 'http://localhost:11002/backend/api/v1/management/wrapper/broker/connectors?adminApiKey=DefaultBrokerServerAdminApiKey' \
         --header 'Content-Type: application/json' \
-        --header 'X-Api-Key: ApiKeyDefaultValue' \
+        --header 'x-api-key: ApiKeyDefaultValue' \
         --data '["https://some-new-connector/api/dsp", "https://some-other-new-connector/api/dsp"]'
     ```
    

@@ -213,7 +213,7 @@ Connectors can be dynamically added at runtime by using the following endpoint:
 curl --request PUT \
   --url 'http://localhost:11002/backend/api/management/wrapper/broker/connectors?adminApiKey=DefaultBrokerServerAdminApiKey' \
   --header 'Content-Type: application/json' \
-  --header 'X-Api-Key: ApiKeyDefaultValue' \
+  --header 'x-api-key: ApiKeyDefaultValue' \
   --data '["https://some-new-connector/api/dsp", "https://some-other-new-connector/api/dsp"]'
 ```
 
@@ -226,7 +226,7 @@ Connectors can be dynamically removed at runtime by using the following endpoint
 curl --request DELETE \
   --url 'http://localhost:11002/backend/api/management/wrapper/broker/connectors?adminApiKey=DefaultBrokerServerAdminApiKey' \
   --header 'Content-Type: application/json' \
-  --header 'X-Api-Key: ApiKeyDefaultValue' \
+  --header 'x-api-key: ApiKeyDefaultValue' \
   --data '["https://some-connector-to-be-removed/api/dsp", "https://some-other-connector-to-be-removed/api/dsp"]'
 ```
 
