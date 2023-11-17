@@ -85,6 +85,8 @@ branch or on releases.
 Local Broker UI Development can start with the type-safe broker server fake backend once the Client Library version is
 bumped to contain the up-to-date API Models.
 
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
 ### Local E2E Development
 
 There is currently no support for Local E2E Development (a locally running backend build server and a locally running
@@ -92,6 +94,8 @@ frontend build server).
 
 For debugging UI issues, however, the UI can be manually configured to use a live backend, e.g. one started via
 the [docker-compose.yaml](#local-demo).
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ### Local Demo
 
@@ -108,9 +112,11 @@ Mid-development it might be un-pinned back to latest versions.
 | Management API Key  | `ApiKeyDefaultValue`                                             | `ApiKeyDefaultValue`                                                         |
 | Connector Endpoint  | http://broker:11003/api/dsp <br> Requires Docker Compose Network | http://connector:22003/api/dsp          <br> Requires Docker Compose Network |
 
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
 ## Releasing
 
-Create an issue using the [release template](.github/ISSUE_TEMPLATE/release.md) and follow the instructions.
+[Create a Release Issue](https://github.com/sovity/edc-broker-server-extension/issues/new?assignees=&labels=task%2Frelease%2Cscope%2Fmds&projects=&template=release.md&title=Release+x.x.x) and follow the instructions.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
