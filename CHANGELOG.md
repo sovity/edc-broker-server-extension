@@ -24,9 +24,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 #### Patch
 
+- Fixed some issues with DB Connections not released between tests.
+
 ### Deployment Migration Notes
 
-- All connectors need to be re-crawled for detailed asset metadata and participant IDs to work
+1. Until an initial crawl some asset properties will be missing.
+2. The Broker UI is now served on port `8080`, ~~used to be `80`~~.
+3. The Protocol Endpoint changed to `https://[MY_EDC_FQDN]/backend/api/dsp`, ~~used to be `https://[MY_EDC_FQDN]/backend/api/v1/ids`~~.
+4. The Management Endpoint changed to `https://[MY_EDC_FQDN]/backend/api/management`, ~~used to be `https://[MY_EDC_FQDN]/backend/api/v1/management`~~.
+5. The Connector Endpoint changed to `https://[MY_EDC_FQDN]/backend/api/dsp`, ~~used to be `https://[MY_EDC_FQDN]/backend/api/v1/ids/data`~~.
 
 ## [v1.2.0] - 2023-10-30
 
