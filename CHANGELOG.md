@@ -39,6 +39,8 @@ EDC 0 Bugfix Release.
 
 ### Deployment Migration Notes
 
+_No special migration steps required._
+
 #### Compatible Versions
 
 - Broker Backend Docker Image: `ghcr.io/sovity/broker-server-ce:2.0.2`
@@ -58,6 +60,8 @@ EDC 0 Bugfix Release.
 - Fixed an issue preventing DAPS roll-in with the `broker-server-ce` variant.
 
 ### Deployment Migration Notes
+
+_No special migration steps required._
 
 #### Compatible Versions
 
