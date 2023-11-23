@@ -13,13 +13,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 #### Major
 
-#### Minor
+- Reworked Authority Portal API: Connector metadata endpoint
 
-- Rework endpoint for Data Offer count to return general connector metadata
+#### Minor
 
 #### Patch
 
 ### Deployment Migration Notes
+
+- The Data Offer Count endpoint was reworked and changed to `https://[MY_EDC_FQDN]/backend/api/management/wrapper/broker/authority-portal-api/connectors
 
 #### Compatible Versions
 
