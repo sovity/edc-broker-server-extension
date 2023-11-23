@@ -42,9 +42,9 @@ import de.sovity.edc.ext.brokerserver.services.api.CatalogApiService;
 import de.sovity.edc.ext.brokerserver.services.api.ConnectorApiService;
 import de.sovity.edc.ext.brokerserver.services.api.ConnectorDetailApiService;
 import de.sovity.edc.ext.brokerserver.services.api.ConnectorListApiService;
-import de.sovity.edc.ext.brokerserver.services.api.ConnectorMetadataApiService;
+import de.sovity.edc.ext.brokerserver.services.api.AuthorityPortalConnectorMetadataApiService;
 import de.sovity.edc.ext.brokerserver.services.api.ConnectorOnlineStatusMapper;
-import de.sovity.edc.ext.brokerserver.services.api.ConnectorQueryService;
+import de.sovity.edc.ext.brokerserver.services.api.AuthorityPortalConnectorQueryService;
 import de.sovity.edc.ext.brokerserver.services.api.ConnectorService;
 import de.sovity.edc.ext.brokerserver.services.api.DataOfferDetailApiService;
 import de.sovity.edc.ext.brokerserver.services.api.DataOfferMappingUtils;
@@ -283,8 +283,8 @@ public class BrokerServerExtensionContextBuilder {
                 viewCountLogger,
                 dataOfferMappingUtils
         );
-        var connectorQueryService = new ConnectorQueryService();
-        var dataOfferCountApiService = new ConnectorMetadataApiService(
+        var connectorQueryService = new AuthorityPortalConnectorQueryService();
+        var dataOfferCountApiService = new AuthorityPortalConnectorMetadataApiService(
             connectorQueryService,
                 connectorOnlineStatusMapper
         );

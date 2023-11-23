@@ -29,7 +29,7 @@ import de.sovity.edc.ext.brokerserver.services.api.CatalogApiService;
 import de.sovity.edc.ext.brokerserver.services.api.ConnectorApiService;
 import de.sovity.edc.ext.brokerserver.services.api.ConnectorDetailApiService;
 import de.sovity.edc.ext.brokerserver.services.api.ConnectorListApiService;
-import de.sovity.edc.ext.brokerserver.services.api.ConnectorMetadataApiService;
+import de.sovity.edc.ext.brokerserver.services.api.AuthorityPortalConnectorMetadataApiService;
 import de.sovity.edc.ext.brokerserver.services.api.DataOfferDetailApiService;
 import de.sovity.edc.ext.brokerserver.services.config.AdminApiKeyValidator;
 import lombok.RequiredArgsConstructor;
@@ -49,7 +49,7 @@ public class BrokerServerResourceImpl implements BrokerServerResource {
     private final CatalogApiService catalogApiService;
     private final DataOfferDetailApiService dataOfferDetailApiService;
     private final AdminApiKeyValidator adminApiKeyValidator;
-    private final ConnectorMetadataApiService connectorMetadataApiService;
+    private final AuthorityPortalConnectorMetadataApiService authorityPortalConnectorMetadataApiService;
 
     @Override
     public CatalogPageResult catalogPage(CatalogPageQuery query) {
@@ -86,6 +86,6 @@ public class BrokerServerResourceImpl implements BrokerServerResource {
     @Override
     public List<AuthorityPortalConnectorInfo> getConnectorMetadata(List<String> endpoints, String adminApiKey) {
         adminApiKeyValidator.validateAdminApiKey(adminApiKey);
-        return dslContextFactory.transactionResult(dsl -> connectorMetadataApiService.getMetadataByEndpoints(dsl, endpoints));
+        return dslContextFactory.transactionResult(dsl -> authorityPortalConnectorMetadataApiService.getMetadataByEndpoints(dsl, endpoints));
     }
 }

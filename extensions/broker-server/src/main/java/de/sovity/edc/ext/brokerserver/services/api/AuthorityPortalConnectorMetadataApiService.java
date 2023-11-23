@@ -21,13 +21,13 @@ import org.jooq.DSLContext;
 import java.util.List;
 
 @RequiredArgsConstructor
-public class ConnectorMetadataApiService {
-    private final ConnectorQueryService connectorQueryService;
+public class AuthorityPortalConnectorMetadataApiService {
+    private final AuthorityPortalConnectorQueryService authorityPortalConnectorQueryService;
     private final ConnectorOnlineStatusMapper connectorOnlineStatusMapper;
 
     public List<AuthorityPortalConnectorInfo> getMetadataByEndpoints(DSLContext dsl, List<String> endpoints) {
 
-        return connectorQueryService.getConnectorMetadataRs(dsl, endpoints).stream()
+        return authorityPortalConnectorQueryService.getConnectorMetadata(dsl, endpoints).stream()
             .map(it -> new AuthorityPortalConnectorInfo(
                 it.connectorEndpoint,
                 it.participantId,

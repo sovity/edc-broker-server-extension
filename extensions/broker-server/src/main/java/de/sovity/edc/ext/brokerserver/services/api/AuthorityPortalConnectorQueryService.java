@@ -34,7 +34,7 @@ import static org.jooq.impl.DSL.count;
 import static org.jooq.impl.DSL.select;
 
 @RequiredArgsConstructor
-public class ConnectorQueryService {
+public class AuthorityPortalConnectorQueryService {
 
     @Data
     @FieldDefaults(level = AccessLevel.PUBLIC)
@@ -47,7 +47,7 @@ public class ConnectorQueryService {
     }
 
     @NotNull
-    public List<ConnectorMetadataRs> getConnectorMetadataRs(DSLContext dsl, List<String> endpoints) {
+    public List<ConnectorMetadataRs> getConnectorMetadata(DSLContext dsl, List<String> endpoints) {
         var c = Tables.CONNECTOR;
 
         return dsl.select(
