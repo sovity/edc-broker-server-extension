@@ -23,7 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Deployment Migration Notes
 
-- The Data Offer Count endpoint was reworked and changed to `https://[MY_EDC_FQDN]/backend/api/management/wrapper/broker/authority-portal-api/connectors
+- Authority Portal API: The data offer count endpoint was removed in favor of the new Connector Metadata Endpoint: `wrapper/broker/authority-portal-api/connectors`, used to be ~~``authority-portal-api/data-offer-counts``~~.
 
 #### Compatible Versions
 
