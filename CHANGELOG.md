@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 #### Minor
 
+- Rework endpoint for Data Offer count to return general connector metadata
+
 #### Patch
 
 ### Deployment Migration Notes
