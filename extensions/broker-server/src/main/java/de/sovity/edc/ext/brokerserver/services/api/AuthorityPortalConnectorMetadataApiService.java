@@ -29,11 +29,11 @@ public class AuthorityPortalConnectorMetadataApiService {
 
         return authorityPortalConnectorQueryService.getConnectorMetadata(dsl, endpoints).stream()
             .map(it -> new AuthorityPortalConnectorInfo(
-                it.connectorEndpoint,
-                it.participantId,
-                it.dataOfferCount,
-                connectorOnlineStatusMapper.getOnlineStatus(it.onlineStatus),
-                it.offlineSinceOrLastUpdatedAt
+                it.getConnectorEndpoint(),
+                it.getParticipantId(),
+                it.getDataOfferCount(),
+                connectorOnlineStatusMapper.getOnlineStatus(it.getOnlineStatus()),
+                it.getOfflineSinceOrLastUpdatedAt()
             ))
             .toList();
     }

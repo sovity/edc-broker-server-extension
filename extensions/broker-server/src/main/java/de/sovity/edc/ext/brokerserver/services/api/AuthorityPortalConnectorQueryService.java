@@ -38,7 +38,7 @@ import static org.jooq.impl.DSL.select;
 public class AuthorityPortalConnectorQueryService {
 
     @Data
-    @FieldDefaults(level = AccessLevel.PUBLIC)
+    @FieldDefaults(level = AccessLevel.PRIVATE)
     public static class ConnectorMetadataRs {
         String connectorEndpoint;
         String participantId;

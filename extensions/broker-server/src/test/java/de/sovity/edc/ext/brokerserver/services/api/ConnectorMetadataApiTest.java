@@ -85,6 +85,7 @@ class ConnectorMetadataApiTest {
 
             // assert
             var first = forConnector(actual, 1);
+            assertThat(first.getParticipantId()).isEqualTo("my-connector");
             assertThat(first.getDataOfferCount()).isEqualTo(2);
             assertThat(first.getOnlineStatus()).isEqualTo(AuthorityPortalConnectorInfo.OnlineStatusEnum.ONLINE);
             assertThat(first.getOfflineSinceOrLastUpdatedAt()).isEqualTo(now);

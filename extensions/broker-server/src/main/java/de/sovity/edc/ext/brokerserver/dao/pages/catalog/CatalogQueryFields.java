@@ -58,10 +58,7 @@ public class CatalogQueryFields {
         this.dataOfferTable = dataOfferTable;
         this.dataOfferViewCountTable = dataOfferViewCountTable;
         this.dataSpaceConfig = dataSpaceConfig;
-        offlineSinceOrLastUpdatedAt = DSL.coalesce(
-                connectorTable.LAST_SUCCESSFUL_REFRESH_AT,
-                connectorTable.CREATED_AT
-        );
+        offlineSinceOrLastUpdatedAt = offlineSinceOrLastUpdatedAt(connectorTable);
 
         dataSpace = buildDataSpaceField(connectorTable, dataSpaceConfig);
     }
