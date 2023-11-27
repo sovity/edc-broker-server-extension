@@ -33,7 +33,7 @@ public class AuthorityPortalConnectorMetadataApiService {
                 it.participantId,
                 it.dataOfferCount,
                 connectorOnlineStatusMapper.getOnlineStatus(it.onlineStatus),
-                it.onlineStatusRefreshedAt
+                it.offlineSinceOrLastUpdatedAt
             ))
             .toList();
     }

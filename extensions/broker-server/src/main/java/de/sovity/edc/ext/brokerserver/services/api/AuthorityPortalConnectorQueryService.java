@@ -14,6 +14,7 @@
 
 package de.sovity.edc.ext.brokerserver.services.api;
 
+import de.sovity.edc.ext.brokerserver.dao.pages.catalog.CatalogQueryFields;
 import de.sovity.edc.ext.brokerserver.dao.utils.PostgresqlUtils;
 import de.sovity.edc.ext.brokerserver.db.jooq.Tables;
 import de.sovity.edc.ext.brokerserver.db.jooq.enums.ConnectorOnlineStatus;
@@ -42,7 +43,7 @@ public class AuthorityPortalConnectorQueryService {
         String connectorEndpoint;
         String participantId;
         ConnectorOnlineStatus onlineStatus;
-        OffsetDateTime onlineStatusRefreshedAt;
+        OffsetDateTime offlineSinceOrLastUpdatedAt;
         Integer dataOfferCount;
     }
 
@@ -54,7 +55,7 @@ public class AuthorityPortalConnectorQueryService {
                 c.ENDPOINT.as("connectorEndpoint"),
                 c.PARTICIPANT_ID.as("participantId"),
                 c.ONLINE_STATUS.as("onlineStatus"),
-                c.LAST_SUCCESSFUL_REFRESH_AT.as("onlineStatusRefreshedAt"),
+                CatalogQueryFields.offlineSinceOrLastUpdatedAt(c).as("offlineSinceOrLastUpdatedAt"),
                 getDataOfferCount(c.ENDPOINT).as("dataOfferCount")
             )
             .from(c)

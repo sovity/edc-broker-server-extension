@@ -87,15 +87,15 @@ class ConnectorMetadataApiTest {
             var first = forConnector(actual, 1);
             assertThat(first.getDataOfferCount()).isEqualTo(2);
             assertThat(first.getOnlineStatus()).isEqualTo(AuthorityPortalConnectorInfo.OnlineStatusEnum.ONLINE);
-            assertThat(first.getOnlineStatusRefreshedAt()).isEqualTo(now);
+            assertThat(first.getOfflineSinceOrLastUpdatedAt()).isEqualTo(now);
             var second = forConnector(actual, 2);
             assertThat(second.getDataOfferCount()).isEqualTo(1);
             assertThat(second.getOnlineStatus()).isEqualTo(AuthorityPortalConnectorInfo.OnlineStatusEnum.ONLINE);
-            assertThat(second.getOnlineStatusRefreshedAt()).isEqualTo(now);
+            assertThat(second.getOfflineSinceOrLastUpdatedAt()).isEqualTo(now);
             var fourth = forConnector(actual, 4);
             assertThat(fourth.getDataOfferCount()).isEqualTo(0);
             assertThat(fourth.getOnlineStatus()).isEqualTo(AuthorityPortalConnectorInfo.OnlineStatusEnum.ONLINE);
-            assertThat(fourth.getOnlineStatusRefreshedAt()).isEqualTo(now);
+            assertThat(fourth.getOfflineSinceOrLastUpdatedAt()).isEqualTo(now);
         });
     }
 

@@ -105,4 +105,11 @@ public class CatalogQueryFields {
 
         return subquery.asField();
     }
+
+    public static Field<OffsetDateTime> offlineSinceOrLastUpdatedAt(Connector connectorTable) {
+        return DSL.coalesce(
+                connectorTable.LAST_SUCCESSFUL_REFRESH_AT,
+                connectorTable.CREATED_AT
+        );
+    }
 }

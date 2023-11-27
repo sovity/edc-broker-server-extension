@@ -84,6 +84,6 @@ public interface BrokerServerResource {
     @Path("authority-portal-api/connectors")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(description = "Provide Connector metadata by provided Connector URLs")
+    @Operation(description = "Provide Connector metadata by provided Connector Endpoints")
     List<AuthorityPortalConnectorInfo> getConnectorMetadata(List<String> endpoints, @QueryParam("adminApiKey") String adminApiKey);
 }

@@ -8,7 +8,6 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.time.OffsetDateTime;
-import java.util.Map;
 
 @Getter
 @Setter
@@ -21,10 +20,10 @@ public class AuthorityPortalConnectorInfo {
     private String connectorEndpoint;
     @Schema(description = "Connector Participant ID", requiredMode = Schema.RequiredMode.REQUIRED)
     private String participantId;
-    @Schema(description = "Number of Data Offers in this connector", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(description = "Number of public Data Offers in this connector, as tracked by the broker", requiredMode = Schema.RequiredMode.REQUIRED)
     private Integer dataOfferCount;
     @Schema(description = "Connector Online Status", requiredMode = Schema.RequiredMode.REQUIRED)
     private ConnectorOnlineStatus onlineStatus;
     @Schema(description = "Last successful refresh time stamp of the online status", requiredMode = Schema.RequiredMode.REQUIRED)
-    private OffsetDateTime onlineStatusRefreshedAt;
+    private OffsetDateTime offlineSinceOrLastUpdatedAt;
 }
