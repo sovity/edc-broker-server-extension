@@ -22,7 +22,7 @@ configurations.all {
 dependencies {
     annotationProcessor("org.projectlombok:lombok:1.18.30")
     compileOnly("org.projectlombok:lombok:1.18.30")
-    implementation("org.apache.commons:commons-lang3:3.13.0")
+    implementation("org.apache.commons:commons-lang3:3.14.0")
 
     api("${sovityEdcGroup}:catalog-parser:${sovityEdcExtensionsVersion}") { isChanging = true }
     api("${sovityEdcGroup}:json-and-jsonld-utils:${sovityEdcExtensionsVersion}") { isChanging = true }
