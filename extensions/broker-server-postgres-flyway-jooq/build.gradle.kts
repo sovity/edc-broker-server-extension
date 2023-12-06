@@ -39,7 +39,7 @@ dependencies {
 
     jooqGenerator("org.postgresql:postgresql:42.6.0")
     flywayMigration("org.postgresql:postgresql:42.6.0")
-    implementation("com.zaxxer:HikariCP:5.0.1")
+    implementation("com.zaxxer:HikariCP:5.1.0")
 
     annotationProcessor("org.projectlombok:lombok:1.18.30")
     compileOnly("org.projectlombok:lombok:1.18.30")
