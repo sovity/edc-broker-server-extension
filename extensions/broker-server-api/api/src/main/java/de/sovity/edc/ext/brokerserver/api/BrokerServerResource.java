@@ -88,6 +88,10 @@ public interface BrokerServerResource {
     @Operation(description = "Provide Connector metadata by provided Connector Endpoints")
     List<AuthorityPortalConnectorInfo> getConnectorMetadata(List<String> endpoints, @QueryParam("adminApiKey") String adminApiKey);
 
+    /**
+     * @deprecated
+     * This endpoint has been replaced by the Authority Portal Connector Metadata endpoint and will be removed in the near future.
+     */
     @POST
     @Deprecated
     @Path("authority-portal-api/data-offer-counts")
