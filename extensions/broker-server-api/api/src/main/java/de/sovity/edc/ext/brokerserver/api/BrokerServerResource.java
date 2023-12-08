@@ -88,15 +88,12 @@ public interface BrokerServerResource {
     @Operation(description = "Provide Connector metadata by provided Connector Endpoints")
     List<AuthorityPortalConnectorInfo> getConnectorMetadata(List<String> endpoints, @QueryParam("adminApiKey") String adminApiKey);
 
-    /**
-     * @deprecated
-     * This endpoint has been replaced by the Authority Portal Connector Metadata endpoint and will be removed in the near future.
-     */
     @POST
     @Deprecated
     @Path("authority-portal-api/data-offer-counts")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(description = "Query the amount of public Data Offers by provided Connector URLs")
+    @Operation(description = "Query the amount of public Data Offers by provided Connector URLs." +
+        "This endpoint has been replaced by the Authority Portal Connector Metadata endpoint and will be removed in the near future.")
     DataOfferCountResult dataOfferCount(List<String> endpoints);
 }
