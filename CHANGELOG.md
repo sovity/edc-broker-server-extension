@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 #### Minor
 
 #### Patch
+- Add downwards compatibility for the Authority Portal API: `wrapper/broker/authority-portal-api/data-offer-counts`
 
 ### Deployment Migration Notes
 

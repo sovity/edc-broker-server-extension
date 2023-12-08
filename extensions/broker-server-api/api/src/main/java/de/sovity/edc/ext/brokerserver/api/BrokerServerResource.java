@@ -21,6 +21,7 @@ import de.sovity.edc.ext.brokerserver.api.model.ConnectorDetailPageResult;
 import de.sovity.edc.ext.brokerserver.api.model.ConnectorPageQuery;
 import de.sovity.edc.ext.brokerserver.api.model.ConnectorPageResult;
 import de.sovity.edc.ext.brokerserver.api.model.AuthorityPortalConnectorInfo;
+import de.sovity.edc.ext.brokerserver.api.model.DataOfferCountResult;
 import de.sovity.edc.ext.brokerserver.api.model.DataOfferDetailPageQuery;
 import de.sovity.edc.ext.brokerserver.api.model.DataOfferDetailPageResult;
 import io.swagger.v3.oas.annotations.Operation;
@@ -86,4 +87,11 @@ public interface BrokerServerResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(description = "Provide Connector metadata by provided Connector Endpoints")
     List<AuthorityPortalConnectorInfo> getConnectorMetadata(List<String> endpoints, @QueryParam("adminApiKey") String adminApiKey);
+
+    @POST
+    @Path("authority-portal-api/data-offer-counts")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Operation(description = "Query the amount of public Data Offers by provided Connector URLs")
+    DataOfferCountResult dataOfferCount(List<String> endpoints);
 }
