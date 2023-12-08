@@ -89,6 +89,7 @@ public interface BrokerServerResource {
     List<AuthorityPortalConnectorInfo> getConnectorMetadata(List<String> endpoints, @QueryParam("adminApiKey") String adminApiKey);
 
     @POST
+    @Deprecated
     @Path("authority-portal-api/data-offer-counts")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
