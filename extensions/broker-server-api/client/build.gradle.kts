@@ -7,7 +7,7 @@ val assertj: String by project
 plugins {
     `java-library`
     `maven-publish`
-    id("org.openapi.generator") version "7.0.1"
+    id("org.openapi.generator") version "7.2.0"
 }
 
 repositories {
