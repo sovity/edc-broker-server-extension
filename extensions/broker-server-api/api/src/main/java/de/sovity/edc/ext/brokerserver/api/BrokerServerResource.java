@@ -14,6 +14,7 @@
 
 package de.sovity.edc.ext.brokerserver.api;
 
+import de.sovity.edc.ext.brokerserver.api.model.AuthorityPortalOrganizationMetadata;
 import de.sovity.edc.ext.brokerserver.api.model.CatalogPageQuery;
 import de.sovity.edc.ext.brokerserver.api.model.CatalogPageResult;
 import de.sovity.edc.ext.brokerserver.api.model.ConnectorDetailPageQuery;
@@ -96,4 +97,10 @@ public interface BrokerServerResource {
     @Operation(description = "Query the amount of public Data Offers by provided Connector URLs." +
         "This endpoint has been replaced by the Authority Portal Connector Metadata endpoint and will be removed in the near future.")
     DataOfferCountResult dataOfferCount(List<String> endpoints);
+
+    @POST
+    @Path("authority-portal-api/organization-metadata")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Operation(description = "Provide Connector metadata by provided Connector Endpoints")
+    void addOrganizationMetadata(List<AuthorityPortalOrganizationMetadata> endpoints, @QueryParam("adminApiKey") String adminApiKey);
 }

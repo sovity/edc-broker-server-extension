@@ -29,14 +29,18 @@ import org.jooq.impl.DSL;
 
 import java.util.List;
 
+import static org.jooq.impl.DSL.coalesce;
+
 public class ConnectorListQueryService {
     public List<ConnectorListEntryRs> queryConnectorPage(DSLContext dsl, String searchQuery, ConnectorPageSortingType sorting) {
         var c = Tables.CONNECTOR;
-        var filterBySearchQuery = SearchUtils.simpleSearch(searchQuery, List.of(c.ENDPOINT, c.PARTICIPANT_ID));
+        var om = Tables.ORGANIZATION_METADATA;
+        var filterBySearchQuery = SearchUtils.simpleSearch(searchQuery, List.of(c.ENDPOINT, c.PARTICIPANT_ID, om.NAME));
 
         return dsl.select(
                 c.ENDPOINT.as("endpoint"),
                 c.PARTICIPANT_ID.as("participantId"),
+                coalesce(om.NAME, "undefined").as("organizationName"),
                 c.CREATED_AT.as("createdAt"),
                 c.LAST_SUCCESSFUL_REFRESH_AT.as("lastSuccessfulRefreshAt"),
                 c.LAST_REFRESH_ATTEMPT_AT.as("lastRefreshAttemptAt"),
@@ -44,6 +48,7 @@ public class ConnectorListQueryService {
                 dataOfferCount(c.ENDPOINT).as("numDataOffers")
             )
             .from(c)
+            .leftJoin(om).on(c.MDS_ID.eq(om.MDS_ID))
             .where(filterBySearchQuery)
             .orderBy(sortConnectorPage(c, sorting))
             .fetchInto(ConnectorListEntryRs.class);

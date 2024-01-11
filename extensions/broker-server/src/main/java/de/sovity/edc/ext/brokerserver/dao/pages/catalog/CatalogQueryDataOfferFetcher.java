@@ -19,6 +19,7 @@ import de.sovity.edc.ext.brokerserver.dao.pages.catalog.models.CatalogQueryFilte
 import de.sovity.edc.ext.brokerserver.dao.pages.catalog.models.DataOfferListEntryRs;
 import de.sovity.edc.ext.brokerserver.dao.pages.catalog.models.PageQuery;
 import de.sovity.edc.ext.brokerserver.dao.utils.MultisetUtils;
+import de.sovity.edc.ext.brokerserver.db.jooq.Tables;
 import lombok.RequiredArgsConstructor;
 import org.jooq.Field;
 import org.jooq.Record;
@@ -27,6 +28,8 @@ import org.jooq.SelectSelectStep;
 import org.jooq.impl.DSL;
 
 import java.util.List;
+
+import static org.jooq.impl.DSL.coalesce;
 
 @RequiredArgsConstructor
 public class CatalogQueryDataOfferFetcher {
@@ -53,6 +56,7 @@ public class CatalogQueryDataOfferFetcher {
     ) {
         var c = fields.getConnectorTable();
         var d = fields.getDataOfferTable();
+        var om = Tables.ORGANIZATION_METADATA;
 
         var select = DSL.select(
                 d.ASSET_ID.as("assetId"),
@@ -63,10 +67,12 @@ public class CatalogQueryDataOfferFetcher {
                 c.ENDPOINT.as("connectorEndpoint"),
                 c.ONLINE_STATUS.as("connectorOnlineStatus"),
                 c.PARTICIPANT_ID.as("connectorParticipantId"),
+                coalesce(om.NAME, "undefined").as("connectorOrganizationName"),
                 fields.getOfflineSinceOrLastUpdatedAt().as("connectorOfflineSinceOrLastUpdatedAt")
         );
 
         var query = from(select, fields)
+                .leftJoin(om).on(c.MDS_ID.eq(om.MDS_ID))
                 .where(catalogQueryFilterService.filterDbQuery(fields, searchQuery, filters))
                 .orderBy(catalogQuerySortingService.getOrderBy(fields, sorting))
                 .limit(pageQuery.offset(), pageQuery.limit());
