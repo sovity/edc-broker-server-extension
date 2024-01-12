@@ -29,8 +29,8 @@ _Describe whether this request is related to an existing workflow, feature, or o
 ## Scope check
 
 _Is this feature part of the contracted scope?_
-- [] It is part of the contracted scope
-- [] It is not part of the contracted scope
+- [ ] It is part of the contracted scope
+- [ ] It is not part of the contracted scope
 
 If not, please add the label "mds/future-scope"
 
