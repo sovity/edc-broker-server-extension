@@ -26,6 +26,7 @@ import de.sovity.edc.ext.brokerserver.api.model.DataOfferCountResult;
 import de.sovity.edc.ext.brokerserver.api.model.DataOfferDetailPageQuery;
 import de.sovity.edc.ext.brokerserver.api.model.DataOfferDetailPageResult;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
@@ -101,6 +102,7 @@ public interface BrokerServerResource {
     @POST
     @Path("authority-portal-api/organization-metadata")
     @Consumes(MediaType.APPLICATION_JSON)
+    @RequestBody(description = "List of organizations to update. Organizations not contained in the payload will be deleted.")
     @Operation(description = "Update organization metadata. Organizations not contained in the payload will be deleted.")
     void setOrganizationMetadata(List<AuthorityPortalOrganizationMetadata> organizationMetadata, @QueryParam("adminApiKey") String adminApiKey);
 }
