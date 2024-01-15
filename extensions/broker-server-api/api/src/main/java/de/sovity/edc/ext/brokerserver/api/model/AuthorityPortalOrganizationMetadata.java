@@ -16,8 +16,8 @@ import java.time.OffsetDateTime;
 @AllArgsConstructor
 @Schema(description = "Information about organizations from the Authority Portal.")
 public class AuthorityPortalOrganizationMetadata {
-    @Schema(description = "MDS-ID from the Authority Portal", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(description = "MDS-ID from the Authority Portal")
     private String mdsId;
-    @Schema(description = "Company name", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(description = "Company name")
     private String name;
 }
