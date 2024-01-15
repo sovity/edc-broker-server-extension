@@ -102,7 +102,7 @@ public interface BrokerServerResource {
     @POST
     @Path("authority-portal-api/organization-metadata")
     @Consumes(MediaType.APPLICATION_JSON)
-    @RequestBody(description = "List of organizations to update. Organizations not contained in the payload will be deleted.")
+    @RequestBody(required = true)
     @Operation(description = "Update organization metadata. Organizations not contained in the payload will be deleted.")
     void setOrganizationMetadata(List<AuthorityPortalOrganizationMetadata> organizationMetadata, @QueryParam("adminApiKey") String adminApiKey);
 }
