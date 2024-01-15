@@ -16,7 +16,7 @@ package de.sovity.edc.ext.brokerserver.services.api;
 
 import de.sovity.edc.ext.brokerserver.TestPolicy;
 import de.sovity.edc.ext.brokerserver.client.gen.model.AuthorityPortalOrganizationMetadata;
-import de.sovity.edc.ext.brokerserver.client.gen.model.CatalogPageQuery;
+import de.sovity.edc.ext.brokerserver.client.gen.model.AuthorityPortalOrganizationMetadataRequest;
 import de.sovity.edc.ext.brokerserver.client.gen.model.ConnectorPageQuery;
 import de.sovity.edc.ext.brokerserver.client.gen.model.DataOfferDetailPageQuery;
 import de.sovity.edc.ext.brokerserver.db.TestDatabase;
@@ -66,12 +66,15 @@ class AuthorityPortalOrganizationMetadataApiTest {
             createDataOffer(dsl, now, 1, 1);
 
             // act
-            var orgMetadataPayload = new AuthorityPortalOrganizationMetadata();
-            orgMetadataPayload.setMdsId("MDSL1234AA");
-            orgMetadataPayload.setName("Test Org");
+            var orgMetadata = new AuthorityPortalOrganizationMetadata();
+            orgMetadata.setMdsId("MDSL1234ZZ");
+            orgMetadata.setName("Test Org");
+            var orgMetadataRequest = new AuthorityPortalOrganizationMetadataRequest();
+            orgMetadataRequest.setOrganizations(List.of(orgMetadata));
+
             brokerServerClient().brokerServerApi().setOrganizationMetadata(
                 ADMIN_API_KEY,
-                List.of(orgMetadataPayload)
+                orgMetadataRequest
             );
 
             // assert
@@ -95,12 +98,15 @@ class AuthorityPortalOrganizationMetadataApiTest {
             createDataOffer(dsl, now, 1, 1);
 
             // act
-            var orgMetadataPayload = new AuthorityPortalOrganizationMetadata();
-            orgMetadataPayload.setMdsId("MDSL4321ZZ");
-            orgMetadataPayload.setName("Test Org");
+            var orgMetadata = new AuthorityPortalOrganizationMetadata();
+            orgMetadata.setMdsId("MDSL4321ZZ");
+            orgMetadata.setName("Test Org");
+            var orgMetadataRequest = new AuthorityPortalOrganizationMetadataRequest();
+            orgMetadataRequest.setOrganizations(List.of(orgMetadata));
+
             brokerServerClient().brokerServerApi().setOrganizationMetadata(
                 ADMIN_API_KEY,
-                List.of(orgMetadataPayload)
+                orgMetadataRequest
             );
 
             // assert
