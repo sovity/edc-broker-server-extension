@@ -99,7 +99,7 @@ public class BrokerServerResourceImpl implements BrokerServerResource {
     }
 
     @Override
-    public void addOrganizationMetadata(List<AuthorityPortalOrganizationMetadata> organizationMetadata, String adminApiKey) {
+    public void setOrganizationMetadata(List<AuthorityPortalOrganizationMetadata> organizationMetadata, String adminApiKey) {
         adminApiKeyValidator.validateAdminApiKey(adminApiKey);
         dslContextFactory.transaction(dsl -> authorityPortalOrganizationMetadataApiService.persistOrganizationMetadata(dsl, organizationMetadata));
     }

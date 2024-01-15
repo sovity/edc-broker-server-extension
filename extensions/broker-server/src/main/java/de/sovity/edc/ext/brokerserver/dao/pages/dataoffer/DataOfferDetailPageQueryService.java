@@ -22,8 +22,6 @@ import de.sovity.edc.ext.brokerserver.services.config.BrokerServerSettings;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 
-import static org.jooq.impl.DSL.coalesce;
-
 @RequiredArgsConstructor
 public class DataOfferDetailPageQueryService {
     private final CatalogQueryContractOfferFetcher catalogQueryContractOfferFetcher;
@@ -40,7 +38,6 @@ public class DataOfferDetailPageQueryService {
 
         var d = fields.getDataOfferTable();
         var c = fields.getConnectorTable();
-        var om = Tables.ORGANIZATION_METADATA;
 
         return dsl.select(
                         d.ASSET_ID,
@@ -52,11 +49,10 @@ public class DataOfferDetailPageQueryService {
                         c.ENDPOINT.as("connectorEndpoint"),
                         c.ONLINE_STATUS.as("connectorOnlineStatus"),
                         c.PARTICIPANT_ID.as("connectorParticipantId"),
-                        coalesce(om.NAME, "undefined").as("organizationName"),
+                        fields.getOrganizationName().as("organizationName"),
                         fields.getViewCount().as("viewCount"))
                 .from(d)
                 .leftJoin(c).on(c.ENDPOINT.eq(d.CONNECTOR_ENDPOINT))
-                .leftJoin(om).on(c.MDS_ID.eq(om.MDS_ID))
                 .where(d.ASSET_ID.eq(assetId).and(d.CONNECTOR_ENDPOINT.eq(endpoint)))
                 .fetchOneInto(DataOfferDetailRs.class);
     }

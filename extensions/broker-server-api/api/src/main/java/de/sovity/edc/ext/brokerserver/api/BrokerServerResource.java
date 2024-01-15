@@ -101,6 +101,6 @@ public interface BrokerServerResource {
     @POST
     @Path("authority-portal-api/organization-metadata")
     @Consumes(MediaType.APPLICATION_JSON)
-    @Operation(description = "Provide Connector metadata by provided Connector Endpoints")
-    void addOrganizationMetadata(List<AuthorityPortalOrganizationMetadata> endpoints, @QueryParam("adminApiKey") String adminApiKey);
+    @Operation(description = "Update organization metadata. Organizations not contained in the payload will be deleted.")
+    void setOrganizationMetadata(List<AuthorityPortalOrganizationMetadata> organizationMetadata, @QueryParam("adminApiKey") String adminApiKey);
 }

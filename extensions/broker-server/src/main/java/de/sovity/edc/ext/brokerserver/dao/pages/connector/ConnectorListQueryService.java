@@ -15,6 +15,7 @@
 package de.sovity.edc.ext.brokerserver.dao.pages.connector;
 
 import de.sovity.edc.ext.brokerserver.api.model.ConnectorPageSortingType;
+import de.sovity.edc.ext.brokerserver.dao.pages.catalog.CatalogQueryFields;
 import de.sovity.edc.ext.brokerserver.dao.pages.connector.model.ConnectorListEntryRs;
 import de.sovity.edc.ext.brokerserver.dao.utils.SearchUtils;
 import de.sovity.edc.ext.brokerserver.db.jooq.Tables;
@@ -29,18 +30,19 @@ import org.jooq.impl.DSL;
 
 import java.util.List;
 
-import static org.jooq.impl.DSL.coalesce;
-
 public class ConnectorListQueryService {
     public List<ConnectorListEntryRs> queryConnectorPage(DSLContext dsl, String searchQuery, ConnectorPageSortingType sorting) {
         var c = Tables.CONNECTOR;
-        var om = Tables.ORGANIZATION_METADATA;
-        var filterBySearchQuery = SearchUtils.simpleSearch(searchQuery, List.of(c.ENDPOINT, c.PARTICIPANT_ID, om.NAME));
+        var filterBySearchQuery = SearchUtils.simpleSearch(searchQuery, List.of(
+                c.ENDPOINT,
+                c.PARTICIPANT_ID,
+                CatalogQueryFields.organizationName(c.MDS_ID)
+        ));
 
         return dsl.select(
                 c.ENDPOINT.as("endpoint"),
                 c.PARTICIPANT_ID.as("participantId"),
-                coalesce(om.NAME, "undefined").as("organizationName"),
+                CatalogQueryFields.organizationName(c.MDS_ID).as("organizationName"),
                 c.CREATED_AT.as("createdAt"),
                 c.LAST_SUCCESSFUL_REFRESH_AT.as("lastSuccessfulRefreshAt"),
                 c.LAST_REFRESH_ATTEMPT_AT.as("lastRefreshAttemptAt"),
@@ -48,7 +50,6 @@ public class ConnectorListQueryService {
                 dataOfferCount(c.ENDPOINT).as("numDataOffers")
             )
             .from(c)
-            .leftJoin(om).on(c.MDS_ID.eq(om.MDS_ID))
             .where(filterBySearchQuery)
             .orderBy(sortConnectorPage(c, sorting))
             .fetchInto(ConnectorListEntryRs.class);

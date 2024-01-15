@@ -14,6 +14,7 @@
 
 package de.sovity.edc.ext.brokerserver.dao.pages.connector;
 
+import de.sovity.edc.ext.brokerserver.dao.pages.catalog.CatalogQueryFields;
 import de.sovity.edc.ext.brokerserver.dao.pages.connector.model.ConnectorDetailsRs;
 import de.sovity.edc.ext.brokerserver.db.jooq.Tables;
 import de.sovity.edc.ext.brokerserver.db.jooq.enums.MeasurementErrorStatus;
@@ -25,17 +26,14 @@ import org.jooq.impl.DSL;
 
 import java.math.BigDecimal;
 
-import static org.jooq.impl.DSL.coalesce;
-
 public class ConnectorDetailQueryService {
     public ConnectorDetailsRs queryConnectorDetailPage(DSLContext dsl, String connectorEndpoint) {
         var c = Tables.CONNECTOR;
-        var om = Tables.ORGANIZATION_METADATA;
 
         return dsl.select(
                 c.ENDPOINT.as("endpoint"),
                 c.PARTICIPANT_ID.as("participantId"),
-                coalesce(om.NAME, "undefined").as("organizationName"),
+                CatalogQueryFields.organizationName(c.MDS_ID).as("organizationName"),
                 c.CREATED_AT.as("createdAt"),
                 c.LAST_SUCCESSFUL_REFRESH_AT.as("lastSuccessfulRefreshAt"),
                 c.LAST_REFRESH_ATTEMPT_AT.as("lastRefreshAttemptAt"),
@@ -43,7 +41,6 @@ public class ConnectorDetailQueryService {
                 dataOfferCount(c.ENDPOINT).as("numDataOffers"),
                 getAvgSuccessfulCrawlTimeInMs(c).as("connectorCrawlingTimeAvg"))
             .from(c)
-            .leftJoin(om).on(c.MDS_ID.eq(om.MDS_ID))
             .where(c.ENDPOINT.eq(connectorEndpoint))
             .groupBy(c.ENDPOINT)
             .fetchOneInto(ConnectorDetailsRs.class);
