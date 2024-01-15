@@ -16,7 +16,7 @@ package de.sovity.edc.ext.brokerserver;
 
 import de.sovity.edc.ext.brokerserver.api.BrokerServerResource;
 import de.sovity.edc.ext.brokerserver.api.model.AuthorityPortalConnectorInfo;
-import de.sovity.edc.ext.brokerserver.api.model.AuthorityPortalOrganizationMetadata;
+import de.sovity.edc.ext.brokerserver.api.model.AuthorityPortalOrganizationMetadataRequest;
 import de.sovity.edc.ext.brokerserver.api.model.CatalogPageQuery;
 import de.sovity.edc.ext.brokerserver.api.model.CatalogPageResult;
 import de.sovity.edc.ext.brokerserver.api.model.ConnectorDetailPageQuery;
@@ -99,8 +99,8 @@ public class BrokerServerResourceImpl implements BrokerServerResource {
     }
 
     @Override
-    public void setOrganizationMetadata(List<AuthorityPortalOrganizationMetadata> organizationMetadata, String adminApiKey) {
+    public void setOrganizationMetadata(AuthorityPortalOrganizationMetadataRequest organizationMetadataRequest, String adminApiKey) {
         adminApiKeyValidator.validateAdminApiKey(adminApiKey);
-        dslContextFactory.transaction(dsl -> authorityPortalOrganizationMetadataApiService.persistOrganizationMetadata(dsl, organizationMetadata));
+        dslContextFactory.transaction(dsl -> authorityPortalOrganizationMetadataApiService.persistOrganizationMetadata(dsl, organizationMetadataRequest.getOrganizations()));
     }
 }

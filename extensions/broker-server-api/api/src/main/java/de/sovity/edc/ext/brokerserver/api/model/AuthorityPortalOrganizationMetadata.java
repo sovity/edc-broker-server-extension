@@ -14,7 +14,7 @@ import java.time.OffsetDateTime;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-@Schema(description = "Information about organizations from the Authority Portal.")
+@Schema(description = "Information about a single organization from the Authority Portal.")
 public class AuthorityPortalOrganizationMetadata {
     @Schema(description = "MDS-ID from the Authority Portal")
     private String mdsId;

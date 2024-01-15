@@ -14,19 +14,18 @@
 
 package de.sovity.edc.ext.brokerserver.api;
 
-import de.sovity.edc.ext.brokerserver.api.model.AuthorityPortalOrganizationMetadata;
+import de.sovity.edc.ext.brokerserver.api.model.AuthorityPortalConnectorInfo;
+import de.sovity.edc.ext.brokerserver.api.model.AuthorityPortalOrganizationMetadataRequest;
 import de.sovity.edc.ext.brokerserver.api.model.CatalogPageQuery;
 import de.sovity.edc.ext.brokerserver.api.model.CatalogPageResult;
 import de.sovity.edc.ext.brokerserver.api.model.ConnectorDetailPageQuery;
 import de.sovity.edc.ext.brokerserver.api.model.ConnectorDetailPageResult;
 import de.sovity.edc.ext.brokerserver.api.model.ConnectorPageQuery;
 import de.sovity.edc.ext.brokerserver.api.model.ConnectorPageResult;
-import de.sovity.edc.ext.brokerserver.api.model.AuthorityPortalConnectorInfo;
 import de.sovity.edc.ext.brokerserver.api.model.DataOfferCountResult;
 import de.sovity.edc.ext.brokerserver.api.model.DataOfferDetailPageQuery;
 import de.sovity.edc.ext.brokerserver.api.model.DataOfferDetailPageResult;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
@@ -102,7 +101,6 @@ public interface BrokerServerResource {
     @POST
     @Path("authority-portal-api/organization-metadata")
     @Consumes(MediaType.APPLICATION_JSON)
-    @RequestBody(required = true)
     @Operation(description = "Update organization metadata. Organizations not contained in the payload will be deleted.")
-    void setOrganizationMetadata(List<AuthorityPortalOrganizationMetadata> organizationMetadata, @QueryParam("adminApiKey") String adminApiKey);
+    void setOrganizationMetadata(AuthorityPortalOrganizationMetadataRequest organizationMetadataRequest, @QueryParam("adminApiKey") String adminApiKey);
 }
