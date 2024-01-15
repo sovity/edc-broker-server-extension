@@ -67,7 +67,7 @@ class AuthorityPortalOrganizationMetadataApiTest {
 
             // act
             var orgMetadata = new AuthorityPortalOrganizationMetadata();
-            orgMetadata.setMdsId("MDSL1234ZZ");
+            orgMetadata.setMdsId("MDSL1234AA");
             orgMetadata.setName("Test Org");
             var orgMetadataRequest = new AuthorityPortalOrganizationMetadataRequest();
             orgMetadataRequest.setOrganizations(List.of(orgMetadata));
