@@ -478,9 +478,7 @@ class CatalogApiTest {
 
             // act
             var query = new CatalogPageQuery();
-            query.setFilter(new CnfFilterValue(List.of(
-                new CnfFilterValueAttribute("curatorOrganizationName", List.of("Test Org"))
-            )));
+            query.setSearchQuery("Test Org");
 
             var actual = brokerServerClient().brokerServerApi().catalogPage(query);
 
@@ -507,9 +505,7 @@ class CatalogApiTest {
 
             // act
             var query = new CatalogPageQuery();
-            query.setFilter(new CnfFilterValue(List.of(
-                new CnfFilterValueAttribute("curatorOrganizationName", List.of("tEsT oRg"))
-            )));
+            query.setSearchQuery("tEsT");
 
             var actual = brokerServerClient().brokerServerApi().catalogPage(query);
 
@@ -536,9 +532,7 @@ class CatalogApiTest {
 
             // act
             var query = new CatalogPageQuery();
-            query.setFilter(new CnfFilterValue(List.of(
-                new CnfFilterValueAttribute("curatorOrganizationName", List.of("Unknown"))
-            )));
+            query.setSearchQuery("Unknown");
 
             var actual = brokerServerClient().brokerServerApi().catalogPage(query);
 
@@ -565,9 +559,7 @@ class CatalogApiTest {
 
             // act
             var query = new CatalogPageQuery();
-            query.setFilter(new CnfFilterValue(List.of(
-                new CnfFilterValueAttribute("curatorOrganizationName", List.of("uNkNoWn"))
-            )));
+            query.setSearchQuery("uNkN");
 
             var actual = brokerServerClient().brokerServerApi().catalogPage(query);
 
