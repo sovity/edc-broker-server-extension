@@ -15,16 +15,34 @@
 package de.sovity.edc.ext.brokerserver.services.api;
 
 import de.sovity.edc.ext.brokerserver.api.model.AuthorityPortalOrganizationMetadata;
+import de.sovity.edc.ext.brokerserver.db.jooq.Tables;
+import de.sovity.edc.ext.brokerserver.db.jooq.tables.records.OrganizationMetadataRecord;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 import org.jooq.DSLContext;
 
 import java.util.List;
 
 @RequiredArgsConstructor
 public class AuthorityPortalOrganizationMetadataApiService {
-    private final AuthorityPortalOrganizationMetadataQueryService authorityPortalOrganizationMetadataQueryService;
 
-    public void persistOrganizationMetadata(DSLContext dsl, List<AuthorityPortalOrganizationMetadata> organizationMetadata) {
-        authorityPortalOrganizationMetadataQueryService.addOrganizationMetadataEntries(dsl, organizationMetadata);
+    public void setOrganizationMetadata(DSLContext dsl, List<AuthorityPortalOrganizationMetadata> organizationMetadata) {
+        if (organizationMetadata.isEmpty()) {
+            return;
+        }
+
+        var records = organizationMetadata.stream().map(this::buildRecord).toList();
+
+        dsl.deleteFrom(Tables.ORGANIZATION_METADATA).execute();
+        dsl.batchStore(records).execute();
+    }
+
+    @NotNull
+    private OrganizationMetadataRecord buildRecord(AuthorityPortalOrganizationMetadata it) {
+        var record = new OrganizationMetadataRecord();
+        record.setMdsId(it.getMdsId());
+        record.setName(it.getName());
+
+        return record;
     }
 }

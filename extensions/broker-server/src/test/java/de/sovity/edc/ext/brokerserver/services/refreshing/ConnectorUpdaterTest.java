@@ -31,6 +31,7 @@ import de.sovity.edc.ext.brokerserver.client.gen.model.ConnectorListEntry;
 import de.sovity.edc.ext.brokerserver.client.gen.model.ConnectorPageQuery;
 import de.sovity.edc.ext.brokerserver.db.TestDatabase;
 import de.sovity.edc.ext.brokerserver.db.TestDatabaseFactory;
+import de.sovity.edc.ext.brokerserver.db.jooq.Tables;
 import de.sovity.edc.utils.jsonld.vocab.Prop;
 import org.eclipse.edc.junit.annotations.ApiTest;
 import org.eclipse.edc.junit.extensions.EdcExtension;
@@ -138,6 +139,9 @@ class ConnectorUpdaterTest {
             assertThat(connector.getParticipantId()).isEqualTo(TestUtils.PARTICIPANT_ID);
             assertThat(connector.getOrganizationName()).isEqualTo("Unknown");
             assertThat(connector.getLastRefreshAttemptAt()).isCloseTo(OffsetDateTime.now(), within(1, ChronoUnit.SECONDS));
+
+            var connectorRecord = dsl.selectFrom(Tables.CONNECTOR).fetchOne();
+            assertThat(connectorRecord.getMdsId()).isEqualTo("MDSL1234ZZ");
         });
     }
 

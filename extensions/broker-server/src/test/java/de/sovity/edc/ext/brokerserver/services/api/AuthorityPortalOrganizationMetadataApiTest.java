@@ -72,6 +72,7 @@ class AuthorityPortalOrganizationMetadataApiTest {
             // assert
             var orgMetadata = getOrgMetadataFromDb(dsl);
             assertThat(orgMetadata).hasSize(3);
+            assertThat(orgMetadata).extracting(OrganizationMetadataRecord::getName).containsExactlyInAnyOrder("Test Org B", "Test Org C new", "Test Org D");
         });
     }
 
