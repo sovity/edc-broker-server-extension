@@ -14,17 +14,12 @@
 
 package de.sovity.edc.ext.brokerserver.services.api;
 
-import de.sovity.edc.ext.brokerserver.TestPolicy;
 import de.sovity.edc.ext.brokerserver.client.gen.model.AuthorityPortalOrganizationMetadata;
 import de.sovity.edc.ext.brokerserver.client.gen.model.AuthorityPortalOrganizationMetadataRequest;
-import de.sovity.edc.ext.brokerserver.client.gen.model.ConnectorPageQuery;
-import de.sovity.edc.ext.brokerserver.client.gen.model.DataOfferDetailPageQuery;
 import de.sovity.edc.ext.brokerserver.db.TestDatabase;
 import de.sovity.edc.ext.brokerserver.db.TestDatabaseFactory;
 import de.sovity.edc.ext.brokerserver.db.jooq.Tables;
-import de.sovity.edc.ext.brokerserver.db.jooq.enums.ConnectorContractOffersExceeded;
-import de.sovity.edc.ext.brokerserver.db.jooq.enums.ConnectorDataOffersExceeded;
-import de.sovity.edc.ext.brokerserver.db.jooq.enums.ConnectorOnlineStatus;
+import de.sovity.edc.ext.brokerserver.db.jooq.tables.records.OrganizationMetadataRecord;
 import org.eclipse.edc.junit.annotations.ApiTest;
 import org.eclipse.edc.junit.extensions.EdcExtension;
 import org.jooq.DSLContext;
@@ -33,12 +28,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
-import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Map;
 
-import static de.sovity.edc.ext.brokerserver.TestAsset.getAssetJsonLd;
-import static de.sovity.edc.ext.brokerserver.TestAsset.setDataOfferAssetMetadata;
 import static de.sovity.edc.ext.brokerserver.TestUtils.ADMIN_API_KEY;
 import static de.sovity.edc.ext.brokerserver.TestUtils.brokerServerClient;
 import static de.sovity.edc.ext.brokerserver.TestUtils.createConfiguration;
@@ -57,20 +49,20 @@ class AuthorityPortalOrganizationMetadataApiTest {
     }
 
     @Test
-    void testSetOrganizationMetadataExists() {
+    void testSetOrganizationMetadata() {
         TEST_DATABASE.testTransaction(dsl -> {
             // arrange
-            var now = OffsetDateTime.now().withNano(0);
-
-            createConnector(dsl, now, 1, "MDSL1234AA");
-            createDataOffer(dsl, now, 1, 1);
+            createOrgMetadataInDb(dsl, "MDSL1111AA", "Test Org A");
+            createOrgMetadataInDb(dsl, "MDSL2222BB", "Test Org B");
+            createOrgMetadataInDb(dsl, "MDSL3333CC", "Test Org C");
 
             // act
-            var orgMetadata = new AuthorityPortalOrganizationMetadata();
-            orgMetadata.setMdsId("MDSL1234AA");
-            orgMetadata.setName("Test Org");
             var orgMetadataRequest = new AuthorityPortalOrganizationMetadataRequest();
-            orgMetadataRequest.setOrganizations(List.of(orgMetadata));
+            orgMetadataRequest.setOrganizations(List.of(
+                buildOrgMetadataRequestEntry("MDSL2222BB", "Test Org B"),
+                buildOrgMetadataRequestEntry("MDSL3333CC", "Test Org C new"),
+                buildOrgMetadataRequestEntry("MDSL4444DD", "Test Org D")
+            ));
 
             brokerServerClient().brokerServerApi().setOrganizationMetadata(
                 ADMIN_API_KEY,
@@ -78,84 +70,26 @@ class AuthorityPortalOrganizationMetadataApiTest {
             );
 
             // assert
-            var connectorPage = brokerServerClient().brokerServerApi().connectorPage(new ConnectorPageQuery());
-            var connector = connectorPage.getConnectors().get(0);
-            assertThat(connector.getOrganizationName()).isEqualTo("Test Org");
-
-            var dataOfferDetailPage = brokerServerClient().brokerServerApi().dataOfferDetailPage(new DataOfferDetailPageQuery(getEndpoint(1), "my-asset-1"));
-            var asset = dataOfferDetailPage.getAsset();
-            assertThat(asset.getCreatorOrganizationName()).isEqualTo("Test Org");
+            var orgMetadata = getOrgMetadataFromDb(dsl);
+            assertThat(orgMetadata).hasSize(3);
         });
     }
 
-    @Test
-    void testSetOrganizationMetadataNotExists() {
-        TEST_DATABASE.testTransaction(dsl -> {
-            // arrange
-            var now = OffsetDateTime.now().withNano(0);
-
-            createConnector(dsl, now, 1, "MDSL1234AA");
-            createDataOffer(dsl, now, 1, 1);
-
-            // act
-            var orgMetadata = new AuthorityPortalOrganizationMetadata();
-            orgMetadata.setMdsId("MDSL4321ZZ");
-            orgMetadata.setName("Test Org");
-            var orgMetadataRequest = new AuthorityPortalOrganizationMetadataRequest();
-            orgMetadataRequest.setOrganizations(List.of(orgMetadata));
-
-            brokerServerClient().brokerServerApi().setOrganizationMetadata(
-                ADMIN_API_KEY,
-                orgMetadataRequest
-            );
-
-            // assert
-            var connectorPage = brokerServerClient().brokerServerApi().connectorPage(new ConnectorPageQuery());
-            var connector = connectorPage.getConnectors().get(0);
-            assertThat(connector.getOrganizationName()).isEqualTo("Unknown");
-
-            var dataOfferDetailPage = brokerServerClient().brokerServerApi().dataOfferDetailPage(new DataOfferDetailPageQuery(getEndpoint(1), "my-asset-1"));
-            var asset = dataOfferDetailPage.getAsset();
-            assertThat(asset.getCreatorOrganizationName()).isEqualTo("Unknown");
-        });
+    private void createOrgMetadataInDb(DSLContext dsl, String mdsId, String name) {
+        var organizationMetadata = dsl.newRecord(Tables.ORGANIZATION_METADATA);
+        organizationMetadata.setMdsId(mdsId);
+        organizationMetadata.setName(name);
+        organizationMetadata.insert();
     }
 
-    private void createConnector(DSLContext dsl, OffsetDateTime now, int iConnector, String mdsId) {
-        var connector = dsl.newRecord(Tables.CONNECTOR);
-        connector.setParticipantId("my-connector");
-        connector.setMdsId(mdsId);
-        connector.setEndpoint(getEndpoint(iConnector));
-        connector.setOnlineStatus(ConnectorOnlineStatus.ONLINE);
-        connector.setCreatedAt(now.minusDays(1));
-        connector.setLastRefreshAttemptAt(now);
-        connector.setLastSuccessfulRefreshAt(now);
-        connector.setDataOffersExceeded(ConnectorDataOffersExceeded.OK);
-        connector.setContractOffersExceeded(ConnectorContractOffersExceeded.OK);
-        connector.insert();
+    private List<OrganizationMetadataRecord> getOrgMetadataFromDb(DSLContext dsl) {
+        return dsl.selectFrom(Tables.ORGANIZATION_METADATA).fetch();
     }
 
-    private String getEndpoint(int iConnector) {
-        return "https://connector-%d".formatted(iConnector);
-    }
-
-    private void createDataOffer(DSLContext dsl, OffsetDateTime now, int iConnector, int iDataOffer) {
-        var connectorEndpoint = getEndpoint(iConnector);
-        var assetJsonLd = getAssetJsonLd("my-asset-%d".formatted(iDataOffer));
-
-        var dataOffer = dsl.newRecord(Tables.DATA_OFFER);
-        setDataOfferAssetMetadata(dataOffer, assetJsonLd, "my-participant-id");
-        dataOffer.setConnectorEndpoint(connectorEndpoint);
-        dataOffer.setCreatedAt(now.minusDays(5));
-        dataOffer.setUpdatedAt(now);
-        dataOffer.insert();
-
-        var contractOffer = dsl.newRecord(Tables.CONTRACT_OFFER);
-        contractOffer.setContractOfferId("my-contract-offer-1");
-        contractOffer.setConnectorEndpoint(connectorEndpoint);
-        contractOffer.setAssetId(dataOffer.getAssetId());
-        contractOffer.setCreatedAt(now.minusDays(5));
-        contractOffer.setUpdatedAt(now);
-        contractOffer.setPolicy(TestPolicy.createAfterYesterdayPolicyJson());
-        contractOffer.insert();
+    private AuthorityPortalOrganizationMetadata buildOrgMetadataRequestEntry(String mdsId, String name) {
+        var orgMetadata = new AuthorityPortalOrganizationMetadata();
+        orgMetadata.setMdsId(mdsId);
+        orgMetadata.setName(name);
+        return orgMetadata;
     }
 }

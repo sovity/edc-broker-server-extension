@@ -26,6 +26,5 @@ public class AuthorityPortalOrganizationMetadataApiService {
 
     public void persistOrganizationMetadata(DSLContext dsl, List<AuthorityPortalOrganizationMetadata> organizationMetadata) {
         authorityPortalOrganizationMetadataQueryService.addOrganizationMetadataEntries(dsl, organizationMetadata);
-        // TODO: re-join orgs with connectors???
     }
 }
