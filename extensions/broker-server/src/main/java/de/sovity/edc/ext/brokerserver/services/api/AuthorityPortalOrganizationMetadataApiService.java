@@ -27,14 +27,10 @@ import java.util.List;
 public class AuthorityPortalOrganizationMetadataApiService {
 
     public void setOrganizationMetadata(DSLContext dsl, List<AuthorityPortalOrganizationMetadata> organizationMetadata) {
-        if (organizationMetadata.isEmpty()) {
-            return;
-        }
-
         var records = organizationMetadata.stream().map(this::buildRecord).toList();
 
         dsl.deleteFrom(Tables.ORGANIZATION_METADATA).execute();
-        dsl.batchStore(records).execute();
+        dsl.batchInsert(records).execute();
     }
 
     @NotNull

@@ -461,7 +461,7 @@ class CatalogApiTest {
     }
 
     @Test
-    void testFilteringByOrgName_correctCapitalization() {
+    void testFilterByOrgName() {
         TEST_DATABASE.testTransaction(dsl -> {
             // arrange
             var today = OffsetDateTime.now().withNano(0);
@@ -478,7 +478,9 @@ class CatalogApiTest {
 
             // act
             var query = new CatalogPageQuery();
-            query.setSearchQuery("Test Org");
+            query.setFilter(new CnfFilterValue(List.of(
+                new CnfFilterValueAttribute("curatorOrganizationName", List.of("Test Org"))
+            )));
 
             var actual = brokerServerClient().brokerServerApi().catalogPage(query);
 
@@ -488,7 +490,7 @@ class CatalogApiTest {
     }
 
     @Test
-    void testFilteringByOrgName_wrongCapitalization() {
+    void testSearchForOrgName() {
         TEST_DATABASE.testTransaction(dsl -> {
             // arrange
             var today = OffsetDateTime.now().withNano(0);
@@ -515,7 +517,7 @@ class CatalogApiTest {
     }
 
     @Test
-    void testFilteringByUnknown_correctCapitalization() {
+    void testFilterByUnknown() {
         TEST_DATABASE.testTransaction(dsl -> {
             // arrange
             var today = OffsetDateTime.now().withNano(0);
@@ -532,7 +534,9 @@ class CatalogApiTest {
 
             // act
             var query = new CatalogPageQuery();
-            query.setSearchQuery("Unknown");
+            query.setFilter(new CnfFilterValue(List.of(
+                    new CnfFilterValueAttribute("curatorOrganizationName", List.of("Unknown"))
+            )));
 
             var actual = brokerServerClient().brokerServerApi().catalogPage(query);
 
@@ -542,7 +546,7 @@ class CatalogApiTest {
     }
 
     @Test
-    void testFilteringByUnknown_wrongCapitalization() {
+    void testSearchForUnknown() {
         TEST_DATABASE.testTransaction(dsl -> {
             // arrange
             var today = OffsetDateTime.now().withNano(0);

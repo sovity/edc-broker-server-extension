@@ -76,6 +76,27 @@ class AuthorityPortalOrganizationMetadataApiTest {
         });
     }
 
+    @Test
+    void testSetEmptyOrganizationMetadata() {
+        TEST_DATABASE.testTransaction(dsl -> {
+            // arrange
+            createOrgMetadataInDb(dsl, "MDSL1111AA", "Test Org A");
+
+            // act
+            var orgMetadataRequest = new AuthorityPortalOrganizationMetadataRequest();
+            orgMetadataRequest.setOrganizations(List.of());
+
+            brokerServerClient().brokerServerApi().setOrganizationMetadata(
+                ADMIN_API_KEY,
+                orgMetadataRequest
+            );
+
+            // assert
+            var orgMetadata = getOrgMetadataFromDb(dsl);
+            assertThat(orgMetadata).isEmpty();
+        });
+    }
+
     private void createOrgMetadataInDb(DSLContext dsl, String mdsId, String name) {
         var organizationMetadata = dsl.newRecord(Tables.ORGANIZATION_METADATA);
         organizationMetadata.setMdsId(mdsId);
