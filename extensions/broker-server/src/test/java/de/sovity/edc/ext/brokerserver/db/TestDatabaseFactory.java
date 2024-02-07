@@ -26,10 +26,6 @@ public class TestDatabaseFactory {
      * @return {@link TestDatabase}
      */
     public static TestDatabase getTestDatabase() {
-        if (TestDatabaseViaEnv.isSkipTestcontainers()) {
-            return new TestDatabaseViaEnv();
-        }
-
         return new TestDatabaseViaTestcontainers();
     }
 }

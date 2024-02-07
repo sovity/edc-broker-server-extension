@@ -5,7 +5,7 @@ import org.testcontainers.containers.PostgreSQLContainer
 
 val jooqDbType = "org.jooq.meta.postgres.PostgresDatabase"
 val jdbcDriver = "org.postgresql.Driver"
-val postgresContainer = "postgres:11-alpine"
+val postgresContainer = "postgres:15-alpine"
 
 val migrationsDir = "src/main/resources/db/migration"
 val testDataDir = "src/main/resources/db/testdata"
@@ -22,7 +22,7 @@ val postgresVersion: String by project
 
 buildscript {
     dependencies {
-        classpath("org.testcontainers:postgresql:1.19.1")
+        classpath("org.testcontainers:postgresql:1.19.4")
     }
 }
 
@@ -92,12 +92,11 @@ fun jdbcPassword(): String {
             ?: error("Need $jdbcPasswordEnvVarName since $skipTestcontainersEnvVarName=true")
 }
 
-
 tasks.register("startTestcontainer") {
     doLast {
         if (isTestcontainersEnabled()) {
             container = PostgreSQLContainer<Nothing>(postgresContainer)
-            container!!.start()
+            container?.start()
             gradle.buildFinished {
                 container?.stop()
             }
