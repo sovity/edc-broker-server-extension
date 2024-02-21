@@ -34,7 +34,7 @@ plugins {
 }
 
 dependencies {
-    api("org.jooq:jooq:3.18.7")
+    api("org.jooq:jooq:3.19.4")
     api("com.github.t9t.jooq:jooq-postgresql-json:4.0.0")
 
     jooqGenerator("org.postgresql:postgresql:42.7.2")
