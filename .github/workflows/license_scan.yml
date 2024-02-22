@@ -10,7 +10,7 @@ jobs:
     timeout-minutes: 30
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Run license scanner
         uses: aquasecurity/trivy-action@master
@@ -26,7 +26,7 @@ jobs:
     timeout-minutes: 30
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: npm install (client-ts)
         run: cd extensions/broker-server-api/client-ts && npm install
       - name: Run license scanner
