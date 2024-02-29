@@ -23,7 +23,6 @@ import de.sovity.edc.ext.brokerserver.api.model.ConnectorDetailPageQuery;
 import de.sovity.edc.ext.brokerserver.api.model.ConnectorDetailPageResult;
 import de.sovity.edc.ext.brokerserver.api.model.ConnectorPageQuery;
 import de.sovity.edc.ext.brokerserver.api.model.ConnectorPageResult;
-import de.sovity.edc.ext.brokerserver.api.model.DataOfferCountResult;
 import de.sovity.edc.ext.brokerserver.api.model.DataOfferDetailPageQuery;
 import de.sovity.edc.ext.brokerserver.api.model.DataOfferDetailPageResult;
 import io.swagger.v3.oas.annotations.Operation;
