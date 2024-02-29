@@ -44,15 +44,4 @@ public class AuthorityPortalConnectorMetadataApiService {
             ))
             .toList();
     }
-
-    public DataOfferCountResult countByEndpoints(DSLContext dsl, List<String> endpoints) {
-        var connectorMetadata = getMetadataByEndpoints(dsl, endpoints);
-
-        var numDataOffers = connectorMetadata.stream().distinct().collect(toMap(
-            AuthorityPortalConnectorInfo::getConnectorEndpoint,
-            AuthorityPortalConnectorInfo::getDataOfferCount
-        ));
-
-        return new DataOfferCountResult(numDataOffers);
-    }
 }

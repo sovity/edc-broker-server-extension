@@ -97,11 +97,6 @@ public class BrokerServerResourceImpl implements BrokerServerResource {
     }
 
     @Override
-    public DataOfferCountResult dataOfferCount(List<String> endpoints) {
-        return dslContextFactory.transactionResult(dsl -> authorityPortalConnectorMetadataApiService.countByEndpoints(dsl, endpoints));
-    }
-
-    @Override
     public void setOrganizationMetadata(AuthorityPortalOrganizationMetadataRequest organizationMetadataRequest, String adminApiKey) {
         adminApiKeyValidator.validateAdminApiKey(adminApiKey);
         dslContextFactory.transaction(dsl -> authorityPortalOrganizationMetadataApiService.setOrganizationMetadata(dsl, organizationMetadataRequest.getOrganizations()));
