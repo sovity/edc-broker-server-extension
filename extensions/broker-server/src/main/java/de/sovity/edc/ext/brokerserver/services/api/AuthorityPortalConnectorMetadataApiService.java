@@ -15,17 +15,10 @@
 package de.sovity.edc.ext.brokerserver.services.api;
 
 import de.sovity.edc.ext.brokerserver.api.model.AuthorityPortalConnectorInfo;
-import de.sovity.edc.ext.brokerserver.api.model.DataOfferCountResult;
-import de.sovity.edc.ext.brokerserver.dao.utils.PostgresqlUtils;
-import de.sovity.edc.ext.brokerserver.db.jooq.Tables;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
-import org.jooq.impl.DSL;
 
 import java.util.List;
-import java.util.function.Function;
-
-import static java.util.stream.Collectors.toMap;
 
 @RequiredArgsConstructor
 public class AuthorityPortalConnectorMetadataApiService {
