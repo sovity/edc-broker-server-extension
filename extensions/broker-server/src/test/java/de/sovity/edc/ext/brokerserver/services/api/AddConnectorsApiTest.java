@@ -16,7 +16,8 @@ package de.sovity.edc.ext.brokerserver.services.api;
 
 import de.sovity.edc.ext.brokerserver.TestUtils;
 import de.sovity.edc.ext.brokerserver.client.BrokerServerClient;
-import de.sovity.edc.ext.brokerserver.client.gen.model.AddConnectorRequest;
+import de.sovity.edc.ext.brokerserver.client.gen.model.AddConnectorsRequest;
+import de.sovity.edc.ext.brokerserver.client.gen.model.AddedConnector;
 import de.sovity.edc.ext.brokerserver.client.gen.model.ConnectorListEntry;
 import de.sovity.edc.ext.brokerserver.client.gen.model.ConnectorPageQuery;
 import de.sovity.edc.ext.brokerserver.db.TestDatabase;
@@ -57,70 +58,100 @@ class AddConnectorsApiTest {
             client.brokerServerApi().addConnectors(ADMIN_API_KEY, List.of());
 
             client.brokerServerApi().addConnectors(ADMIN_API_KEY, Arrays.asList(
-                new AddConnectorRequest(
+                null,
+                "",
+                "  ",
+                "\t",
+                "http://a",
+                "http://b"
+            ));
+
+            assertThat(client.brokerServerApi().connectorPage(new ConnectorPageQuery()).getConnectors())
+                .extracting(ConnectorListEntry::getEndpoint)
+                .containsExactlyInAnyOrder("http://a", "http://b");
+
+            client.brokerServerApi().addConnectors(ADMIN_API_KEY, Arrays.asList(
+                "http://b",
+                " http://b\r\n",
+                "http://c"
+            ));
+
+            assertThat(client.brokerServerApi().connectorPage(new ConnectorPageQuery()).getConnectors())
+                .extracting(ConnectorListEntry::getEndpoint)
+                .containsExactlyInAnyOrder("http://a", "http://b", "http://c");
+        });
+    }
+
+    @Test
+    void testAddConnectorsWithMdsIds() {
+        TEST_DATABASE.testTransaction(dsl -> {
+            client.brokerServerApi().addConnectorsWithMdsIds(ADMIN_API_KEY, new AddConnectorsRequest(List.of()));
+
+            client.brokerServerApi().addConnectorsWithMdsIds(ADMIN_API_KEY, new AddConnectorsRequest(Arrays.asList(
+                new AddedConnector(
                     null,
                     "MDSL1234"
                 ),
-                new AddConnectorRequest(
+                new AddedConnector(
                     "",
                     "MDSL1234"
                 ),
-                new AddConnectorRequest(
+                new AddedConnector(
                     "  ",
                     "MDSL1234"
                 ),
-                new AddConnectorRequest(
+                new AddedConnector(
                     "\t",
                     "MDSL1234"
                 ),
-                new AddConnectorRequest(
+                new AddedConnector(
                     "http://a",
                     "MDSL1234"
                 ),
-                new AddConnectorRequest(
+                new AddedConnector(
                     "http://b",
                     "MDSL1234"
                 ),
-                new AddConnectorRequest(
+                new AddedConnector(
                     "http://c",
                     null
                 ),
-                new AddConnectorRequest(
+                new AddedConnector(
                     "http://d",
                     ""
                 ),
-                new AddConnectorRequest(
+                new AddedConnector(
                     "http://e",
                     "  "
                 ),
-                new AddConnectorRequest(
+                new AddedConnector(
                     "http://f",
                     "\t"
                 )
-            ));
+            )));
 
             assertThat(client.brokerServerApi().connectorPage(new ConnectorPageQuery()).getConnectors())
-                    .extracting(ConnectorListEntry::getEndpoint)
-                    .containsExactlyInAnyOrder("http://a", "http://b");
+                .extracting(ConnectorListEntry::getEndpoint)
+                .containsExactlyInAnyOrder("http://a", "http://b");
 
-            client.brokerServerApi().addConnectors(ADMIN_API_KEY, Arrays.asList(
-                new AddConnectorRequest(
+            client.brokerServerApi().addConnectorsWithMdsIds(ADMIN_API_KEY, new AddConnectorsRequest(Arrays.asList(
+                new AddedConnector(
                     "http://b",
                     "MDSL1234"
                 ),
-                new AddConnectorRequest(
+                new AddedConnector(
                     " http://b\r\n",
                     "MDSL1234"
                 ),
-                new AddConnectorRequest(
+                new AddedConnector(
                     "http://c",
                     "MDSL1234"
                 )
-            ));
+            )));
 
             assertThat(client.brokerServerApi().connectorPage(new ConnectorPageQuery()).getConnectors())
-                    .extracting(ConnectorListEntry::getEndpoint)
-                    .containsExactlyInAnyOrder("http://a", "http://b", "http://c");
+                .extracting(ConnectorListEntry::getEndpoint)
+                .containsExactlyInAnyOrder("http://a", "http://b", "http://c");
         });
     }
 

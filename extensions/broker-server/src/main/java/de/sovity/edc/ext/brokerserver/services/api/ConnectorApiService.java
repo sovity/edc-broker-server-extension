@@ -14,7 +14,8 @@
 
 package de.sovity.edc.ext.brokerserver.services.api;
 
-import de.sovity.edc.ext.brokerserver.api.model.AddConnectorRequest;
+import de.sovity.edc.ext.brokerserver.api.model.AddConnectorsRequest;
+import de.sovity.edc.ext.brokerserver.api.model.AddedConnector;
 import de.sovity.edc.ext.brokerserver.dao.ConnectorQueries;
 import de.sovity.edc.ext.brokerserver.services.logging.BrokerEventLogger;
 import de.sovity.edc.ext.brokerserver.utils.MdsIdUtils;
@@ -34,7 +35,20 @@ public class ConnectorApiService {
     private final BrokerEventLogger brokerEventLogger;
     private final ConnectorQueries connectorQueries;
 
-    public void addConnectors(DSLContext dsl, List<AddConnectorRequest> connectors) {
+
+    public void addConnectors(DSLContext dsl, List<String> connectorEndpoints) {
+        var existingEndpoints = connectorService.getConnectorEndpoints(dsl);
+        var endpoints = connectorEndpoints.stream()
+            .filter(Objects::nonNull)
+            .map(String::trim)
+            .filter(UrlUtils::isValidUrl)
+            .filter(endpoint -> !existingEndpoints.contains(endpoint))
+            .collect(toSet());
+        connectorService.addConnectors(dsl, endpoints, ADDED_ON_API_CALL);
+    }
+
+    public void addConnectorsWithMdsIds(DSLContext dsl, AddConnectorsRequest addConnectorsRequests) {
+        var connectors = addConnectorsRequests.getConnectors();
         var existingEndpoints = connectorService.getConnectorEndpoints(dsl);
 
         connectors.removeIf(it -> it.getConnectorEndpoint() == null || it.getMdsId() == null);
@@ -48,7 +62,7 @@ public class ConnectorApiService {
                 || existingEndpoints.contains(it.getConnectorEndpoint())
         );
 
-        var endpoints = connectors.stream().map(AddConnectorRequest::getConnectorEndpoint).collect(toSet());
+        var endpoints = connectors.stream().map(AddedConnector::getConnectorEndpoint).collect(toSet());
         connectorService.addConnectors(dsl, endpoints, ADDED_ON_API_CALL);
         addMdsIdsToConnectors(dsl, connectors);
     }
@@ -58,7 +72,7 @@ public class ConnectorApiService {
         brokerEventLogger.logConnectorsDeleted(dsl, connectorEndpoints);
     }
 
-    private void addMdsIdsToConnectors(DSLContext dsl, List<AddConnectorRequest> connectors) {
+    private void addMdsIdsToConnectors(DSLContext dsl, List<AddedConnector> connectors) {
         connectors.forEach(it -> {
             var connector = connectorQueries.findByEndpoint(dsl, it.getConnectorEndpoint());
             if (connector != null) {

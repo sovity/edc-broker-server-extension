@@ -20,15 +20,13 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.time.OffsetDateTime;
-
 @Getter
 @Setter
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Schema(description = "Information for adding an unknown connector.", requiredMode = Schema.RequiredMode.REQUIRED)
-public class AddConnectorRequest {
+public class AddedConnector {
     @Schema(description = "Connector Endpoint", requiredMode = Schema.RequiredMode.REQUIRED)
     private String connectorEndpoint;
     @Schema(description = "Organization MDS ID", requiredMode = Schema.RequiredMode.REQUIRED)
