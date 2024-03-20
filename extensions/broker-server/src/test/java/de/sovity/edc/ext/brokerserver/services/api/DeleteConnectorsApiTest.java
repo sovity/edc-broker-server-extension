@@ -17,6 +17,7 @@ package de.sovity.edc.ext.brokerserver.services.api;
 import de.sovity.edc.ext.brokerserver.TestPolicy;
 import de.sovity.edc.ext.brokerserver.TestUtils;
 import de.sovity.edc.ext.brokerserver.client.BrokerServerClient;
+import de.sovity.edc.ext.brokerserver.client.gen.model.AddConnectorRequest;
 import de.sovity.edc.ext.brokerserver.client.gen.model.ConnectorListEntry;
 import de.sovity.edc.ext.brokerserver.client.gen.model.ConnectorPageQuery;
 import de.sovity.edc.ext.brokerserver.db.TestDatabase;
@@ -68,8 +69,8 @@ class DeleteConnectorsApiTest {
     void testRemoveConnectors() {
         TEST_DATABASE.testTransaction(dsl -> {
             // arrange
-            setupConnectorData(dsl, firstConnector);
-            setupConnectorData(dsl, otherConnector);
+            setupConnectorData(dsl, new AddConnectorRequest(firstConnector, "MDSL1234"));
+            setupConnectorData(dsl, new AddConnectorRequest(otherConnector, "MDSL1234"));
 
             var connectorsBefore = List.of(firstConnector, otherConnector);
             assertContainsEndpoints(dsl, Tables.BROKER_EXECUTION_TIME_MEASUREMENT.CONNECTOR_ENDPOINT, connectorsBefore);
@@ -104,10 +105,11 @@ class DeleteConnectorsApiTest {
         assertThat(actual).containsExactlyInAnyOrderElementsOf(expected);
     }
 
-    public void setupConnectorData(DSLContext dsl, String endpoint) {
-        client.brokerServerApi().addConnectors(ADMIN_API_KEY, List.of(endpoint));
+    public void setupConnectorData(DSLContext dsl, AddConnectorRequest connector) {
+        client.brokerServerApi().addConnectors(ADMIN_API_KEY, List.of(connector));
 
         var assetId = "my-asset";
+        var endpoint = connector.getConnectorEndpoint();
 
         var dataOffer = dsl.newRecord(Tables.DATA_OFFER);
         setDataOfferAssetMetadata(dataOffer, getAssetJsonLd("my-asset"), "my-participant-id");

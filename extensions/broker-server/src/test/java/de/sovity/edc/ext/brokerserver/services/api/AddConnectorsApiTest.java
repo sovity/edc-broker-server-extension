@@ -16,6 +16,7 @@ package de.sovity.edc.ext.brokerserver.services.api;
 
 import de.sovity.edc.ext.brokerserver.TestUtils;
 import de.sovity.edc.ext.brokerserver.client.BrokerServerClient;
+import de.sovity.edc.ext.brokerserver.client.gen.model.AddConnectorRequest;
 import de.sovity.edc.ext.brokerserver.client.gen.model.ConnectorListEntry;
 import de.sovity.edc.ext.brokerserver.client.gen.model.ConnectorPageQuery;
 import de.sovity.edc.ext.brokerserver.db.TestDatabase;
@@ -56,12 +57,46 @@ class AddConnectorsApiTest {
             client.brokerServerApi().addConnectors(ADMIN_API_KEY, List.of());
 
             client.brokerServerApi().addConnectors(ADMIN_API_KEY, Arrays.asList(
+                new AddConnectorRequest(
                     null,
+                    "MDSL1234"
+                ),
+                new AddConnectorRequest(
                     "",
+                    "MDSL1234"
+                ),
+                new AddConnectorRequest(
                     "  ",
+                    "MDSL1234"
+                ),
+                new AddConnectorRequest(
                     "\t",
+                    "MDSL1234"
+                ),
+                new AddConnectorRequest(
                     "http://a",
-                    "http://b"
+                    "MDSL1234"
+                ),
+                new AddConnectorRequest(
+                    "http://b",
+                    "MDSL1234"
+                ),
+                new AddConnectorRequest(
+                    "http://c",
+                    null
+                ),
+                new AddConnectorRequest(
+                    "http://d",
+                    ""
+                ),
+                new AddConnectorRequest(
+                    "http://e",
+                    "  "
+                ),
+                new AddConnectorRequest(
+                    "http://f",
+                    "\t"
+                )
             ));
 
             assertThat(client.brokerServerApi().connectorPage(new ConnectorPageQuery()).getConnectors())
@@ -69,9 +104,18 @@ class AddConnectorsApiTest {
                     .containsExactlyInAnyOrder("http://a", "http://b");
 
             client.brokerServerApi().addConnectors(ADMIN_API_KEY, Arrays.asList(
+                new AddConnectorRequest(
                     "http://b",
+                    "MDSL1234"
+                ),
+                new AddConnectorRequest(
                     " http://b\r\n",
-                    "http://c"
+                    "MDSL1234"
+                ),
+                new AddConnectorRequest(
+                    "http://c",
+                    "MDSL1234"
+                )
             ));
 
             assertThat(client.brokerServerApi().connectorPage(new ConnectorPageQuery()).getConnectors())

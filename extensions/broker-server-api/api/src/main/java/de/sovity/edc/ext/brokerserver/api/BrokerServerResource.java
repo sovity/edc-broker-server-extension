@@ -14,6 +14,7 @@
 
 package de.sovity.edc.ext.brokerserver.api;
 
+import de.sovity.edc.ext.brokerserver.api.model.AddConnectorRequest;
 import de.sovity.edc.ext.brokerserver.api.model.AuthorityPortalConnectorDataOfferInfo;
 import de.sovity.edc.ext.brokerserver.api.model.AuthorityPortalConnectorInfo;
 import de.sovity.edc.ext.brokerserver.api.model.AuthorityPortalOrganizationMetadataRequest;
@@ -74,7 +75,7 @@ public interface BrokerServerResource {
     @Path("connectors")
     @Consumes(MediaType.APPLICATION_JSON)
     @Operation(description = "Add unknown Connectors to the Broker Server")
-    void addConnectors(List<String> endpoints, @QueryParam("adminApiKey") String adminApiKey);
+    void addConnectors(List<AddConnectorRequest> connectors, @QueryParam("adminApiKey") String adminApiKey);
 
     @DELETE
     @Path("connectors")

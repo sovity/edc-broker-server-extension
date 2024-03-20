@@ -14,7 +14,10 @@
 
 package de.sovity.edc.ext.brokerserver.services.api;
 
+import de.sovity.edc.ext.brokerserver.api.model.AddConnectorRequest;
+import de.sovity.edc.ext.brokerserver.dao.ConnectorQueries;
 import de.sovity.edc.ext.brokerserver.services.logging.BrokerEventLogger;
+import de.sovity.edc.ext.brokerserver.utils.MdsIdUtils;
 import de.sovity.edc.ext.brokerserver.utils.UrlUtils;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
@@ -29,20 +32,39 @@ import static java.util.stream.Collectors.toSet;
 public class ConnectorApiService {
     private final ConnectorService connectorService;
     private final BrokerEventLogger brokerEventLogger;
+    private final ConnectorQueries connectorQueries;
 
-    public void addConnectors(DSLContext dsl, List<String> connectorEndpoints) {
+    public void addConnectors(DSLContext dsl, List<AddConnectorRequest> connectors) {
         var existingEndpoints = connectorService.getConnectorEndpoints(dsl);
-        var endpoints = connectorEndpoints.stream()
-            .filter(Objects::nonNull)
-            .map(String::trim)
-            .filter(UrlUtils::isValidUrl)
-            .filter(endpoint -> !existingEndpoints.contains(endpoint))
-            .collect(toSet());
+
+        connectors.removeIf(it -> it.getConnectorEndpoint() == null || it.getMdsId() == null);
+        connectors.forEach(it -> {
+            it.setConnectorEndpoint(it.getConnectorEndpoint().trim());
+            it.setMdsId(it.getMdsId().trim());
+        });
+        connectors.removeIf(it ->
+            !UrlUtils.isValidUrl(it.getConnectorEndpoint())
+                || !MdsIdUtils.isValidMdsId(it.getMdsId())
+                || existingEndpoints.contains(it.getConnectorEndpoint())
+        );
+
+        var endpoints = connectors.stream().map(AddConnectorRequest::getConnectorEndpoint).collect(toSet());
         connectorService.addConnectors(dsl, endpoints, ADDED_ON_API_CALL);
+        addMdsIdsToConnectors(dsl, connectors);
     }
 
     public void deleteConnectors(DSLContext dsl, List<String> connectorEndpoints) {
         connectorService.deleteConnectors(dsl, connectorEndpoints);
         brokerEventLogger.logConnectorsDeleted(dsl, connectorEndpoints);
+    }
+
+    private void addMdsIdsToConnectors(DSLContext dsl, List<AddConnectorRequest> connectors) {
+        connectors.forEach(it -> {
+            var connector = connectorQueries.findByEndpoint(dsl, it.getConnectorEndpoint());
+            if (connector != null) {
+                connector.setMdsId(it.getMdsId());
+                connector.update();
+            }
+        });
     }
 }
