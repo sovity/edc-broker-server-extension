@@ -16,8 +16,8 @@ package de.sovity.edc.ext.brokerserver.services.api;
 
 import de.sovity.edc.ext.brokerserver.TestUtils;
 import de.sovity.edc.ext.brokerserver.client.BrokerServerClient;
-import de.sovity.edc.ext.brokerserver.client.gen.model.AddConnectorsRequest;
 import de.sovity.edc.ext.brokerserver.client.gen.model.AddedConnector;
+import de.sovity.edc.ext.brokerserver.client.gen.model.ConnectorCreationRequest;
 import de.sovity.edc.ext.brokerserver.client.gen.model.ConnectorListEntry;
 import de.sovity.edc.ext.brokerserver.client.gen.model.ConnectorPageQuery;
 import de.sovity.edc.ext.brokerserver.db.TestDatabase;
@@ -85,9 +85,9 @@ class AddConnectorsApiTest {
     @Test
     void testAddConnectorsWithMdsIds() {
         TEST_DATABASE.testTransaction(dsl -> {
-            client.brokerServerApi().addConnectorsWithMdsIds(ADMIN_API_KEY, new AddConnectorsRequest(List.of()));
+            client.brokerServerApi().addConnectorsWithMdsIds(ADMIN_API_KEY, new ConnectorCreationRequest(List.of()));
 
-            client.brokerServerApi().addConnectorsWithMdsIds(ADMIN_API_KEY, new AddConnectorsRequest(Arrays.asList(
+            client.brokerServerApi().addConnectorsWithMdsIds(ADMIN_API_KEY, new ConnectorCreationRequest(Arrays.asList(
                 new AddedConnector(
                     null,
                     "MDSL1234"
@@ -134,7 +134,7 @@ class AddConnectorsApiTest {
                 .extracting(ConnectorListEntry::getEndpoint)
                 .containsExactlyInAnyOrder("http://a", "http://b");
 
-            client.brokerServerApi().addConnectorsWithMdsIds(ADMIN_API_KEY, new AddConnectorsRequest(Arrays.asList(
+            client.brokerServerApi().addConnectorsWithMdsIds(ADMIN_API_KEY, new ConnectorCreationRequest(Arrays.asList(
                 new AddedConnector(
                     "http://b",
                     "MDSL1234"
