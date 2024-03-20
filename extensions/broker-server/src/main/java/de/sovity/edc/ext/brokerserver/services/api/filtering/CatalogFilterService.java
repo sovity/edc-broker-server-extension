@@ -88,6 +88,11 @@ public class CatalogFilterService {
                 "curatorOrganizationName",
                 "Organization Name"
             ),
+            catalogFilterAttributeDefinitionService.forField(
+                fields -> fields.getConnectorTable().MDS_ID,
+                "curatorMdsId",
+                "MDS ID"
+            ),
             catalogFilterAttributeDefinitionService.buildConnectorEndpointFilter()
         );
     }
