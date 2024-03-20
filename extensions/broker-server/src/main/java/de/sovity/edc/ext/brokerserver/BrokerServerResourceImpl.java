@@ -15,12 +15,12 @@
 package de.sovity.edc.ext.brokerserver;
 
 import de.sovity.edc.ext.brokerserver.api.BrokerServerResource;
-import de.sovity.edc.ext.brokerserver.api.model.ConnectorCreationRequest;
 import de.sovity.edc.ext.brokerserver.api.model.AuthorityPortalConnectorDataOfferInfo;
 import de.sovity.edc.ext.brokerserver.api.model.AuthorityPortalConnectorInfo;
 import de.sovity.edc.ext.brokerserver.api.model.AuthorityPortalOrganizationMetadataRequest;
 import de.sovity.edc.ext.brokerserver.api.model.CatalogPageQuery;
 import de.sovity.edc.ext.brokerserver.api.model.CatalogPageResult;
+import de.sovity.edc.ext.brokerserver.api.model.ConnectorCreationRequest;
 import de.sovity.edc.ext.brokerserver.api.model.ConnectorDetailPageQuery;
 import de.sovity.edc.ext.brokerserver.api.model.ConnectorDetailPageResult;
 import de.sovity.edc.ext.brokerserver.api.model.ConnectorPageQuery;
