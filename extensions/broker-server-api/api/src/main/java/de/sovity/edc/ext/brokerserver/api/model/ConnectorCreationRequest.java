@@ -20,7 +20,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.time.OffsetDateTime;
 import java.util.List;
 
 @Getter
@@ -29,7 +28,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Schema(description = "Wrapper for adding unknown Connectors with MDS IDs.", requiredMode = Schema.RequiredMode.REQUIRED)
-public class AddConnectorsRequest {
+public class ConnectorCreationRequest {
     @Schema(description = "Connectors", requiredMode = Schema.RequiredMode.REQUIRED)
     private List<AddedConnector> connectors;
 }

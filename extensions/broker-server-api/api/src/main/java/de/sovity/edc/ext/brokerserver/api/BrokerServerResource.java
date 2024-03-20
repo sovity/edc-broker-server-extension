@@ -14,7 +14,7 @@
 
 package de.sovity.edc.ext.brokerserver.api;
 
-import de.sovity.edc.ext.brokerserver.api.model.AddConnectorsRequest;
+import de.sovity.edc.ext.brokerserver.api.model.ConnectorCreationRequest;
 import de.sovity.edc.ext.brokerserver.api.model.AuthorityPortalConnectorDataOfferInfo;
 import de.sovity.edc.ext.brokerserver.api.model.AuthorityPortalConnectorInfo;
 import de.sovity.edc.ext.brokerserver.api.model.AuthorityPortalOrganizationMetadataRequest;
@@ -81,7 +81,7 @@ public interface BrokerServerResource {
     @Path("connectors-with-mdsid")
     @Consumes(MediaType.APPLICATION_JSON)
     @Operation(description = "Add unknown Connectors with MDS IDs to the Broker Server")
-    void addConnectorsWithMdsIds(AddConnectorsRequest connectors, @QueryParam("adminApiKey") String adminApiKey);
+    void addConnectorsWithMdsIds(ConnectorCreationRequest connectors, @QueryParam("adminApiKey") String adminApiKey);
 
     @DELETE
     @Path("connectors")

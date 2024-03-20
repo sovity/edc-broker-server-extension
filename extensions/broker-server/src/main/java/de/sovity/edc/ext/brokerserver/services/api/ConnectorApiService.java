@@ -14,7 +14,7 @@
 
 package de.sovity.edc.ext.brokerserver.services.api;
 
-import de.sovity.edc.ext.brokerserver.api.model.AddConnectorsRequest;
+import de.sovity.edc.ext.brokerserver.api.model.ConnectorCreationRequest;
 import de.sovity.edc.ext.brokerserver.api.model.AddedConnector;
 import de.sovity.edc.ext.brokerserver.dao.ConnectorQueries;
 import de.sovity.edc.ext.brokerserver.services.logging.BrokerEventLogger;
@@ -47,8 +47,8 @@ public class ConnectorApiService {
         connectorService.addConnectors(dsl, endpoints, ADDED_ON_API_CALL);
     }
 
-    public void addConnectorsWithMdsIds(DSLContext dsl, AddConnectorsRequest addConnectorsRequests) {
-        var connectors = addConnectorsRequests.getConnectors();
+    public void addConnectorsWithMdsIds(DSLContext dsl, ConnectorCreationRequest connectorCreationRequests) {
+        var connectors = connectorCreationRequests.getConnectors();
         var existingEndpoints = connectorService.getConnectorEndpoints(dsl);
 
         connectors.removeIf(it -> it.getConnectorEndpoint() == null || it.getMdsId() == null);
