@@ -109,7 +109,7 @@ class AddConnectorsApiTest {
                     "MDSL1234"
                 ),
                 new AddedConnector(
-                    "http://b",
+                    " http://b\r\n",
                     "MDSL1234"
                 ),
                 new AddedConnector(
