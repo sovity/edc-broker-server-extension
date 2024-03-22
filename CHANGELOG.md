@@ -50,7 +50,7 @@ Release with adjustmets for the ongoing integration with the Authority Portal
 
 - Broker Backend Docker Image: `ghcr.io/sovity/broker-server-ce:4.0.0`
 - Broker UI Docker Image: `ghcr.io/sovity/edc-ui:3.0.0`
-- Sovity EDC CE: [``](https://github.com/sovity/edc-extensions/releases/tag/v)
+- Sovity EDC CE: [`7.2.2`](https://github.com/sovity/edc-extensions/releases/tag/v7.2.2)
 
 ## [v3.5.0] - 2024-02-29
 
