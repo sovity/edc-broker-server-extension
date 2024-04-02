@@ -36,7 +36,7 @@ Pull changes from EDC CE 7.3.0 into the broker.
 #### Minor
 
 - Bumped EDC version to 7.3.0:
-  - UIAsset: Replaced unsafe additional and private properties with safer alternative fields customJsonAsString (not affected by Json LD manipulation) and customJsonLdAsString (affected by Json LD manipulation), along with their private counterparts.
+  - Broker UI: Support for UIAsset's `customJsonAsString` and `customJsonLdAsString`, along with their private counterparts.
 
 ### Deployment Migration Notes
 
