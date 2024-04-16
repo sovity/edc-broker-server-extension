@@ -67,10 +67,12 @@ dependencies {
 tasks.getByName<Test>("test") {
     useJUnitPlatform()
     maxParallelForks = 1
-    retry {
-        maxRetries.set(2)
-        maxFailures.set(4)
-        failOnPassedAfterRetry.set(false)
+    if (System.getenv("LOCALDEV") == null) {
+        retry {
+            maxRetries.set(2)
+            maxFailures.set(4)
+            failOnPassedAfterRetry.set(false)
+        }
     }
 }
 

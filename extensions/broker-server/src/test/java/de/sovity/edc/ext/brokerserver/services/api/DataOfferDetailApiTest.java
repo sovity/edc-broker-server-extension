@@ -23,6 +23,7 @@ import de.sovity.edc.ext.brokerserver.db.jooq.enums.ConnectorContractOffersExcee
 import de.sovity.edc.ext.brokerserver.db.jooq.enums.ConnectorDataOffersExceeded;
 import de.sovity.edc.ext.brokerserver.db.jooq.enums.ConnectorOnlineStatus;
 import de.sovity.edc.utils.jsonld.vocab.Prop;
+import de.sovity.edc.utils.jsonld.vocab.Prop.MobilityDcatAp;
 import jakarta.json.JsonObject;
 import org.eclipse.edc.junit.annotations.ApiTest;
 import org.eclipse.edc.junit.extensions.EdcExtension;
@@ -63,12 +64,14 @@ class DataOfferDetailApiTest {
             var today = OffsetDateTime.now().withNano(0);
 
             var assetJsonLd1 = getAssetJsonLd("my-asset-1", Map.of(
-                Prop.Mds.DATA_CATEGORY, "my-category",
+                Prop.MobilityDcatAp.MOBILITY_THEME, Map.of(
+                    Prop.MobilityDcatAp.DataCategoryProps.DATA_CATEGORY, "my-category"),
                 Prop.Dcterms.TITLE, "My Asset 1"
             ));
 
             var assetJsonLd2 = getAssetJsonLd("my-asset-2", Map.of(
-                Prop.Mds.DATA_CATEGORY, "my-category-2",
+                Prop.MobilityDcatAp.MOBILITY_THEME, Map.of(
+                    Prop.MobilityDcatAp.DataCategoryProps.DATA_CATEGORY, "my-category-2"),
                 Prop.Dcterms.TITLE, "My Asset 2"
             ));
 

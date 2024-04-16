@@ -31,8 +31,8 @@ import de.sovity.edc.ext.brokerserver.db.jooq.Tables;
 import de.sovity.edc.ext.brokerserver.db.jooq.enums.ConnectorContractOffersExceeded;
 import de.sovity.edc.ext.brokerserver.db.jooq.enums.ConnectorDataOffersExceeded;
 import de.sovity.edc.ext.brokerserver.db.jooq.enums.ConnectorOnlineStatus;
-import de.sovity.edc.ext.wrapper.api.common.mappers.utils.AssetJsonLdUtils;
 import de.sovity.edc.utils.jsonld.vocab.Prop;
+import jakarta.json.Json;
 import jakarta.json.JsonObject;
 import lombok.SneakyThrows;
 import org.eclipse.edc.junit.annotations.ApiTest;
@@ -67,9 +67,9 @@ class CatalogApiTest {
     @BeforeEach
     void setUp(EdcExtension extension) {
         extension.setConfiguration(createConfiguration(TEST_DATABASE, Map.of(
-                BrokerServerExtension.CATALOG_PAGE_PAGE_SIZE, "10",
-                BrokerServerExtension.DEFAULT_CONNECTOR_DATASPACE, "MDS",
-                BrokerServerExtension.KNOWN_DATASPACE_CONNECTORS, "Example1=https://my-connector2/api/dsp,Example2=https://my-connector3/api/dsp"
+            BrokerServerExtension.CATALOG_PAGE_PAGE_SIZE, "10",
+            BrokerServerExtension.DEFAULT_CONNECTOR_DATASPACE, "MDS",
+            BrokerServerExtension.KNOWN_DATASPACE_CONNECTORS, "Example1=https://my-connector2/api/dsp,Example2=https://my-connector3/api/dsp"
         )));
     }
 
@@ -91,7 +91,7 @@ class CatalogApiTest {
 
             var query = new CatalogPageQuery();
             query.setFilter(new CnfFilterValue(List.of(
-                    new CnfFilterValueAttribute("dataSpace", List.of("Example1"))
+                new CnfFilterValueAttribute("dataSpace", List.of("Example1"))
             )));
 
             var result = brokerServerClient().brokerServerApi().catalogPage(query);
@@ -118,7 +118,7 @@ class CatalogApiTest {
 
             var query = new CatalogPageQuery();
             query.setFilter(new CnfFilterValue(List.of(
-                    new CnfFilterValueAttribute("connectorEndpoint", List.of("https://my-connector/api/dsp"))
+                new CnfFilterValueAttribute("connectorEndpoint", List.of("https://my-connector/api/dsp"))
             )));
 
             var result = brokerServerClient().brokerServerApi().catalogPage(query);
@@ -151,9 +151,9 @@ class CatalogApiTest {
             // assert that the filter values are correct
             var dataSpace = getAvailableFilter(result, "dataSpace");
             assertThat(dataSpace.getValues()).containsExactly(
-                    new CnfFilterItem("Example1", "Example1"),
-                    new CnfFilterItem("Example2", "Example2"),
-                    new CnfFilterItem("MDS", "MDS")
+                new CnfFilterItem("Example1", "Example1"),
+                new CnfFilterItem("Example2", "Example2"),
+                new CnfFilterItem("MDS", "MDS")
             );
         });
     }
@@ -214,28 +214,36 @@ class CatalogApiTest {
             var today = OffsetDateTime.now().withNano(0);
 
             var assetJsonLd1 = getAssetJsonLd("my-asset-1", Map.of(
-                Prop.Mds.DATA_CATEGORY, "my-category-1",
-                Prop.Mds.TRANSPORT_MODE, "MY-TRANSPORT-MODE-1",
-                Prop.Mds.DATA_SUBCATEGORY, "MY-SUBCATEGORY-2",
-                Prop.Mds.DATA_MODEL, "my-data-model",
-                Prop.Mds.GEO_REFERENCE_METHOD, "my-geo-ref"
+                Prop.MobilityDcatAp.MOBILITY_THEME, Map.of(
+                    Prop.MobilityDcatAp.DataCategoryProps.DATA_CATEGORY, "my-category-1",
+                    Prop.MobilityDcatAp.DataCategoryProps.DATA_SUBCATEGORY, "MY-SUBCATEGORY-2"),
+                Prop.MobilityDcatAp.TRANSPORT_MODE, "MY-TRANSPORT-MODE-1",
+                Prop.Dcat.DISTRIBUTION, Map.of(
+                    Prop.MobilityDcatAp.DATA_MODEL, Map.of(
+                        Prop.ID, "my-data-model"
+                    )
+                ),
+                Prop.MobilityDcatAp.GEO_REFERENCE_METHOD, "my-geo-ref"
             ));
 
             var assetJsonLd2 = getAssetJsonLd("my-asset-2", Map.of(
-                Prop.Mds.DATA_CATEGORY, "my-category-1",
-                Prop.Mds.TRANSPORT_MODE, "my-transport-mode-2",
-                Prop.Mds.DATA_SUBCATEGORY, "MY-SUBCATEGORY-2"
+                Prop.MobilityDcatAp.MOBILITY_THEME, Map.of(
+                    Prop.MobilityDcatAp.DataCategoryProps.DATA_CATEGORY, "my-category-1",
+                    Prop.MobilityDcatAp.DataCategoryProps.DATA_SUBCATEGORY, "MY-SUBCATEGORY-2"),
+                Prop.MobilityDcatAp.TRANSPORT_MODE, "my-transport-mode-2"
             ));
 
             var assetJsonLd3 = getAssetJsonLd("my-asset-3", Map.of(
-                Prop.Mds.DATA_CATEGORY, "my-category-1",
-                Prop.Mds.TRANSPORT_MODE, "MY-TRANSPORT-MODE-1",
-                Prop.Mds.DATA_SUBCATEGORY, "my-subcategory-1"
+                Prop.MobilityDcatAp.MOBILITY_THEME, Map.of(
+                    Prop.MobilityDcatAp.DataCategoryProps.DATA_CATEGORY, "my-category-1",
+                    Prop.MobilityDcatAp.DataCategoryProps.DATA_SUBCATEGORY, "my-subcategory-1"),
+                Prop.MobilityDcatAp.TRANSPORT_MODE, "MY-TRANSPORT-MODE-1"
             ));
 
             var assetJsonLd4 = getAssetJsonLd("my-asset-4", Map.of(
-                Prop.Mds.DATA_CATEGORY, "my-category-1",
-                Prop.Mds.TRANSPORT_MODE, ""
+                Prop.MobilityDcatAp.MOBILITY_THEME, Map.of(
+                    Prop.MobilityDcatAp.DataCategoryProps.DATA_CATEGORY, "my-category-1"),
+                Prop.MobilityDcatAp.TRANSPORT_MODE, ""
             ));
 
             createOrganizationMetadata(dsl, "MDSL123456AA", "Test Org");
@@ -248,32 +256,32 @@ class CatalogApiTest {
             var result = brokerServerClient().brokerServerApi().catalogPage(new CatalogPageQuery());
 
             assertThat(result.getAvailableFilters().getFields())
-                    .extracting(CnfFilterAttribute::getId)
-                    .containsExactly(
-                            "dataSpace",
-                            "dataCategory",
-                            "dataSubcategory",
-                            "dataModel",
-                            "transportMode",
-                            "geoReferenceMethod",
-                            "curatorOrganizationName",
-                            "curatorMdsId",
-                            "connectorEndpoint"
-                    );
+                .extracting(CnfFilterAttribute::getId)
+                .containsExactly(
+                    "dataSpace",
+                    "dataCategory",
+                    "dataSubcategory",
+                    "dataModel",
+                    "transportMode",
+                    "geoReferenceMethod",
+                    "curatorOrganizationName",
+                    "curatorMdsId",
+                    "connectorEndpoint"
+                );
 
             assertThat(result.getAvailableFilters().getFields())
-                    .extracting(CnfFilterAttribute::getTitle)
-                    .containsExactly(
-                            "Data Space",
-                            "Data Category",
-                            "Data Subcategory",
-                            "Data Model",
-                            "Transport Mode",
-                            "Geo Reference Method",
-                            "Organization Name",
-                            "MDS ID",
-                            "Connector"
-                    );
+                .extracting(CnfFilterAttribute::getTitle)
+                .containsExactly(
+                    "Data Space",
+                    "Data Category",
+                    "Data Subcategory",
+                    "Data Model",
+                    "Transport Mode",
+                    "Geo Reference Method",
+                    "Organization Name",
+                    "MDS ID",
+                    "Connector"
+                );
 
             var dataSpace = getAvailableFilter(result, "dataSpace");
             assertThat(dataSpace.getValues()).extracting(CnfFilterItem::getId).containsExactly("MDS");
@@ -343,8 +351,8 @@ class CatalogApiTest {
 
     private CnfFilterAttribute getAvailableFilter(CatalogPageResult result, String filterId) {
         return result.getAvailableFilters().getFields().stream()
-                .filter(it -> it.getId().equals(filterId)).findFirst()
-                .orElseThrow(() -> new IllegalStateException("Filter not found"));
+            .filter(it -> it.getId().equals(filterId)).findFirst()
+            .orElseThrow(() -> new IllegalStateException("Filter not found"));
     }
 
     @Test
@@ -354,13 +362,16 @@ class CatalogApiTest {
             var today = OffsetDateTime.now().withNano(0);
 
             var assetJsonLd1 = getAssetJsonLd("my-asset-1", Map.of(
-                Prop.Mds.DATA_CATEGORY, "my-category",
-                Prop.Mds.DATA_SUBCATEGORY, "my-subcategory"
+                Prop.MobilityDcatAp.MOBILITY_THEME, Map.of(
+                    Prop.MobilityDcatAp.DataCategoryProps.DATA_CATEGORY, "my-category",
+                    Prop.MobilityDcatAp.DataCategoryProps.DATA_SUBCATEGORY, "my-subcategory")
             ));
 
             var assetJsonLd2 = getAssetJsonLd("my-asset-2", Map.of(
-                Prop.Mds.DATA_SUBCATEGORY, "my-other-subcategory"
-            ));
+                    Prop.MobilityDcatAp.MOBILITY_THEME, Map.of(
+                        Prop.MobilityDcatAp.DataCategoryProps.DATA_SUBCATEGORY, "my-other-subcategory")
+                )
+            );
 
             createConnector(dsl, today, "https://my-connector/api/dsp");
             createDataOffer(dsl, today, "https://my-connector/api/dsp", assetJsonLd1);
@@ -368,7 +379,7 @@ class CatalogApiTest {
 
             var query = new CatalogPageQuery();
             query.setFilter(new CnfFilterValue(List.of(
-                    new CnfFilterValueAttribute("dataCategory", List.of(""))
+                new CnfFilterValueAttribute("dataCategory", List.of(""))
             )));
 
             var result = brokerServerClient().brokerServerApi().catalogPage(query);
@@ -399,7 +410,7 @@ class CatalogApiTest {
 
             var result = brokerServerClient().brokerServerApi().catalogPage(query);
             assertThat(result.getDataOffers()).extracting(CatalogDataOffer::getAssetId)
-                    .isEqualTo(range(0, 10).mapToObj("my-asset-%d"::formatted).toList());
+                .isEqualTo(range(0, 10).mapToObj("my-asset-%d"::formatted).toList());
 
             var actual = result.getPaginationMetadata();
             assertThat(actual.getPageOneBased()).isEqualTo(1);
@@ -428,7 +439,7 @@ class CatalogApiTest {
             var result = brokerServerClient().brokerServerApi().catalogPage(query);
 
             assertThat(result.getDataOffers()).extracting(CatalogDataOffer::getAssetId)
-                    .isEqualTo(range(10, 15).mapToObj("my-asset-%d"::formatted).toList());
+                .isEqualTo(range(10, 15).mapToObj("my-asset-%d"::formatted).toList());
 
             var actual = result.getPaginationMetadata();
             assertThat(actual.getPageOneBased()).isEqualTo(2);
@@ -459,9 +470,9 @@ class CatalogApiTest {
 
             var result = brokerServerClient().brokerServerApi().catalogPage(query);
             assertThat(result.getDataOffers()).extracting(CatalogDataOffer::getAssetId).containsExactly(
-                    "asset-2",
-                    "asset-1",
-                    "asset-3"
+                "asset-2",
+                "asset-1",
+                "asset-3"
             );
         });
     }
@@ -568,7 +579,7 @@ class CatalogApiTest {
             // act
             var query = new CatalogPageQuery();
             query.setFilter(new CnfFilterValue(List.of(
-                    new CnfFilterValueAttribute("curatorOrganizationName", List.of("Unknown"))
+                new CnfFilterValueAttribute("curatorOrganizationName", List.of("Unknown"))
             )));
 
             var actual = brokerServerClient().brokerServerApi().catalogPage(query);
@@ -650,15 +661,15 @@ class CatalogApiTest {
 
     private Policy dummyPolicy() {
         return Policy.Builder.newInstance()
-                .type(PolicyType.SET)
-                .build();
+            .type(PolicyType.SET)
+            .build();
     }
 
     private DataOfferDetailPageResult dataOfferDetails(String endpoint, String assetId) {
         var query = DataOfferDetailPageQuery.builder()
-                .connectorEndpoint(endpoint)
-                .assetId(assetId)
-                .build();
+            .connectorEndpoint(endpoint)
+            .assetId(assetId)
+            .build();
         return brokerServerClient().brokerServerApi().dataOfferDetailPage(query);
     }
 
