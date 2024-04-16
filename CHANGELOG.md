@@ -17,6 +17,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 #### Patch
 
+* Update to EDC CE 7.4.0
+* Update to core EDC 0.2.1-sovity1.0
+
 ### Deployment Migration Notes
 
 #### Compatible Versions
