@@ -22,9 +22,12 @@ import de.sovity.edc.ext.wrapper.api.common.mappers.utils.MarkdownToTextConverte
 import de.sovity.edc.ext.wrapper.api.common.mappers.utils.TextUtils;
 import de.sovity.edc.ext.wrapper.api.common.mappers.utils.UiAssetMapper;
 import de.sovity.edc.ext.wrapper.api.common.model.UiAssetCreateRequest;
+import de.sovity.edc.utils.jsonld.vocab.Prop;
 import jakarta.json.JsonObject;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+
+import java.util.Map;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class TestAsset {
@@ -39,7 +42,12 @@ public class TestAsset {
 
     public static JsonObject getAssetJsonLd(UiAssetCreateRequest request) {
         return getUiAssetMapper().buildAssetJsonLd(
-            request,
+            request.toBuilder()
+                .dataAddressProperties(Map.of(
+                    Prop.Edc.TYPE, "HttpData",
+                    Prop.Edc.BASE_URL, "https://example.com"
+                ))
+                .build(),
             "orgName"
         );
     }

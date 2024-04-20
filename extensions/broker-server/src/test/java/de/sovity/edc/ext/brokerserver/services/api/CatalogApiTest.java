@@ -190,8 +190,8 @@ class CatalogApiTest {
             assertThat(dataOfferResult.getConnectorEndpoint()).isEqualTo("https://my-connector/api/dsp");
             assertThat(dataOfferResult.getConnectorOfflineSinceOrLastUpdatedAt()).isEqualTo(today);
             assertThat(dataOfferResult.getConnectorOnlineStatus()).isEqualTo(CatalogDataOffer.ConnectorOnlineStatusEnum.ONLINE);
-            assertThat(dataOfferResult.getAssetId()).isEqualTo("my-asset-1");
-            assertThat(dataOfferResult.getAsset().getAssetId()).isEqualTo("my-asset-1");
+            assertThat(dataOfferResult.getAssetId()).isEqualTo("my-asset");
+            assertThat(dataOfferResult.getAsset().getAssetId()).isEqualTo("my-asset");
             assertThat(dataOfferResult.getAsset().getTitle()).isEqualTo("My Asset");
             assertThat(dataOfferResult.getCreatedAt()).isEqualTo(today.minusDays(5));
         });
