@@ -115,10 +115,10 @@ class DataOfferWriterTestDataHelper {
 
     public String dummyAssetJson(Do dataOffer) {
         var assetJsonLd = getAssetJsonLd(
-            UiAssetCreateRequest.builder()
-                .id(dataOffer.getAssetId())
-                .title(dataOffer.getAssetTitle())
-                .build()
+                UiAssetCreateRequest.builder()
+                    .id(dataOffer.getAssetId())
+                    .title(dataOffer.getAssetTitle())
+                    .build()
         );
         return JsonUtils.toJson(assetJsonLd);
     }
