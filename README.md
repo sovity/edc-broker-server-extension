@@ -32,6 +32,19 @@ Broker Backend &amp; EDC Extensions.
    </ol>
 </details>
 
+# Archived
+
+This project has been merged with the [EDC CE](https://github.com/sovity/edc-extensions) repository.
+
+Any new issue regarding the Broker must be open in the [EDC CE repo](https://github.com/sovity/edc-extensions/issues/new/choose).
+
+The extensions have been moved to the EDC CE [extensions folder](https://github.com/sovity/edc-extensions/tree/main/extensions)
+
+The `ce` and `dev` variants have been moved next to the [EDC CE launchers](https://github.com/sovity/edc-extensions/tree/main/launchers/connectors)
+
+The build has been integrated into the EDC CE's build system.
+
+
 ## About The Project
 
 [Eclipse Dataspace Components](https://github.com/eclipse-edc) (EDC) is a framework
